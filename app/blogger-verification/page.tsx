@@ -1,13 +1,19 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { Upload } from "lucide-react"
-import Breadcrumb from "@/components/breadcrumb"
+import { useState, useRef } from "react"
+import AppHeader from "@/components/app-header"
 
 export default function BloggerVerificationPage() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const [showFollowerInput, setShowFollowerInput] = useState(false)
+  const [followerCount, setFollowerCount] = useState<string>("")
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [isMouseDown, setIsMouseDown] = useState(false)
+  const [startX, setStartX] = useState(0)
+  const [scrollLeft, setScrollLeft] = useState(0)
 
   const handleSubmit = () => {
     if (!uploadedImage) return
@@ -28,129 +34,262 @@ export default function BloggerVerificationPage() {
     }
   }
 
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+
+    const files = e.dataTransfer.files
+    if (files && files[0] && files[0].type.startsWith("image/")) {
+      const file = files[0]
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setUploadedImage(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!scrollContainerRef.current) return
+    setIsMouseDown(true)
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft)
+    setScrollLeft(scrollContainerRef.current.scrollLeft)
+  }
+
+  const handleMouseLeave = () => {
+    setIsMouseDown(false)
+  }
+
+  const handleMouseUp = () => {
+    setIsMouseDown(false)
+  }
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isMouseDown || !scrollContainerRef.current) return
+    e.preventDefault()
+    const x = e.pageX - scrollContainerRef.current.offsetLeft
+    const walk = (x - startX) * 2
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk
+  }
+
+  const handleFollowerCountBlur = () => {
+    if (followerCount) {
+      setShowFollowerInput(false)
+    }
+  }
+
   return (
-    <div className="min-h-[150vh] bg-white">
-      {/* Header */}
-      <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-4">
-          {/* Left: Logo */}
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
-              <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
-                />
-              </svg>
-            </div>
-            <span className="text-xl font-bold text-blue-600">GrowthEngine</span>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <AppHeader
+        breadcrumbItems={[
+          { label: "注册", href: "/register" },
+          { label: "角色选择", href: "/select-role" },
+          { label: "博主认证" },
+        ]}
+      />
 
-          {/* Right: Buttons */}
-          <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50">
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              完成资料
-            </button>
-            <button className="flex items-center gap-2 rounded-lg border border-blue-600 bg-white px-4 py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50">
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                />
-              </svg>
-              上传粉号
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="mx-auto max-w-5xl px-8 py-16 pb-[30vh]">
+      <main className="mx-auto max-w-5xl px-8 py-8 pb-8 pt-24">
         {/* Breadcrumb navigation */}
-        <Breadcrumb
-          items={[
-            { label: "注册", href: "/register" },
-            { label: "角色选择", href: "/select-role" },
-            { label: "博主认证" },
-          ]}
-        />
+        <nav className="mb-12 flex items-center gap-2 text-sm text-slate-600">
+          <a href="/register" className="hover:text-slate-900">
+            注册
+          </a>
+          <span>/</span>
+          <a href="/select-role" className="hover:text-slate-900">
+            角色选择
+          </a>
+          <span>/</span>
+          <span className="font-semibold text-slate-900">博主认证</span>
+        </nav>
 
         {/* Title Section */}
         <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-slate-900">成为优质博主，第一步：上传自媒体账号截图</h1>
-          <p className="text-slate-600">截图仅用于账号验证，不会公开展示或采用于其他用途。</p>
+          <h1 className="mb-3 text-4xl font-bold text-slate-900">博主认证</h1>
+          <p className="text-lg text-slate-600">请上传您的博主认证信息，我们将在1-2个工作日内完成审核。</p>
         </div>
 
         {/* Upload Section - Two Column Layout */}
-        <div className="mb-8 rounded-2xl border border-slate-200 bg-white p-12 shadow-sm">
-          <div className="grid grid-cols-2 gap-12">
-            {/* Left: Upload Area */}
-            <div>
-              <label className="block cursor-pointer">
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                <div className="flex min-h-[320px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-white transition-all hover:border-blue-400 hover:bg-slate-50">
-                  {uploadedImage ? (
-                    <div className="relative h-full w-full p-4">
-                      <img
-                        src={uploadedImage || "/placeholder.svg"}
-                        alt="Uploaded"
-                        className="mx-auto max-h-72 rounded-lg object-contain"
-                      />
-                    </div>
-                  ) : (
-                    <>
-                      <Upload className="mb-4 h-16 w-16 text-slate-400" />
-                      <p className="mb-2 text-lg font-medium text-slate-700">点击或拖拽文件上传</p>
-                      <p className="text-sm text-slate-500">支持PNG, JPG, GIF文件，最大5MB</p>
-                    </>
-                  )}
-                </div>
-              </label>
-              <p className="mt-4 text-xs text-slate-500">推荐尺寸：1080x1920像素，请确保截图清晰可见账号和粉丝数据。</p>
-            </div>
-
-            {/* Right: Phone Mockup Preview */}
-            <div className="flex items-center justify-center">
-              <img
-                src="/images/image.png"
-                alt="Preview example"
-                className="h-auto w-full max-w-sm rounded-2xl object-contain"
+        <div className="mb-12 grid gap-8 md:grid-cols-2">
+          {/* Left - Upload Area */}
+          <div>
+            <label className="mb-3 block text-sm font-semibold text-slate-900">上传认证截图</label>
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`relative flex h-80 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed transition-all ${
+                isDragging
+                  ? "border-blue-500 bg-blue-50"
+                  : uploadedImage
+                    ? "border-green-500 bg-green-50"
+                    : "border-slate-300 bg-white hover:border-blue-400 hover:bg-slate-50"
+              }`}
+            >
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="absolute inset-0 cursor-pointer opacity-0"
               />
+              {uploadedImage ? (
+                <div className="relative h-full w-full">
+                  <img
+                    src={uploadedImage || "/placeholder.svg"}
+                    alt="Uploaded"
+                    className="h-full w-full rounded-2xl object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100">
+                    <p className="text-white">点击或拖拽替换图片</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <svg
+                    className="mx-auto mb-4 h-12 w-12 text-slate-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                    />
+                  </svg>
+                  <p className="mb-2 text-sm font-semibold text-slate-900">点击上传或拖拽文件到此处</p>
+                  <p className="text-xs text-slate-500">支持 PNG、JPG、JPEG 格式</p>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Submit Button */}
+          {/* Right - Preview with Logo */}
+          <div className="relative">
+            <label className="mb-3 block text-sm font-semibold text-slate-900">认证预览</label>
+            <div className="flex h-80 flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 p-8">
+              {uploadedImage ? (
+                <div className="relative h-full w-full overflow-hidden rounded-xl">
+                  <img
+                    src={uploadedImage || "/placeholder.svg"}
+                    alt="Preview"
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+              ) : (
+                <div className="text-center">
+                  <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 mx-auto">
+                    <svg className="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-slate-600">上传图片后显示预览</p>
+                </div>
+              )}
+            </div>
+
+            {showFollowerInput ? (
+              <div className="absolute -bottom-12 right-0">
+                <div className="flex items-center gap-1">
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={followerCount}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, "")
+                      setFollowerCount(value)
+                    }}
+                    onBlur={() => {
+                      if (followerCount) {
+                        setShowFollowerInput(false)
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && followerCount) {
+                        setShowFollowerInput(false)
+                      }
+                    }}
+                    placeholder="输入数字"
+                    autoFocus
+                    className="w-20 text-sm text-slate-900 bg-white border border-blue-300 rounded px-2 py-1 outline-none focus:border-blue-500 placeholder-slate-400"
+                  />
+                  <span className="text-sm text-slate-600 font-medium">k</span>
+                </div>
+              </div>
+            ) : followerCount ? (
+              <div
+                onClick={() => {
+                  setShowFollowerInput(true)
+                }}
+                className="absolute -bottom-12 right-0 cursor-pointer hover:opacity-70 transition-opacity"
+              >
+                <span className="text-sm font-medium text-slate-700">{followerCount} k 粉丝数</span>
+              </div>
+            ) : (
+              <div className="absolute -bottom-12 right-0">
+                <div
+                  onClick={() => setShowFollowerInput(true)}
+                  className="flex items-center gap-1 cursor-pointer group hover:opacity-80 transition-opacity"
+                >
+                  <span className="text-base">👉</span>
+                  <span className="text-sm font-medium group-hover:text-blue-600 transition-colors text-orange-400">
+                    填写全网粉丝数
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <div className="mb-6 flex justify-center">
           <button
             onClick={handleSubmit}
             disabled={!uploadedImage || isSubmitting}
-            className="mt-8 w-full rounded-xl bg-indigo-600 py-4 text-lg font-semibold text-white shadow-md transition-all hover:bg-indigo-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-12 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:shadow-xl hover:shadow-blue-500/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:shadow-lg cursor-pointer"
           >
-            {isSubmitting ? "提交中..." : "提交审核"}
+            {isSubmitting ? "提交中..." : "提交认证"}
           </button>
         </div>
 
         {/* Info Text */}
-        <p className="mb-16 text-center text-sm text-slate-600">上传截图后，我们将会审核保质，请稍等待。</p>
+        <p className="mb-16 text-center text-sm text-slate-500">
+          提交后，我们将在1-2个工作日内完成审核，请保持联系方式畅通。
+        </p>
 
         {/* Latest Projects Section */}
-        <div className="rounded-2xl bg-slate-50 px-12 py-12">
-          <h2 className="mb-3 text-center text-2xl font-bold text-slate-900">最新待推广项目（实时更新）</h2>
+        <div className="rounded-2xl px-12 py-12">
+          <h2 className="mb-3 text-center text-2xl font-bold text-slate-900">{"最新待推广项目"}</h2>
           <p className="mb-10 text-center text-slate-600">浏览最新项目，寻找适合您的合作机会。</p>
 
-          {/* Product Cards */}
-          <div className="grid grid-cols-3 gap-6">
+          <div
+            ref={scrollContainerRef}
+            onMouseDown={handleMouseDown}
+            onMouseLeave={handleMouseLeave}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+            className="flex gap-[0.9rem] overflow-x-auto pb-4 scrollbar-hide cursor-grab active:cursor-grabbing"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
             {[
               {
                 name: "咖啡品牌推广",
@@ -185,17 +324,57 @@ export default function BloggerVerificationPage() {
                 fans: "20K+",
                 image: "/product-.jpg?height=200&width=300&query=healthy-food",
               },
+              {
+                name: "时尚服饰推荐",
+                platform: "Instagram",
+                tags: ["流行中"],
+                description: "展示最新时尚潮流服饰，分享穿搭技巧和搭配建议，帮助粉丝提升时尚品味和穿搭能力",
+                price: "$ 700-1300元",
+                duration: "抖音",
+                fans: "30K+",
+                image: "/product-.jpg?height=200&width=300&query=fashion",
+              },
+              {
+                name: "旅行体验分享",
+                platform: "Youtube",
+                tags: ["流行中"],
+                description: "记录真实旅行经历，分享旅行攻略和当地美食，为观众提供实用的旅游指南和灵感",
+                price: "$ 900-1800元",
+                duration: "B站",
+                fans: "60K+",
+                image: "/product-.jpg?height=200&width=300&query=travel",
+              },
+              {
+                name: "健身运动教学",
+                platform: "TikTok",
+                tags: ["流行中"],
+                description: "分享专业健身知识和训练方法，帮助粉丝科学健身，塑造理想身材，传递健康生活理念",
+                price: "$ 550-1100元",
+                duration: "快手",
+                fans: "25K+",
+                image: "/product-.jpg?height=200&width=300&query=fitness",
+              },
+              {
+                name: "美妆护肤测评",
+                platform: "小红书",
+                tags: ["流行中"],
+                description: "测评各类美妆护肤产品，分享使用心得和化妆技巧，帮助粉丝选择适合自己的产品",
+                price: "$ 650-1250元",
+                duration: "微博",
+                fans: "40K+",
+                image: "/product-.jpg?height=200&width=300&query=beauty",
+              },
             ].map((product, index) => (
               <div
                 key={index}
-                className="overflow-hidden rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md"
+                className="flex-shrink-0 overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.01] cursor-pointer w-[280px]"
               >
                 <img
                   src={product.image || "/placeholder.svg"}
                   alt={product.name}
                   className="h-48 w-full object-cover"
                 />
-                <div className="p-5">
+                <div className="p-5 px-5">
                   <div className="mb-3 flex items-center gap-2">
                     <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">🔥</span>
                   </div>
@@ -208,7 +387,7 @@ export default function BloggerVerificationPage() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                       </svg>
                       {product.price}
@@ -236,7 +415,7 @@ export default function BloggerVerificationPage() {
                       {product.fans}
                     </span>
                   </div>
-                  <button className="w-full rounded-lg border border-slate-200 bg-white py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50">
+                  <button className="w-full rounded-lg border border-slate-200 bg-white py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer">
                     查看详情
                   </button>
                 </div>
@@ -247,7 +426,7 @@ export default function BloggerVerificationPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-white py-8">
+      <footer className="border-t bg-white py-8 border-slate-100">
         <p className="text-center text-sm text-slate-500">© 2025 GrowthEngine. All rights reserved.</p>
       </footer>
     </div>

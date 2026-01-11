@@ -1,7 +1,9 @@
 "use client"
 
+import type React from "react"
+
 import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -29,6 +31,11 @@ export default function Page() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
   const [isLoggedIn, setIsLoggedIn] = useState(false) // This would come from auth context in production
   const [showCarouselNav, setShowCarouselNav] = useState(false)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [startX, setStartX] = useState(0)
+  const [scrollLeft, setScrollLeft] = useState(0)
+  const [activeAuthButton, setActiveAuthButton] = useState<"login" | "register">("login") // State to track active button
 
   const notifications = [
     { id: 1, title: "新项目申请", message: "云盘大师项目申请已提交", time: "5分钟前" },
@@ -44,10 +51,11 @@ export default function Page() {
       company: "电子产品公司",
       title: "销售额飙升300%",
       description:
-        "通过GrowthEngine的智能推荐系统，我们精准定位了潜在客户，并优化了广告投放策略。我们的产品销售额在短短三个月内实现了飙人的3",
+        "通过GrowthEngine的智能推荐系统，我们精准定位了潜在客户，并优化了广告投放策略。我们的产品销售额在短短三个月内实现了飙升。",
       metrics: [
-        { label: "销售增长", value: "300%", icon: TrendingUp, color: "text-emerald-600" },
-        { label: "新客户", value: "5K+", icon: TrendingUp, color: "text-emerald-600" },
+        { label: "ROI", value: "320%", icon: TrendingUp, color: "text-emerald-600" },
+        { label: "新客户", value: "5.2K", icon: TrendingUp, color: "text-blue-600" },
+        { label: "播放量", value: "12.8K", icon: TrendingUp, color: "text-purple-600" },
       ],
       quote: "GrowthEngine是推动我们业务增长的关键，效果显著。",
       author: "张经理",
@@ -59,10 +67,11 @@ export default function Page() {
       company: "SaaS平台",
       title: "用户活跃度提升120%",
       description:
-        "GrowthEngine帮助我们重新设计了用户引导流程，并实施了个性化内容推送。这使得我们的平台用户活跃度提高了120%，用户留存率也得",
+        "GrowthEngine帮助我们重新设计了用户引导流程，并实施了个性化内容推送。这使得我们的平台用户活跃度大幅提升。",
       metrics: [
-        { label: "活跃度", value: "120%", icon: TrendingUp, color: "text-blue-600" },
-        { label: "满意度", value: "95%", icon: TrendingUp, color: "text-blue-600" },
+        { label: "ROI", value: "280%", icon: TrendingUp, color: "text-emerald-600" },
+        { label: "新客户", value: "3.8K", icon: TrendingUp, color: "text-blue-600" },
+        { label: "播放量", value: "9.5K", icon: TrendingUp, color: "text-purple-600" },
       ],
       quote: "我们非常满意GrowthEngine带来的改变，它真正理解了用户的需求。",
       author: "李产品经理",
@@ -74,13 +83,90 @@ export default function Page() {
       company: "教育机构",
       title: "报名转化率翻倍",
       description:
-        "利用GrowthEngine的数据分析工具，我们精确识别了转化瓶颈，并进行了A/B测试。最终，我们的课程报名转化率实现了翻倍，招生效",
+        "利用GrowthEngine的数据分析工具，我们精确识别了转化瓶颈，并进行了优化。最终，我们的课程报名转化率实现了翻倍。",
       metrics: [
-        { label: "转化率", value: "2X", icon: TrendingUp, color: "text-purple-600" },
-        { label: "节省成本", value: "80%", icon: TrendingUp, color: "text-purple-600" },
+        { label: "ROI", value: "410%", icon: TrendingUp, color: "text-emerald-600" },
+        { label: "新客户", value: "6.1K", icon: TrendingUp, color: "text-blue-600" },
+        { label: "播放量", value: "15.3K", icon: TrendingUp, color: "text-purple-600" },
       ],
       quote: "GrowthEngine的策略设计非常专业，是教育行业增长的得力助手。",
       author: "王校长",
+    },
+    {
+      id: 4,
+      image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=300&fit=crop",
+      avatar: "/images/profile.png",
+      company: "电商平台",
+      title: "订单量增长240%",
+      description: "通过精准的用户画像和智能推荐算法，我们的电商平台订单量在两个月内增长了240%，客户满意度也显著提升。",
+      metrics: [
+        { label: "ROI", value: "350%", icon: TrendingUp, color: "text-emerald-600" },
+        { label: "新客户", value: "7.3K", icon: TrendingUp, color: "text-blue-600" },
+        { label: "播放量", value: "18.6K", icon: TrendingUp, color: "text-purple-600" },
+      ],
+      quote: "数据驱动的增长策略让我们的业务实现了质的飞跃。",
+      author: "刘总监",
+    },
+    {
+      id: 5,
+      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
+      avatar: "/images/profile.png",
+      company: "金融科技",
+      title: "用户留存率提升180%",
+      description: "借助GrowthEngine的用户行为分析和精准营销工具，我们成功将用户留存率提升了180%，大幅降低了获客成本。",
+      metrics: [
+        { label: "ROI", value: "390%", icon: TrendingUp, color: "text-emerald-600" },
+        { label: "新客户", value: "4.9K", icon: TrendingUp, color: "text-blue-600" },
+        { label: "播放量", value: "11.2K", icon: TrendingUp, color: "text-purple-600" },
+      ],
+      quote: "精准的数据洞察帮助我们做出了正确的产品决策。",
+      author: "陈副总",
+    },
+    {
+      id: 6,
+      image: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop",
+      avatar: "/images/profile.png",
+      company: "健康医疗",
+      title: "预约量增长310%",
+      description: "通过GrowthEngine的多渠道营销自动化，我们的在线预约量在一个季度内增长了310%，极大提升了服务效率。",
+      metrics: [
+        { label: "ROI", value: "425%", icon: TrendingUp, color: "text-emerald-600" },
+        { label: "新客户", value: "8.7K", icon: TrendingUp, color: "text-blue-600" },
+        { label: "播放量", value: "21.4K", icon: TrendingUp, color: "text-purple-600" },
+      ],
+      quote: "自动化营销让我们能够专注于提供更好的医疗服务。",
+      author: "赵院长",
+    },
+    {
+      id: 7,
+      image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=300&fit=crop",
+      avatar: "/images/profile.png",
+      company: "旅游服务",
+      title: "预订转化率提升290%",
+      description: "利用GrowthEngine的智能推荐和个性化营销，我们的旅游产品预订转化率提升了290%，复购率也大幅增加。",
+      metrics: [
+        { label: "ROI", value: "365%", icon: TrendingUp, color: "text-emerald-600" },
+        { label: "新客户", value: "5.6K", icon: TrendingUp, color: "text-blue-600" },
+        { label: "播放量", value: "14.1K", icon: TrendingUp, color: "text-purple-600" },
+      ],
+      quote: "个性化推荐让每位客户都能找到心仪的旅行方案。",
+      author: "孙经理",
+    },
+    {
+      id: 8,
+      image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=300&fit=crop",
+      avatar: "/images/profile.png",
+      company: "企业服务",
+      title: "签约率增长260%",
+      description:
+        "通过GrowthEngine的销售漏斗优化和智能线索分配，我们的企业服务签约率在半年内增长了260%，销售效率显著提升。",
+      metrics: [
+        { label: "ROI", value: "440%", icon: TrendingUp, color: "text-emerald-600" },
+        { label: "新客户", value: "6.8K", icon: TrendingUp, color: "text-blue-600" },
+        { label: "播放量", value: "16.9K", icon: TrendingUp, color: "text-purple-600" },
+      ],
+      quote: "数据驱动的销售策略让我们的业绩实现了突破性增长。",
+      author: "周总经理",
     },
   ]
 
@@ -92,15 +178,38 @@ export default function Page() {
     }
   }
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!scrollContainerRef.current) return
+    setIsDragging(true)
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft)
+    setScrollLeft(scrollContainerRef.current.scrollLeft)
+  }
+
+  const handleMouseLeave = () => {
+    setIsDragging(false)
+  }
+
+  const handleMouseUp = () => {
+    setIsDragging(false)
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollContainerRef.current) return
+    e.preventDefault()
+    const x = e.pageX - scrollContainerRef.current.offsetLeft
+    const walk = (x - startX) * 2
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk
+  }
+
   return (
     <div className={`${plusJakarta.variable} ${spaceGrotesk.variable} font-[family-name:var(--font-plus-jakarta)]`}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         {/* Header */}
-        <header className="border-b border-blue-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
+        <header className="border-b border-blue-100 bg-white/42 backdrop-blur-md sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:pl-0 lg:pr-2.5">
+            <div className="flex justify-between items-center py-[1.8] leading-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <div className="bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center rounded-full w-[50px] h-[50px] leading-7">
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -131,16 +240,43 @@ export default function Page() {
               </nav>
 
               <div className="flex items-center gap-3">
-                <Link href="/login">
-                  <Button variant="ghost" className="text-sm font-medium text-gray-700 hover:text-gray-900">
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/register">
-                  <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/30">
-                    Sign Up
-                  </Button>
-                </Link>
+                <div className="relative flex items-center rounded-full bg-slate-100 p-1 px-0 py-1 w-fit h-auto">
+                  {/* Sliding background */}
+                  <div
+                    className={`absolute top-1 bottom-1 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-300 ${
+                      activeAuthButton === "login" ? "left-1 w-[calc(50%-4px)]" : "right-1 w-[calc(50%-4px)]"
+                    }`}
+                  />
+
+                  {/* Login Button */}
+                  <Link href="/login" className="relative z-10">
+                    <Button
+                      variant="ghost"
+                      className={`relative text-sm font-medium rounded-full px-6 transition-colors !bg-transparent hover:!bg-transparent ${
+                        activeAuthButton === "login" ? "!text-white" : "!text-gray-700 hover:!text-white"
+                      }`}
+                      onMouseEnter={() => setActiveAuthButton("login")}
+                      onClick={() => setActiveAuthButton("login")}
+                    >
+                      登录
+                    </Button>
+                  </Link>
+
+                  {/* Register Button */}
+                  <Link href="/register" className="relative z-10">
+                    <Button
+                      variant="ghost"
+                      className={`relative text-sm font-medium rounded-full px-6 transition-colors !bg-transparent hover:!bg-transparent ${
+                        activeAuthButton === "register" ? "!text-white" : "!text-gray-700 hover:!text-white"
+                      }`}
+                      onMouseEnter={() => setActiveAuthButton("register")}
+                      onClick={() => setActiveAuthButton("register")}
+                    >
+                      注册
+                    </Button>
+                  </Link>
+                </div>
+                {/* End of sliding capsule background */}
 
                 {/* Notification Bell */}
                 <div className="relative">
@@ -156,13 +292,18 @@ export default function Page() {
 
                   {/* Notifications Dropdown */}
                   {showNotifications && (
-                    <div className="absolute right-0 top-full mt-2 w-80 rounded-lg border bg-white shadow-lg z-50">
-                      <div className="border-b px-4 py-3">
+                    <div className="absolute right-0 top-full mt-2 w-80 rounded-lg border bg-white shadow-lg z-50 border-cyan-600">
+                      <div className="absolute -top-2 right-8 h-4 w-4 bg-white border-t border-l border-slate-300 rotate-45"></div>
+
+                      <div className="border-b px-4 py-3 border-slate-400">
                         <h3 className="font-semibold text-slate-900">通知</h3>
                       </div>
                       <div className="max-h-96 overflow-y-auto">
                         {notifications.map((notif) => (
-                          <div key={notif.id} className="border-b px-4 py-3 hover:bg-slate-50 transition-colors">
+                          <div
+                            key={notif.id}
+                            className="px-4 py-3 hover:bg-slate-50 transition-colors border-b border-slate-300"
+                          >
                             <div className="flex items-start gap-3">
                               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
                                 <Bell className="h-4 w-4 text-blue-600" />
@@ -176,7 +317,7 @@ export default function Page() {
                           </div>
                         ))}
                       </div>
-                      <div className="border-t px-4 py-2 text-center">
+                      <div className="px-4 py-2 text-center border-t-0 border-b-0">
                         <button className="text-sm text-blue-600 hover:text-blue-700">查看所有通知</button>
                       </div>
                     </div>
@@ -226,7 +367,7 @@ export default function Page() {
         </header>
 
         {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32 lg:pr-8 lg:pl-8 sm:pt-[100px] sm:pb-20">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="font-[family-name:var(--font-space-grotesk)] text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight text-balance">
               你的产品准备好被看见了吗?
@@ -234,7 +375,7 @@ export default function Page() {
             <p className="text-lg sm:text-xl text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto">
               GrowthEngine — 独立创作者的首选引擎，帮助产品高效曝光出圈。
             </p>
-            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-lg px-8 py-6 rounded-xl shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all">
+            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-lg px-8 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all">
               开始赚钱
             </Button>
 
@@ -250,7 +391,7 @@ export default function Page() {
           <div className="bg-white rounded-3xl shadow-xl border border-blue-100 p-6 sm:p-8 lg:p-10">
             <div className="flex justify-between items-center mb-6">
               <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl sm:text-3xl font-bold text-gray-900">
-                仪表盘 (Dashboard)
+                仪表盘
               </h2>
               <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">
                 热门
@@ -260,59 +401,150 @@ export default function Page() {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Left Card - 到问答网提问 */}
               <Card className="p-6 border-2 border-gray-100 hover:border-blue-200 transition-all hover:shadow-lg">
-                <h3 className="font-semibold text-lg text-gray-900 mb-4">到问答网提问</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
-                    <div className="flex items-center gap-3">
+                <h3 className="font-semibold text-lg text-gray-900 mb-4">推广墙</h3>
+                <div className="space-y-6">
+                  <div className="flex items-center bg-white gap-6 rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer p-2 hover:border-2 hover:border-blue-200">
+                    {/* Left: Video Thumbnail */}
+                    <div className="relative h-32 w-48 flex-shrink-0 overflow-hidden rounded-lg bg-slate-200">
                       <img
-                        src="/images/profile.png"
-                        alt="User"
-                        className="w-12 h-12 rounded-full border-2 border-white shadow-md"
+                        src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=300&fit=crop"
+                        alt="产品发布宣传视频"
+                        className="h-full w-full object-cover"
                       />
-                      <div>
-                        <p className="font-medium text-gray-900 text-sm">产品需求简单描述</p>
-                        <p className="text-xs text-gray-500">排除 2 条</p>
+                    </div>
+
+                    {/* Middle: Video Info */}
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-slate-900">产品发布宣传视频</h3>
+                      <p className="mt-2 text-base text-slate-400">时长: 2:35</p>
+                    </div>
+
+                    {/* Right: Progress Circle */}
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="relative h-20 w-20">
+                        <svg className="h-20 w-20 -rotate-90" viewBox="0 0 80 80">
+                          {/* Background circle */}
+                          <circle cx="40" cy="40" r="34" fill="none" stroke="#e5e7eb" strokeWidth="6" />
+                          {/* Progress circle */}
+                          <circle
+                            cx="40"
+                            cy="40"
+                            r="34"
+                            fill="none"
+                            stroke="#3b82f6"
+                            strokeWidth="6"
+                            strokeDasharray={`${2 * Math.PI * 34}`}
+                            strokeDashoffset={`${2 * Math.PI * 34 * (1 - 75 / 100)}`}
+                            strokeLinecap="round"
+                            className="transition-all duration-1000"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-lg font-bold text-slate-900">75%</span>
+                        </div>
+                      </div>
+                      <div className="text-center text-xs text-slate-500">
+                        <div>{""}</div>
+                        <div>已曝光/目标曝光</div>
                       </div>
                     </div>
-                    <button className="p-2 hover:bg-white rounded-lg transition-colors">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        className="w-5 h-5 text-blue-600"
-                      >
-                        <path d="M1 4v6h6M23 20v-6h-6"></path>
-                        <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
-                      </svg>
-                    </button>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl">
-                    <div className="flex items-center gap-3">
+                  <div className="flex items-center bg-white gap-6 rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer p-2 hover:border-2 hover:border-blue-200 border-0">
+                    {/* Left: Video Thumbnail */}
+                    <div className="relative h-32 w-48 flex-shrink-0 overflow-hidden rounded-lg bg-slate-200">
                       <img
-                        src="/images/profile.png"
-                        alt="User"
-                        className="w-12 h-12 rounded-full border-2 border-white shadow-md"
+                        src="https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=300&fit=crop"
+                        alt="用户案例分享"
+                        className="h-full w-full object-cover"
                       />
-                      <div>
-                        <p className="font-medium text-gray-900 text-sm">用户画像简要</p>
-                        <p className="text-xs text-gray-500">排除 3 条</p>
+                    </div>
+
+                    {/* Middle: Video Info */}
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-slate-900">用户案例分享</h3>
+                      <p className="mt-2 text-base text-slate-400">时长: 1:40</p>
+                    </div>
+
+                    {/* Right: Progress Circle */}
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="relative h-20 w-20">
+                        <svg className="h-20 w-20 -rotate-90" viewBox="0 0 80 80">
+                          {/* Background circle */}
+                          <circle cx="40" cy="40" r="34" fill="none" stroke="#e5e7eb" strokeWidth="6" />
+                          {/* Progress circle */}
+                          <circle
+                            cx="40"
+                            cy="40"
+                            r="34"
+                            fill="none"
+                            stroke="#3b82f6"
+                            strokeWidth="6"
+                            strokeDasharray={`${2 * Math.PI * 34}`}
+                            strokeDashoffset={`${2 * Math.PI * 34 * (1 - 75 / 100)}`}
+                            strokeLinecap="round"
+                            className="transition-all duration-1000"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-lg font-bold text-slate-900">75%</span>
+                        </div>
+                      </div>
+                      <div className="text-center text-xs text-slate-500">
+                        <div>{""}</div>
+                        <div>已曝光/目标曝光</div>
                       </div>
                     </div>
-                    <button className="p-2 hover:bg-white rounded-lg transition-colors">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        className="w-5 h-5 text-purple-600"
-                      >
-                        <path d="M1 4v6h6M23 20v-6h-6"></path>
-                        <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
-                      </svg>
-                    </button>
                   </div>
+
+                  {/* ADDED CARD BELOW STARTS HERE */}
+                  <div className="flex items-center bg-white gap-6 rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer p-2">
+                    {/* Left: Video Thumbnail */}
+                    <div className="relative h-32 w-48 flex-shrink-0 overflow-hidden rounded-lg bg-slate-200">
+                      <img
+                        src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=300&fit=crop"
+                        alt="工作流自动化演示"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+
+                    {/* Middle: Video Info */}
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-slate-900">工作流自动化演示</h3>
+                      <p className="mt-2 text-base text-slate-400">时长: 3:12</p>
+                    </div>
+
+                    {/* Right: Progress Circle */}
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="relative h-20 w-20">
+                        <svg className="h-20 w-20 -rotate-90" viewBox="0 0 80 80">
+                          {/* Background circle */}
+                          <circle cx="40" cy="40" r="34" fill="none" stroke="#e5e7eb" strokeWidth="6" />
+                          {/* Progress circle */}
+                          <circle
+                            cx="40"
+                            cy="40"
+                            r="34"
+                            fill="none"
+                            stroke="#8b5cf6"
+                            strokeWidth="6"
+                            strokeDasharray={`${2 * Math.PI * 34}`}
+                            strokeDashoffset={`${2 * Math.PI * 34 * (1 - 75 / 100)}`}
+                            strokeLinecap="round"
+                            className="transition-all duration-1000"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-lg font-bold text-slate-900">75%</span>
+                        </div>
+                      </div>
+                      <div className="text-center text-xs text-slate-500">
+                        <div>{""}</div>
+                        <div>已曝光/目标曝光</div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* ADDED CARD BELOW ENDS HERE */}
                 </div>
               </Card>
 
@@ -382,83 +614,106 @@ export default function Page() {
           <div
             className="relative"
             onMouseEnter={() => setShowCarouselNav(true)}
-            onMouseLeave={() => setShowCarouselNav(false)}
+            onMouseLeave={() => {
+              setShowCarouselNav(false)
+              handleMouseLeave()
+            }}
           >
-            <div className="grid md:grid-cols-3 gap-[18px]">
-              {testimonials.map((testimonial, idx) => (
-                <Card
+            <div
+              ref={scrollContainerRef}
+              onMouseDown={handleMouseDown}
+              onMouseLeave={handleMouseLeave}
+              onMouseUp={handleMouseUp}
+              onMouseMove={handleMouseMove}
+              className="flex gap-[18px] overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
+              style={{
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
+            >
+              {testimonials.map((testimonial) => (
+                <Link
                   key={testimonial.id}
-                  className="overflow-hidden border-2 border-gray-100 shadow-lg hover:shadow-xl transition-shadow"
+                  href={`/product/${testimonial.id}`}
+                  className="block flex-shrink-0 w-[350px]"
                 >
-                  {/* Top Image with Avatar */}
-                  <div className="relative h-48">
-                    <img
-                      src={testimonial.image || "/placeholder.svg"}
-                      alt={testimonial.company}
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="absolute left-4 top-4">
+                  <Card className="overflow-hidden border-2 border-gray-100 shadow-lg hover:shadow-xl transition-all cursor-pointer hover:border-blue-300 h-full">
+                    {/* Top Image with Avatar */}
+                    <div className="relative h-48">
                       <img
-                        src={testimonial.avatar || "/placeholder.svg"}
-                        alt="Avatar"
-                        className="h-12 w-12 rounded-full border-4 border-white shadow-lg"
+                        src={testimonial.image || "/placeholder.svg"}
+                        alt={testimonial.company}
+                        className="h-full w-full object-cover"
                       />
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">
-                      {testimonial.company}：{testimonial.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-3">{testimonial.description}</p>
-
-                    {/* Metrics */}
-                    <div className="grid grid-cols-2 gap-3 mb-4">
-                      {testimonial.metrics.map((metric, metricIdx) => {
-                        const Icon = metric.icon
-                        return (
-                          <div key={metricIdx} className="flex items-center gap-2">
-                            <Icon className={`h-4 w-4 ${metric.color}`} />
-                            <div>
-                              <div className={`text-xl font-bold ${metric.color}`}>{metric.value}</div>
-                              <div className="text-xs text-gray-500">{metric.label}</div>
-                            </div>
-                          </div>
-                        )
-                      })}
-                    </div>
-
-                    {/* Quote */}
-                    <div className="border-l-4 border-blue-500 pl-3 py-2">
-                      <p className="text-xs text-gray-700 italic mb-2 line-clamp-2">"{testimonial.quote}"</p>
-                      <div className="flex items-center gap-2">
+                      <div className="absolute left-4 top-4">
                         <img
                           src={testimonial.avatar || "/placeholder.svg"}
-                          alt={testimonial.author}
-                          className="h-6 w-6 rounded-full"
+                          alt="Avatar"
+                          className="h-12 w-12 rounded-full border-4 border-white shadow-lg"
                         />
-                        <span className="text-xs text-gray-600">{testimonial.author}</span>
                       </div>
                     </div>
-                  </div>
-                </Card>
+
+                    {/* Content */}
+                    <div className="p-6 px-6 shadow-none">
+                      <h3 className="text-lg font-bold text-gray-900 mb-1">
+                        {testimonial.company}：{testimonial.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-3">
+                        {testimonial.description}
+                      </p>
+
+                      <div className="grid grid-cols-3 gap-3 mb-4">
+                        {testimonial.metrics.map((metric, metricIdx) => {
+                          const Icon = metric.icon
+                          return (
+                            <div key={metricIdx} className="flex flex-col items-center text-center">
+                              <Icon className={`h-4 w-4 ${metric.color} mb-1`} />
+                              <div className={`text-lg font-bold ${metric.color}`}>{metric.value}</div>
+                              <div className="text-xs text-gray-500">{metric.label}</div>
+                            </div>
+                          )
+                        })}
+                      </div>
+
+                      {/* Quote */}
+                      <div className="border-l-4 border-blue-500 pl-3 py-2">
+                        <p className="text-xs text-gray-700 italic mb-2 line-clamp-2">"{testimonial.quote}"</p>
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={testimonial.avatar || "/placeholder.svg"}
+                            alt={testimonial.author}
+                            className="h-6 w-6 rounded-full"
+                          />
+                          <span className="text-xs text-gray-600">{testimonial.author}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </Link>
               ))}
             </div>
 
-            {/* Hover Navigation Buttons */}
             {showCarouselNav && (
               <>
                 <button
-                  onClick={() => setCurrentTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1))}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-lg text-gray-700 transition-all hover:bg-white hover:scale-110"
+                  onClick={() => {
+                    if (scrollContainerRef.current) {
+                      scrollContainerRef.current.scrollBy({ left: -370, behavior: "smooth" })
+                    }
+                  }}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-lg text-gray-700 transition-all hover:bg-white hover:scale-110 z-10"
                 >
                   <ChevronLeft className="h-6 w-6" />
                 </button>
 
                 <button
-                  onClick={() => setCurrentTestimonial((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1))}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-lg text-gray-700 transition-all hover:bg-white hover:scale-110"
+                  onClick={() => {
+                    if (scrollContainerRef.current) {
+                      scrollContainerRef.current.scrollBy({ left: 370, behavior: "smooth" })
+                    }
+                  }}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-lg text-gray-700 transition-all hover:bg-white hover:scale-110 z-10"
                 >
                   <ChevronRight className="h-6 w-6" />
                 </button>
@@ -469,7 +724,7 @@ export default function Page() {
           <div className="text-center mt-12">
             <Button
               onClick={handleUploadClick}
-              className="bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600 text-white text-lg px-12 py-6 rounded-xl shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all"
+              className="bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600 text-white text-lg px-9 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all"
             >
               立即上传我的产品
             </Button>
@@ -679,7 +934,7 @@ export default function Page() {
 
         {/* Footer */}
         <footer id="contact" className="border-t border-blue-100 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-7 lg:px-7 pb-[15px]">
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
               <div>
                 <div className="flex items-center gap-2 mb-4">
@@ -775,12 +1030,12 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="border-t border-gray-100 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 pt-[15px]">
               <p className="text-sm text-gray-500">© 2025 GrowthEngine. All rights reserved.</p>
               <div className="flex items-center gap-4">
                 <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path>
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
                   </svg>
                 </a>
                 <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -791,6 +1046,17 @@ export default function Page() {
                 <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path>
+                  </svg>
+                </a>
+                <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                    <path d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path>
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"></path>
+                  </svg>
+                </a>
+                <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"></path>
                   </svg>
                 </a>
               </div>
@@ -815,7 +1081,7 @@ export default function Page() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+                        d="M11.067 19.027a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
                       />
                     </svg>
                   </div>

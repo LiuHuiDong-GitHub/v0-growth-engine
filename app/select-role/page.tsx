@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import Breadcrumb from "@/components/breadcrumb"
+import AppHeader from "@/components/app-header"
 
 export default function SelectRolePage() {
   const [selectedRole, setSelectedRole] = useState<string | null>(null)
@@ -18,32 +18,10 @@ export default function SelectRolePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-center">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
-                <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
-                  />
-                </svg>
-              </div>
-              <span className="text-xl font-bold text-slate-900">推广平台</span>
-            </div>
-          </div>
-        </div>
-      </header>
+      <AppHeader breadcrumbItems={[{ label: "注册", href: "/register" }, { label: "选择角色" }]} />
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-16">
+      <main className="container mx-auto px-4 py-16 pt-24">
         <div className="mx-auto max-w-4xl">
-          <Breadcrumb items={[{ label: "注册", href: "/register" }, { label: "选择角色" }]} />
-
           {/* Title Section */}
           <div className="mb-16 text-center">
             <h1 className="mb-4 text-4xl font-bold text-slate-900">选择您的角色</h1>

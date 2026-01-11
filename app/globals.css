@@ -116,9 +116,36 @@
 
 @layer base {
   * {
+    border-color: hsl(var(--border));
     @apply border-border outline-ring/50;
   }
+
   body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
     @apply bg-background text-foreground;
+  }
+
+  /* Global cursor pointer for interactive elements */
+  button,
+  a,
+  [role="button"],
+  [onclick],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  select,
+  label[for] {
+    cursor: pointer;
+  }
+
+  /* Hide scrollbar for draggable containers */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

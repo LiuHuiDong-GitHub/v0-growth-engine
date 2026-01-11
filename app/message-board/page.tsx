@@ -1,9 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
-import { ArrowLeft, Upload, Send } from "lucide-react"
-import Breadcrumb from "@/components/breadcrumb"
+import { Upload, Send } from "lucide-react"
+import AppHeader from "@/components/app-header"
 
 export default function MessageBoardPage() {
   const [message, setMessage] = useState("")
@@ -49,28 +48,11 @@ export default function MessageBoardPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm">
-        <div className="flex items-center justify-between px-8 py-4">
-          <Link href="/select-product" className="flex items-center gap-2 text-slate-600 hover:text-slate-900">
-            <ArrowLeft className="h-5 w-5" />
-            <span>返回</span>
-          </Link>
+      <AppHeader breadcrumbItems={[{ label: "待推广项目", href: "/select-product" }, { label: "留言板" }]} />
 
-          <Link href="/" className="text-xl font-bold text-blue-600">
-            GrowthEngine
-          </Link>
-
-          <div className="w-20"></div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-8 pt-24">
         <div className="mx-auto max-w-4xl">
-          <Breadcrumb items={[{ label: "待推广项目", href: "/select-product" }, { label: "留言板" }]} />
-
-          <div className="mt-8 rounded-2xl border bg-white p-8 shadow-lg">
+          <div className="rounded-2xl bg-white p-8 shadow-lg border-transparent border-0 px-7 py-7 mt-5">
             <h1 className="mb-4 text-3xl font-bold text-slate-900">留言板</h1>
             <p className="mb-8 text-slate-600 leading-relaxed">
               有任何建议、疑问、申诉、反馈都可以发送给我们，我们的平台运营会及时回复您，并做到公平、公正处理任何问题。
@@ -114,7 +96,7 @@ export default function MessageBoardPage() {
             </div>
 
             {/* Message Input */}
-            <div className="flex items-end gap-3 border-t pt-6">
+            <div className="flex items-end gap-3 pt-6 border-t-0">
               <button className="flex h-12 w-12 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600">
                 <Upload className="h-5 w-5" />
               </button>
@@ -140,7 +122,7 @@ export default function MessageBoardPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-white/50 py-6 text-center">
+      <footer className="bg-white/50 text-center border-t-0 py-5">
         <p className="text-sm text-slate-600">© 2025 GrowthEngine. All rights reserved.</p>
       </footer>
     </div>

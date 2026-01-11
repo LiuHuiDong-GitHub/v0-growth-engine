@@ -1,46 +1,229 @@
 "use client"
 
-import React from "react"
-
+import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
-import { Upload, ChevronDown, Users, TrendingUp, DollarSign, Target, CheckCircle2 } from "lucide-react"
-import { useState } from "react"
 import { useRouter } from "next/navigation"
+import {
+  ChevronRight,
+  ChevronLeft,
+  Users,
+  CheckCircle2,
+  ExternalLink,
+  Mail,
+  Phone,
+  Globe,
+  Clock,
+  Play,
+  FileText,
+  Calendar,
+  Zap,
+  Download,
+  Trophy,
+} from "lucide-react"
 import Breadcrumb from "@/components/breadcrumb"
 import AppHeader from "@/components/app-header"
 
+// Mock product data
+const productData = {
+  id: "1",
+  name: "NoteMaster Pro",
+  description:
+    "NoteMaster Pro 是一款革命性的智能笔记应用，结合AI技术帮助用户更高效地整理、搜索和回顾笔记内容。支持多平台同步，语音转文字，智能标签分类等功能。",
+  fullDescription: `【职场人士的绝命痛点】：每天面对海量信息，难以有效整理和回顾，让NoteMaster Pro瞬间解决，再也不用天天加班要疯掉！
+
+NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计，一劳永逸解决信息整理难题。
+
+- 年龄/性别/地域：18-45岁，男女不限，国内外均可
+- 生活场景：办公室、学习、家庭
+- 核心痛点：信息过载，难以有效整理和回顾
+
+1. AI智能分类：自动识别笔记内容并归类，让您的笔记井井有条
+2. 跨平台同步：支持iOS、Android、Web、桌面端，随时随地访问您的笔记
+3. 语音转文字：高精度语音识别，支持多种语言，会议记录更轻松
+4. 协作功能：团队共享笔记空间，实时协作编辑
+5. 智能搜索：基于语义的全文搜索，快速找到您需要的内容
+
+市面普通产品：只能手动分类、不支持多平台同步、语音转文字功能单一、无法团队协作、搜索功能有限；
+我们的产品：AI智能分类、跨平台同步、高精度语音转文字、团队协作、智能搜索，一步到位解决所有痛点。
+
+场景1：
+博主在办公室接收到一个紧急会议通知，使用NoteMaster Pro的语音转文字功能快速记录会议内容，并在会议结束后自动分类整理。
+
+场景2：
+博主在学习过程中，使用NoteMaster Pro的智能搜索功能快速找到之前学习的笔记，提高学习效率。
+
+场景3：
+博主在家庭中，使用NoteMaster Pro的跨平台同步功能在手机、平板和电脑之间无缝切换，管理家庭事务。
+
+- 内测用户反馈：NoteMaster Pro极大地提高了我们的工作效率，节省了大量时间。
+- 当前数据（月收入/注册量等）：NoteMaster Pro的月收入达到XX万元，注册用户达到XX万。
+- 真实用户评价摘录：NoteMaster Pro是一款非常实用的笔记工具，让我们更好地管理信息。
+
+- 试水套餐：XX元（内容要求 + 时效）
+- 标准套餐：XX元（内容要求）
+- 佣金比例：XX%
+- 历史平均ROI：XX%
+
+**博主拍摄建议**：
+- 开箱部分：展示NoteMaster Pro的外观和主要功能。
+- 真实场景演示：在办公室、学习和家庭场景中演示NoteMaster Pro的功能。
+- 结尾引导：鼓励博主申请合作，提供完整素材包和专属优惠码。
+
+**粉丝使用体验**：
+- 第一步：下载并安装NoteMaster Pro。
+- 第二步：注册账号并设置个人偏好。
+- 第三步：使用语音转文字功能记录会议内容。
+- 小贴士：定期备份笔记，确保数据安全。
+
+`,
+  link: "https://notemaster.pro",
+  contact: {
+    name: "张明",
+    email: "marketing@notemaster.pro",
+    phone: "+86 138-0000-0000",
+    website: "https://notemaster.pro",
+  },
+  category: {
+    type: "效率工具",
+    keywords: ["笔记工具", "生产力APP"],
+  },
+  attachments: {
+    demoVideo: "/demo-video.mp4",
+    screenshots: [
+      "/app-screenshot-1.jpg",
+      "/app-screenshot-2.jpg",
+      "/app-screenshot-3.jpg",
+      "/app-screenshot-4.jpg",
+      "/app-screenshot-5.jpg",
+      "/app-screenshot-6.jpg",
+      "/app-screenshot-7.jpg",
+    ],
+    documents: [
+      { name: "产品介绍.pdf", size: "2.4 MB", icon: "📄" },
+      { name: "品牌指南.pdf", size: "5.1 MB", icon: "🎨" },
+      { name: "素材包.zip", size: "45 MB", icon: "📦" },
+      { name: "使用教程.pdf", size: "1.2 MB", icon: "📖" },
+      { name: "API文档.pdf", size: "3.8 MB", icon: "⚙️" },
+      { name: "案例研究.pdf", size: "4.7 MB", icon: "📊" },
+      { name: "媒体包.zip", size: "52.3 MB", icon: "🎬" },
+      { name: "常见问题.pdf", size: "0.8 MB", icon: "❓" },
+    ],
+  },
+  progress: "匹配中",
+  timeline: {
+    developerDeadline: "2025-02-15",
+    bloggerDeadline: null,
+  },
+  pricing: {
+    type: "订阅制",
+    price: "$9.99/月",
+    originalPrice: "$14.99/月",
+  },
+  incentive: {
+    enabled: true,
+    baseReward: 500,
+    bonusTargets: [
+      { views: 10000, bonus: 200 },
+      { views: 50000, bonus: 500 },
+    ],
+  },
+  stats: {
+    applicants: 12,
+    expectedReach: "50万+",
+    targetAudience: "职场人士、学生、知识工作者",
+  },
+}
+
+const progressSteps = [
+  { id: "matching", label: "匹配中" },
+  { id: "creating", label: "创作中" },
+  { id: "created", label: "已创作" },
+  { id: "published", label: "已发布" },
+]
+
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
-  const [openSection, setOpenSection] = useState<string | null>(null)
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([])
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
   const [isAddingToPromotions, setIsAddingToPromotions] = useState(false)
   const [addedToPromotions, setAddedToPromotions] = useState(false)
+  const [activeMediaType, setActiveMediaType] = useState<"video" | "image">("video")
+  const [activeScreenshot, setActiveScreenshot] = useState(0)
+  const documentsRef = useRef<HTMLDivElement>(null)
+  const descriptionContainerRef = useRef<HTMLDivElement>(null)
+  const screenshotsRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
-  const toggleSection = (section: string) => {
-    setOpenSection(openSection === section ? null : section)
-  }
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isDescriptionExpanded &&
+        descriptionContainerRef.current &&
+        !descriptionContainerRef.current.contains(event.target as Node)
+      ) {
+        setIsDescriptionExpanded(false)
+      }
+    }
+
+    if (isDescriptionExpanded) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isDescriptionExpanded])
 
   const handleAddToPromotions = () => {
     setIsAddingToPromotions(true)
-
-    // Simulate adding to promotions
     setTimeout(() => {
       setIsAddingToPromotions(false)
       setAddedToPromotions(true)
-
-      // Show success message and redirect after delay
       setTimeout(() => {
         router.push("/my-promotions")
       }, 1500)
     }, 800)
   }
 
+  const getProgressIndex = () => {
+    return progressSteps.findIndex((s) => s.label === productData.progress)
+  }
+
+  const scrollDocuments = (direction: "left" | "right") => {
+    if (documentsRef.current) {
+      const scrollAmount = 200
+      documentsRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      })
+    }
+  }
+
+  const scrollScreenshots = (direction: "left" | "right") => {
+    if (screenshotsRef.current) {
+      const scrollAmount = 200
+      screenshotsRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      })
+    }
+  }
+
+  const handleDownloadDocument = (docName: string) => {
+    // Create a mock file URL and trigger download
+    const mockUrl = `https://example.com/downloads/${encodeURIComponent(docName)}`
+    const link = document.createElement("a")
+    link.href = mockUrl
+    link.download = docName
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
       {/* Sidebar */}
-      <aside className="fixed left-0 top-0 flex h-screen w-16 flex-col items-center gap-8 border-r border-slate-200 bg-white py-6">
-        <div className="mb-8">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
+      <aside className="fixed left-0 top-0 flex h-screen flex-col items-center gap-8 border-r border-slate-200/80 bg-white/80 backdrop-blur-sm z-40 w-7 py-9">
+        <Link href="/" className="mb-8">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25">
             <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -50,7 +233,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               />
             </svg>
           </div>
-        </div>
+        </Link>
 
         <nav className="flex flex-col gap-6">
           <Link
@@ -65,41 +248,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
               />
             </svg>
-            <span className="text-xs">Dashboard</span>
+            <span className="text-xs">首页</span>
           </Link>
-
-          <button className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600">
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
-              />
-            </svg>
-            <span className="text-xs">Projects</span>
-          </button>
-
-          <button className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600">
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
-              />
-            </svg>
-            <span className="text-xs">Browse</span>
-          </button>
-
-          <button className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600">
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-            </svg>
-            <span className="text-xs">Promoter</span>
-          </button>
-
-          <button className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600">
+          <Link
+            href="/my-promotions"
+            className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600"
+          >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -108,359 +262,567 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
               />
             </svg>
-            <span className="text-xs">My Promotions</span>
-          </button>
+            <span className="text-xs">我的推广</span>
+          </Link>
         </nav>
-
-        <div className="mt-auto flex flex-col gap-4">
-          <button className="text-slate-400 transition-colors hover:text-slate-600">
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-              />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </button>
-        </div>
       </aside>
 
       {/* Main Content */}
       <div className="ml-16 flex flex-1 flex-col">
-        {/* Header */}
         <AppHeader />
 
-        {/* Page Content */}
         <main className="flex-1 p-8">
-          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-3">
-            {/* Left Column - Main Content */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Breadcrumb Navigation */}
-              <Breadcrumb
-                items={[
-                  { label: "首页", href: "/" },
-                  { label: "待推广项目", href: "/select-product" },
-                  { label: "项目详情" },
-                ]}
-              />
+          <div className="mx-auto max-w-7xl">
+            {/* Breadcrumb */}
+            <Breadcrumb
+              items={[
+                { label: "首页", href: "/" },
+                { label: "待推广项目", href: "/select-product" },
+                { label: productData.name },
+              ]}
+            />
 
-              {/* Hero Banner */}
-              <div className="relative h-56 overflow-hidden rounded-2xl bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <div className="mb-4 flex items-center justify-center gap-2">
-                      <span className="rounded-full bg-white/20 px-3 py-1 text-sm font-medium backdrop-blur-sm">
-                        推荐
-                      </span>
-                      <span className="rounded-full bg-white/20 px-3 py-1 text-sm font-medium backdrop-blur-sm">
-                        科技
-                      </span>
-                      <span className="rounded-full bg-white/20 px-3 py-1 text-sm font-medium backdrop-blur-sm">
-                        小红书
-                      </span>
-                    </div>
-                    <h1 className="text-3xl font-bold">精品咖啡推广项目</h1>
-                  </div>
-                </div>
-              </div>
+            {/* Main Layout: Hero Card + Right Sidebar Cards */}
+            <div className="mt-6 flex gap-6">
+              {/* Hero Section - Main Card */}
+              <div className="flex-1 rounded-3xl bg-white p-8 shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
+                {/* Decorative background */}
+                <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full -translate-y-1/2 translate-x-1/2 opacity-50" />
 
-              {/* Stats */}
-              <div className="grid grid-cols-4 gap-4">
-                {[
-                  { icon: Users, label: "粉丝量", value: "1.2M+" },
-                  { icon: TrendingUp, label: "时长", value: "¥5000 - ¥10000" },
-                  { icon: Target, label: "曝光潜力", value: "城市白领, 咖啡爱好者" },
-                  { icon: DollarSign, label: "招募时长", value: "2周" },
-                ].map((stat, index) => (
-                  <div key={index} className="rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm">
-                    <div className="mb-2 flex items-center justify-center gap-2">
-                      {React.createElement(stat.icon, { className: "h-6 w-6 text-slate-600" })}
-                    </div>
-                    <div className="text-xs text-slate-600">{stat.label}</div>
-                    <div className="font-semibold text-slate-900">{stat.value}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Project Description */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h2 className="mb-4 text-xl font-bold text-slate-900">项目描述</h2>
-                <div className="space-y-3 text-sm leading-relaxed text-slate-700">
-                  <p>
-                    我们正在寻找美食博主来推广我们的精品咖啡店，对主流高品质咖啡的内容，共同推广一款精品咖啡系列。这款咖啡来自世界顶级产区，采用独特的烘焙工艺，旨在为消费者带来世界一流的咖啡体验，采用独特的烘焙工艺，旨在为消费者带来世界一流的咖啡体验。
-                  </p>
-                  <p>
-                    通过您的创意和影响力，向您的粉丝展示没被观看的特殊价值，包含其背后的口味、文化的内涵和价值传递。我们期望借助的专业审美与表达，将我们的专业种类融入中的优质感受。
-                  </p>
-                </div>
-              </div>
-
-              {/* Creator Requirements */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h2 className="mb-4 text-xl font-bold text-slate-900">创作者要求</h2>
-                <ul className="space-y-2 text-sm text-slate-700">
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600">•</span>
-                    <span>粉丝2万以上或铁粉忠诚度较高的美食创作者主；</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600">•</span>
-                    <span>内容风格的向上，对咖啡文化有独到见解；</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600">•</span>
-                    <span>具备高质量内容的视频拍摄能力；</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600">•</span>
-                    <span>推荐3天发布平台在微博等领域。</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Content Guide */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h2 className="mb-4 text-xl font-bold text-slate-900">内容指南（创意简报）</h2>
-                <div className="space-y-3 text-sm text-slate-700">
-                  <p className="font-medium">我们鼓励创意而有趣的创作方式，您可以以下方式之一一步跟随创作：</p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start gap-2">
-                      <span className="text-blue-600">•</span>
-                      <span>
-                        <strong>咖啡泵破解</strong>：分享您如何发现我们的咖啡，描述其独特描述；
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-blue-600">•</span>
-                      <span>
-                        <strong>日常观观模式式</strong>：操作您如何将我们的咖啡融入日常，例如清晨的例行，午茶时光；
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-blue-600">•</span>
-                      <span>
-                        <strong>创意咖啡食谱</strong>：选择用我们的咖啡制作创意做法或做配相关食品。
-                      </span>
-                    </li>
-                  </ul>
-                  <p className="text-xs text-slate-500">
-                    请尊稳内容真实感，能够引发众鸣。视频长度在1-3分钟，图文不不少于500字。
-                  </p>
-                </div>
-              </div>
-
-              {/* Demo Videos */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h2 className="mb-4 text-xl font-bold text-slate-900">示例视频</h2>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="group relative aspect-video overflow-hidden rounded-lg bg-slate-100">
-                      <img
-                        src={`/coffee-demo-${i}.jpg?height=180&width=320&query=coffee-demo-${i}`}
-                        alt={`Demo ${i}`}
-                        className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90">
-                          <svg className="h-6 w-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Material Upload */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h2 className="mb-4 text-xl font-bold text-slate-900">上传演示材料或查看传播</h2>
-                <div className="flex min-h-[150px] cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 transition-colors hover:border-blue-400 hover:bg-blue-50">
-                  <div className="text-center">
-                    <Upload className="mx-auto mb-2 h-8 w-8 text-slate-400" />
-                    <p className="mb-1 text-sm font-medium text-slate-700">点击上传 或拖放文件</p>
-                    <p className="text-xs text-slate-500">PDF, DOCX, JPG, PNG (最大8MB)</p>
-                  </div>
-                </div>
-                <button className="mt-4 w-full rounded-lg border border-slate-300 bg-white py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50">
-                  上传
-                </button>
-              </div>
-
-              {/* Related Projects */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h2 className="mb-4 text-xl font-bold text-slate-900">相关项目</h2>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  {[
-                    { name: "云盘大师", tags: ["AI智能整理", "跨平台同步"] },
-                    { name: "智能温控器", tags: ["节能系统", "语音输出"] },
-                    { name: "投资助手", tags: ["实时市场数据", "风险评估"] },
-                  ].map((project, index) => (
-                    <Link
-                      key={index}
-                      href={`/product/${index + 1}`}
-                      className="group rounded-lg border border-slate-200 bg-white p-4 transition-all hover:border-blue-300 hover:shadow-md"
-                    >
-                      <div className="mb-3 flex items-center gap-3">
-                        <div className="h-12 w-12 overflow-hidden rounded-full bg-slate-100">
-                          <img
-                            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${project.name}`}
-                            alt={project.name}
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                        <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-                          {project.name}
-                        </h3>
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {project.tags.map((tag, i) => (
-                          <span key={i} className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600">
-                            {tag}
+                <div className="relative">
+                  {/* Top Section: Logo, Info, Price Medal */}
+                  <div className="flex gap-8">
+                    {/* Product Logo */}
+                    <div className="flex-shrink-0 relative">
+                      <button
+                        onClick={handleAddToPromotions}
+                        disabled={isAddingToPromotions || addedToPromotions}
+                        className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 py-1 rounded-lg font-semibold text-white text-xs shadow-md transition-all ${
+                          addedToPromotions
+                            ? "bg-green-500 shadow-green-500/25"
+                            : isAddingToPromotions
+                              ? "bg-blue-400 cursor-wait"
+                              : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5"
+                        }`}
+                      >
+                        {addedToPromotions ? (
+                          <span className="flex items-center justify-center gap-0.5">
+                            <CheckCircle2 className="h-3 w-3" />
+                            <span className="hidden">已添加</span>
                           </span>
+                        ) : isAddingToPromotions ? (
+                          "..."
+                        ) : (
+                          "接"
+                        )}
+                      </button>
+                      <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-500/30 ring-4 ring-white">
+                        <span className="text-3xl font-bold text-white">NM</span>
+                      </div>
+                    </div>
+
+                    {/* Product Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h1 className="text-2xl font-bold text-slate-900">{productData.name}</h1>
+                            {/* Progress Badge */}
+                            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200">
+                              {progressSteps.map((step, index) => {
+                                const currentIndex = getProgressIndex()
+                                const isCompleted = index < currentIndex
+                                const isCurrent = index === currentIndex
+                                return (
+                                  <div key={step.id} className="flex items-center gap-0.5">
+                                    <div
+                                      className={`w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-medium ${
+                                        isCompleted
+                                          ? "bg-green-500 text-white"
+                                          : isCurrent
+                                            ? "bg-blue-500 text-white"
+                                            : "bg-slate-200 text-slate-400"
+                                      }`}
+                                    >
+                                      {isCompleted ? <CheckCircle2 className="h-2.5 w-2.5" /> : index + 1}
+                                    </div>
+                                    {index < progressSteps.length - 1 && (
+                                      <div
+                                        className={`w-2 h-0.5 ${index < currentIndex ? "bg-green-500" : "bg-slate-200"}`}
+                                      />
+                                    )}
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </div>
+                          <p className="text-slate-500 text-sm leading-relaxed line-clamp-2">
+                            {productData.description}
+                          </p>
+
+                          {/* Product Link */}
+                          <a
+                            href={productData.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 mt-3 text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
+                          >
+                            <Globe className="h-3.5 w-3.5" />
+                            <span>{productData.link}</span>
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+
+                          {/* Keywords & Timeline Row */}
+                          <div className="flex items-center justify-between mt-3">
+                            <div className="flex flex-wrap gap-2">
+                              <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium">
+                                {productData.category.type}
+                              </span>
+                              {productData.category.keywords.map((keyword, index) => (
+                                <span
+                                  key={index}
+                                  className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium"
+                                >
+                                  {keyword}
+                                </span>
+                              ))}
+                            </div>
+                            <div className="flex items-center gap-3 text-xs">
+                              <div className="flex items-center gap-1.5 text-slate-500">
+                                <Calendar className="h-3.5 w-3.5" />
+                                <span>期望发布时间</span>
+                                <span className="font-semibold text-slate-700">
+                                  {productData.timeline.developerDeadline}
+                                </span>
+                              </div>
+                              <div className="w-px h-3 bg-slate-200" />
+                              <div className="flex items-center gap-1.5 text-slate-400">
+                                <Clock className="h-3.5 w-3.5" />
+                                <span>确定发布时间</span>
+                                <span className="italic">{productData.timeline.bloggerDeadline || "待定"}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex-shrink-0 relative">
+                          <div className="w-24 h-32 relative">
+                            {/* Unified Medal and Ribbon SVG */}
+                            <svg
+                              viewBox="0 0 100 140"
+                              className="w-[67px] h-auto drop-shadow-lg absolute top-0 left-1/2"
+                              style={{
+                                transform: "translateX(calc(-50% + 10px)) translateY(22px)",
+                              }}
+                            >
+                              <defs>
+                                {/* Bright gold gradient matching image */}
+                                <linearGradient id="medalGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                                  <stop offset="0%" stopColor="#FFE566" />
+                                  <stop offset="25%" stopColor="#FFCC00" />
+                                  <stop offset="50%" stopColor="#FFB800" />
+                                  <stop offset="75%" stopColor="#FFCC00" />
+                                  <stop offset="100%" stopColor="#FFE566" />
+                                </linearGradient>
+                                <linearGradient id="medalInner" x1="0%" y1="0%" x2="100%" y2="100%">
+                                  <stop offset="0%" stopColor="#FFF4A3" />
+                                  <stop offset="50%" stopColor="#FFD93D" />
+                                  <stop offset="100%" stopColor="#FFB800" />
+                                </linearGradient>
+                              </defs>
+
+                              {/* Serrated outer edge - starburst pattern */}
+                              <polygon
+                                points="50,0 54,12 62,2 63,15 74,8 72,21 84,17 79,29 92,28 84,38 96,42 86,50 96,58 84,62 92,72 79,71 84,83 72,79 74,92 63,85 62,98 54,88 50,100 46,88 38,98 37,85 26,92 28,79 16,83 21,71 8,72 17,62 4,58 14,50 4,42 16,38 8,28 21,29 16,17 28,21 26,8 37,15 38,2 46,12"
+                                fill="url(#medalGold)"
+                                stroke="#CC9900"
+                                strokeWidth="0.5"
+                              />
+
+                              {/* Inner gold circle */}
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="34"
+                                fill="url(#medalInner)"
+                                stroke="#CC9900"
+                                strokeWidth="1.5"
+                              />
+
+                              {/* Inner ring */}
+                              <circle cx="50" cy="50" r="28" fill="none" stroke="#DAA520" strokeWidth="1" />
+
+                              {/* Laurel wreath left */}
+                              <path
+                                d="M26,50 Q30,42 36,42 Q32,46 32,50 Q32,54 36,58 Q30,58 26,50"
+                                fill="#DAA520"
+                                opacity="0.9"
+                              />
+                              <path d="M28,44 Q33,38 40,40 Q34,44 34,48" fill="#DAA520" opacity="0.8" />
+                              <path d="M28,56 Q33,62 40,60 Q34,56 34,52" fill="#DAA520" opacity="0.8" />
+
+                              {/* Laurel wreath right */}
+                              <path
+                                d="M74,50 Q70,42 64,42 Q68,46 68,50 Q68,54 64,58 Q70,58 74,50"
+                                fill="#DAA520"
+                                opacity="0.9"
+                              />
+                              <path d="M72,44 Q67,38 60,40 Q66,44 66,48" fill="#DAA520" opacity="0.8" />
+                              <path d="M72,56 Q67,62 60,60 Q66,56 66,52" fill="#DAA520" opacity="0.8" />
+
+                              {/* Red Ribbons - 3D fold effect */}
+                              <g transform="translate(25, 100)">
+                                {/* Left ribbon */}
+                                <polygon points="0,0 12,0 8,28 0,20" fill="#CC2222" />
+                                <polygon points="12,0 16,0 16,4 8,28 8,28" fill="#EE4444" />
+                                {/* Right ribbon */}
+                                <polygon points="20,0 32,0 32,20 24,28" fill="#CC2222" />
+                                <polygon points="16,0 20,0 24,28 16,4" fill="#EE4444" />
+                              </g>
+
+                              {/* Price text overlay */}
+                              <text
+                                x="50"
+                                y="45"
+                                textAnchor="middle"
+                                className="text-[7px] font-bold fill-amber-700"
+                                style={{ filter: "drop-shadow(0 1px 0 rgba(255,255,255,0.5))" }}
+                              >
+                                {productData.pricing.price.replace("$", "").split("/")[0]}
+                              </text>
+                              {/* Reduced currency symbol size from 24px to 12px */}
+                              <text x="50" y="62" textAnchor="middle" className="text-[12px] font-bold fill-amber-900">
+                                ¥
+                              </text>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Description Section */}
+                  <div className="mt-8" ref={descriptionContainerRef}>
+                    <div className="rounded-2xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
+                      {/* Document Header */}
+                      <div className="flex items-center gap-3 px-5 py-3 border-b border-slate-200 bg-white">
+                        <div className="flex gap-1.5">
+                          <button
+                            onClick={() => setIsDescriptionExpanded(false)}
+                            className="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all shadow-sm hover:shadow-md group relative"
+                            title="Collapse"
+                          >
+                            <div className="flex items-center justify-center w-full h-full">
+                              <div className="w-2 h-0.5 bg-white" />
+                            </div>
+                          </button>
+                          <button
+                            onClick={() => setIsDescriptionExpanded(true)}
+                            className="w-3.5 h-3.5 rounded-full bg-green-500 hover:bg-green-600 flex items-center justify-center transition-all shadow-sm hover:shadow-md group relative"
+                            title="Expand"
+                          >
+                            <div className="flex items-center justify-center w-full h-full">
+                              <div className="text-white text-xs font-bold">⤡</div>
+                            </div>
+                          </button>
+                        </div>
+                        <span className="text-sm font-medium text-slate-600 flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          产品描述文档
+                        </span>
+                      </div>
+                      <div
+                        className="relative cursor-pointer"
+                        onClick={() => {
+                          if (!isDescriptionExpanded) {
+                            setIsDescriptionExpanded(true)
+                          }
+                        }}
+                      >
+                        <div
+                          className={`px-6 py-5 text-slate-600 text-sm leading-relaxed whitespace-pre-line transition-all duration-500 ${
+                            isDescriptionExpanded ? "max-h-none" : "overflow-hidden"
+                          }`}
+                          style={!isDescriptionExpanded ? { maxHeight: "27rem", lineHeight: "1.5rem" } : {}}
+                        >
+                          {productData.fullDescription}
+                        </div>
+                        {!isDescriptionExpanded && (
+                          <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+                            {/* Layer 1: Lightest opacity at top (90% transparent) */}
+                            <div className="h-8 bg-gradient-to-t from-white/10 to-transparent backdrop-blur-[1px]" />
+                            {/* Layer 2: Gradually increasing opacity */}
+                            <div className="h-6 bg-gradient-to-t from-white/25 to-white/10 backdrop-blur-[3px]" />
+                            {/* Layer 3: More opacity increase */}
+                            <div className="h-6 bg-gradient-to-t from-white/50 to-white/25 backdrop-blur-[5px]" />
+                            {/* Layer 4: Heaviest opacity at bottom (30% transparent) */}
+                            <div className="h-6 bg-gradient-to-t from-white/70 to-white/50 backdrop-blur-[8px]" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Product Display Section */}
+                  <div className="mt-8">
+                    <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2 mb-3">
+                      <Play className="h-4 w-4 text-blue-600" />
+                      产品展示
+                    </h3>
+                    {/* Main Display */}
+                    <div className="aspect-video rounded-xl overflow-hidden relative shadow-lg border border-slate-200">
+                      {activeMediaType === "video" ? (
+                        <div className="w-full h-full bg-slate-900 flex items-center justify-center group cursor-pointer">
+                          <img
+                            src="/product-demo-video-thumbnail.jpg"
+                            alt="Demo Video"
+                            className="w-full h-full object-cover opacity-80 group-hover:opacity-70 transition-opacity"
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-16 h-16 rounded-full bg-white/95 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                              <Play className="h-6 w-6 text-blue-600 ml-1" fill="currentColor" />
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <img
+                          src={productData.attachments.screenshots[activeScreenshot] || "/placeholder.svg"}
+                          alt="Product Screenshot"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+
+                    {/* Thumbnails - Video + Screenshots */}
+                    <div className="relative group border border-slate-200 rounded-lg bg-white p-3">
+                      {/* Left navigation button for screenshots */}
+                      <button
+                        onClick={() => scrollScreenshots("left")}
+                        style={{ background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(3px)" }}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                      >
+                        <ChevronLeft className="h-4 w-4 text-slate-600" />
+                      </button>
+
+                      {/* Scrollable thumbnails container */}
+                      <div
+                        ref={screenshotsRef}
+                        className="flex gap-2 overflow-x-auto scrollbar-hide px-10"
+                        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                      >
+                        {/* Video Thumbnail */}
+                        <button
+                          onClick={() => setActiveMediaType("video")}
+                          className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all relative ${
+                            activeMediaType === "video"
+                              ? "border-blue-500 ring-2 ring-blue-200"
+                              : "border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100"
+                          }`}
+                        >
+                          <img
+                            src="/product-demo-video-thumbnail.jpg"
+                            alt="Video"
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                            <Play className="h-4 w-4 text-white" fill="currentColor" />
+                          </div>
+                        </button>
+
+                        {/* Screenshot Thumbnails */}
+                        {productData.attachments.screenshots.map((screenshot, index) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              setActiveMediaType("image")
+                              setActiveScreenshot(index)
+                            }}
+                            className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                              activeMediaType === "image" && activeScreenshot === index
+                                ? "border-blue-500 ring-2 ring-blue-200"
+                                : "border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100"
+                            }`}
+                          >
+                            <img
+                              src={screenshot || "/placeholder.svg"}
+                              alt={`Screenshot ${index + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </button>
                         ))}
                       </div>
-                    </Link>
-                  ))}
+
+                      {/* Right navigation button for screenshots */}
+                      <button
+                        onClick={() => scrollScreenshots("right")}
+                        style={{ background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(3px)" }}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                      >
+                        <ChevronRight className="h-4 w-4 text-slate-600" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Documents Section */}
+                  <div className="mt-8">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                        <Download className="h-4 w-4 text-blue-600" />
+                        相关资料
+                      </h3>
+                    </div>
+                    <div className="relative group">
+                      <button
+                        onClick={() => scrollDocuments("left")}
+                        style={{ background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(3px)" }}
+                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                      >
+                        <ChevronLeft className="h-4 w-4 text-slate-600" />
+                      </button>
+                      <div
+                        ref={documentsRef}
+                        className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 cursor-grab active:cursor-grabbing px-10"
+                        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                      >
+                        {productData.attachments.documents.map((doc, index) => (
+                          <div key={index} className="flex-shrink-0 flex flex-col items-center">
+                            <div
+                              onClick={() => handleDownloadDocument(doc.name)}
+                              className="w-36 p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:shadow-md transition-all group text-center cursor-pointer"
+                            >
+                              <div className="text-3xl mb-2">{doc.icon}</div>
+                              <div className="text-xs font-medium text-slate-700 group-hover:text-blue-700 truncate">
+                                {doc.name}
+                              </div>
+                              <div className="text-[10px] text-slate-400 mt-1">{doc.size}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => scrollDocuments("right")}
+                        style={{ background: "rgba(255, 255, 255, 0.15)", backdropFilter: "blur(3px)" }}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                      >
+                        <ChevronRight className="h-4 w-4 text-slate-600" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Sidebar Cards */}
+              <div className="w-56 flex-shrink-0 space-y-4">
+                {/* Incentive Card */}
+                <div className="bg-gradient-to-br from-amber-50 via-amber-100/80 to-orange-50 border border-amber-200/60 shadow-lg shadow-amber-100/50 overflow-hidden rounded-lg">
+                  {/* Card Header with Trophy */}
+                  <div className="relative px-5 pt-5 pb-3">
+                    
+                    <div className="text-xs font-medium text-amber-700/80">激励金计划</div>
+                    <div className="text-lg font-bold text-amber-900 mt-0.5">额外奖励</div>
+                  </div>
+
+                  {/* Base Reward */}
+                  <div className="mx-4 px-3 py-2.5 rounded-xl bg-white/80 border border-amber-200/50 mb-3">
+                    <div className="text-[10px] text-amber-600/80 uppercase tracking-wide">基础推广费</div>
+                    <div className="text-xl font-bold text-amber-900">¥{productData.incentive.baseReward}</div>
+                  </div>
+
+                  {/* Bonus Targets */}
+                  <div className="px-4 pb-4">
+                    <div className="text-[10px] text-amber-700/70 mb-2">播放量达标奖励</div>
+                    <div className="space-y-1.5">
+                      {productData.incentive.bonusTargets.map((target, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-white/60 border border-amber-100"
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <Zap className="h-3 w-3 text-amber-500" />
+                            <span className="text-[11px] text-amber-800">{(target.views / 10000).toFixed(0)}万</span>
+                          </div>
+                          <span className="text-xs font-semibold text-amber-600">+¥{target.bonus}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Max Reward */}
+                  </div>
+
+                  {/* Decorative bottom */}
+                  <div className="h-1.5 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-400" />
+                </div>
+
+                {/* Contact Card */}
+                <div className="overflow-hidden shadow-lg bg-gradient-to-br from-blue-50 via-white to-blue-50 border-2 border-blue-200/60 relative rounded-xl">
+                  {/* Postcard decorative stamps */}
+                  <div className="absolute top-3 right-3 w-10 h-10 rotate-12">
+                    <div className="w-full h-full border-2 border-red-400 bg-red-50 rounded-sm flex items-center justify-center">
+                      <Mail className="h-4 w-4 text-red-500" />
+                    </div>
+                    <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 border border-red-400 bg-red-100 transform rotate-45" />
+                  </div>
+
+                  {/* Postcard lines decoration */}
+                  <div className="absolute left-3 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-blue-200 to-transparent opacity-30" />
+
+                  {/* Content */}
+                  <div className="relative p-4 space-y-2.5">
+                    <div className="text-xs font-semibold text-blue-900 tracking-wide uppercase mb-3">联系方式</div>
+
+                    {/* Contact Name */}
+                    <div className="flex items-start gap-2">
+                      <Users className="h-3.5 w-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="text-[10px] text-blue-600/70 uppercase tracking-wide">联系人</div>
+                        <div className="text-sm font-semibold text-slate-800">{productData.contact.name}</div>
+                      </div>
+                    </div>
+
+                    {/* Email */}
+                    <div className="flex items-start gap-2">
+                      <Mail className="h-3.5 w-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <div className="break-all min-w-0">
+                        <div className="text-[10px] text-blue-600/70 uppercase tracking-wide">邮箱</div>
+                        <div className="text-[11px] text-slate-700 leading-tight truncate">
+                          {productData.contact.email}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Phone */}
+                    <div className="flex items-start gap-2">
+                      <Phone className="h-3.5 w-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="text-[10px] text-blue-600/70 uppercase tracking-wide">电话</div>
+                        <div className="text-xs text-slate-700">{productData.contact.phone}</div>
+                      </div>
+                    </div>
+
+                    {/* Website */}
+                    <div className="flex items-start gap-2 pt-1 border-t border-blue-100">
+                      <Globe className="h-3.5 w-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <div className="break-all min-w-0">
+                        <div className="text-[10px] text-blue-600/70 uppercase tracking-wide">网站</div>
+                        <a
+                          href={productData.contact.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[11px] text-blue-600 hover:text-blue-700 underline underline-offset-2 truncate block"
+                        >
+                          {productData.contact.website}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Decorative bottom */}
+                  <div className="h-1.5 bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-400" />
                 </div>
               </div>
             </div>
-
-            {/* Right Sidebar - Application */}
-            <div className="space-y-6">
-              {/* Investment Progress */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h3 className="mb-4 text-lg font-bold text-slate-900">投放日程</h3>
-
-                <button
-                  onClick={() => toggleSection("phase1")}
-                  className="mb-2 w-full rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition-colors hover:bg-slate-100"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-slate-900">第一周</span>
-                    <ChevronDown
-                      className={`h-4 w-4 text-slate-600 transition-transform ${openSection === "phase1" ? "rotate-180" : ""}`}
-                    />
-                  </div>
-                </button>
-                {openSection === "phase1" && (
-                  <div className="mb-3 rounded-lg bg-blue-50 p-3 text-sm text-slate-700">第一周的详细计划和目标...</div>
-                )}
-
-                <button
-                  onClick={() => toggleSection("phase2")}
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition-colors hover:bg-slate-100"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-slate-900">第二周</span>
-                    <ChevronDown
-                      className={`h-4 w-4 text-slate-600 transition-transform ${openSection === "phase2" ? "rotate-180" : ""}`}
-                    />
-                  </div>
-                </button>
-                {openSection === "phase2" && (
-                  <div className="mt-2 rounded-lg bg-blue-50 p-3 text-sm text-slate-700">第二周的详细计划和目标...</div>
-                )}
-              </div>
-
-              {/* Pricing Tiers */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h3 className="mb-4 text-lg font-bold text-slate-900">预算明细</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between rounded-lg border border-slate-200 p-3">
-                    <span className="text-sm text-slate-700">基础广播</span>
-                    <span className="font-semibold text-slate-900">¥5000</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border border-slate-200 p-3">
-                    <span className="text-sm text-slate-700">授权使用 (CPC/CPS)</span>
-                    <span className="font-semibold text-slate-900">¥0 - ¥5000</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg bg-blue-50 p-3">
-                    <span className="font-medium text-slate-900">总计</span>
-                    <span className="text-lg font-bold text-blue-600">¥5000 - ¥10000</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Contact Info */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h3 className="mb-4 text-lg font-bold text-slate-900">联系/品牌信息</h3>
-                <div className="space-y-3 text-sm">
-                  <div>
-                    <span className="font-medium text-slate-700">品牌名称:</span>
-                    <p className="text-slate-600">精品咖啡工坊</p>
-                  </div>
-                  <div>
-                    <span className="font-medium text-slate-700">联系邮箱:</span>
-                    <p className="text-blue-600">brand@example.com</p>
-                  </div>
-                  <div>
-                    <span className="font-medium text-slate-700">品牌官网:</span>
-                    <p className="text-blue-600">www.coffeeshop.com</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Application */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h3 className="mb-4 text-lg font-bold text-slate-900">申请表单</h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-slate-700">上传号截图</label>
-                    <button className="w-full rounded-lg border border-slate-300 bg-slate-50 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100">
-                      支持文/媒体/图片+卡号
-                    </button>
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-slate-700">黑色自我介绍</label>
-                    <textarea
-                      rows={3}
-                      placeholder="介绍您的创作风格，以候及这迷合作创案..."
-                      className="w-full rounded-lg border border-slate-300 bg-white p-3 text-sm text-slate-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                    />
-                  </div>
-                  <button className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 py-3 font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:brightness-110">
-                    提交申请
-                  </button>
-                  <p className="text-center text-xs text-red-500">警告:歌曲请确保认可出或申请</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 flex justify-center pb-8">
-            <button
-              onClick={handleAddToPromotions}
-              disabled={isAddingToPromotions || addedToPromotions}
-              className={`rounded-xl px-16 py-4 text-lg font-semibold shadow-lg transition-all ${
-                addedToPromotions
-                  ? "bg-green-500 text-white"
-                  : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-xl hover:brightness-110"
-              } ${isAddingToPromotions ? "cursor-wait opacity-70" : ""} ${addedToPromotions ? "cursor-default" : ""}`}
-            >
-              {isAddingToPromotions ? (
-                <span className="flex items-center gap-2">
-                  <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  添加中...
-                </span>
-              ) : addedToPromotions ? (
-                <span className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5" />
-                  已添加到我的推广
-                </span>
-              ) : (
-                "我推广此项目"
-              )}
-            </button>
           </div>
         </main>
-
-        {/* Footer */}
-        <footer className="border-t bg-white/50 py-6 text-center">
-          <p className="text-sm text-slate-600">© 2025 GrowthEngine. All rights reserved.</p>
-        </footer>
       </div>
     </div>
   )

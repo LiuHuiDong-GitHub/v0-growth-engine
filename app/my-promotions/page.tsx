@@ -130,7 +130,7 @@ export default function MyPromotions() {
 
       {/* Main Content */}
       <div className="ml-16 flex-1 flex flex-col overflow-hidden">
-        <AppHeader />
+        <AppHeader breadcrumbItems={[{ label: "首页", href: "/" }, { label: "我的推广" }]} />
 
         <main className="flex-1 overflow-y-auto px-8 py-6">
           <Breadcrumb items={[{ label: "首页", href: "/" }, { label: "我的推广" }]} />
@@ -167,12 +167,12 @@ export default function MyPromotions() {
 
           {/* Content based on active tab */}
           {activeTab === "pending" ? (
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-6 lg:grid-cols-3">
               {pendingProjects.map((project) => (
                 <div key={project.id} className="overflow-hidden rounded-2xl bg-white p-4 shadow-sm">
                   <div className="mb-3 flex items-start gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100">
-                      <div className="h-6 w-6 rounded bg-red-500"></div>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+                      <div className="h-7 w-7 rounded-full bg-red-500"></div>
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-slate-900">{project.title}</h3>
@@ -189,9 +189,9 @@ export default function MyPromotions() {
 
                   <Link
                     href={`/submit-video?projectId=${project.id}&projectName=${encodeURIComponent(project.title)}&category=${encodeURIComponent(project.platform)}`}
-                    className="block w-full"
+                    className="block -mx-4 -mb-4"
                   >
-                    <button className="w-full rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 py-12 text-xl font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:brightness-110">
+                    <button className="w-full cursor-pointer rounded-t-none rounded-b-2xl py-12 text-xl font-semibold text-slate-700 shadow-sm transition-all hover:bg-gradient-to-br hover:from-blue-500 hover:via-blue-600 hover:to-blue-700 hover:text-white hover:shadow-xl bg-[rgba(196,226,165,1)]">
                       去发布
                     </button>
                   </Link>
@@ -199,7 +199,7 @@ export default function MyPromotions() {
               ))}
             </div>
           ) : (
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-6 lg:grid-cols-3">
               {publishedProjects.map((project) => (
                 <Link
                   href={`/blogger-video/${project.id}`}
@@ -207,8 +207,8 @@ export default function MyPromotions() {
                   className="overflow-hidden rounded-2xl bg-white p-4 shadow-sm transition-shadow hover:shadow-md cursor-pointer"
                 >
                   <div className="mb-3 flex items-start gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100">
-                      <div className="h-6 w-6 rounded bg-indigo-500"></div>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
+                      <div className="h-7 w-7 rounded-full bg-indigo-500"></div>
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-slate-900">{project.title}</h3>

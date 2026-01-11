@@ -59,7 +59,7 @@ export default function SelectProductPage() {
           </div>
 
           <nav className="flex flex-col gap-6">
-            <button className="flex flex-col items-center gap-1 text-blue-600 transition-colors hover:text-blue-700">
+            <button className="flex flex-col items-center gap-1 text-blue-600 transition-colors hover:text-blue-700 cursor-pointer">
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -71,7 +71,7 @@ export default function SelectProductPage() {
               <span className="text-xs">Dashboard</span>
             </button>
 
-            <button className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600">
+            <button className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600 cursor-pointer">
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -83,7 +83,7 @@ export default function SelectProductPage() {
               <span className="text-xs">Projects</span>
             </button>
 
-            <button className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600">
+            <button className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600 cursor-pointer">
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -95,14 +95,7 @@ export default function SelectProductPage() {
               <span className="text-xs">Browse</span>
             </button>
 
-            <button className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600">
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-              <span className="text-xs">Promoter</span>
-            </button>
-
-            <button className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600">
+            <button className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600 cursor-pointer">
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -111,18 +104,35 @@ export default function SelectProductPage() {
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                 />
               </svg>
-              <span className="text-xs">My</span>
+              <span className="text-xs">Promoter</span>
             </button>
-          </nav>
 
-          <div className="mt-auto flex flex-col gap-4">
-            <button className="text-slate-400 transition-colors hover:text-slate-600">
+            <button className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600 cursor-pointer">
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c-.94 1.543.826-3.31 2.37 2.37a1.724 1.724 0 00-2.572 1.065z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </button>
+          </nav>
+
+          <div className="mt-auto flex flex-col gap-4">
+            <button className="text-slate-400 transition-colors hover:text-slate-600 cursor-pointer">
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c-.94 1.543.826-3.31 2.37-2.37a1.724 1.724 0 00-2.572-1.065z"
                 />
                 <path
                   strokeLinecap="round"
@@ -137,12 +147,12 @@ export default function SelectProductPage() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col min-h-screen">
         {/* Header */}
         <AppHeader />
 
         {/* Page Content */}
-        <main className="p-8">
+        <main className="flex-1 p-8">
           <Breadcrumb
             items={[
               { label: "注册", href: "/register" },
@@ -154,12 +164,12 @@ export default function SelectProductPage() {
 
           <h1 className="mb-8 text-3xl font-bold text-slate-900">待推广项目</h1>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-[0.9rem] lg:grid-cols-3">
             {products.map((product) => (
               <Link
                 key={product.id}
                 href={`/product/${product.id}`}
-                className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-lg cursor-pointer"
+                className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.01] cursor-pointer"
               >
                 <div className="mb-4 flex items-start gap-4">
                   <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-full bg-slate-100">
@@ -192,7 +202,7 @@ export default function SelectProductPage() {
         </main>
 
         {/* Footer */}
-        <footer className="border-t bg-white/50 py-6 text-center">
+        <footer className="bg-white/50 text-center border-t-0 py-[18px]">
           <p className="text-sm text-slate-600">© 2025 GrowthEngine. All rights reserved.</p>
         </footer>
       </div>

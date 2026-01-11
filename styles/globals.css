@@ -121,4 +121,17 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Global cursor pointer for all interactive elements */
+  button,
+  a,
+  [role="button"],
+  [onclick],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  select,
+  label[for] {
+    cursor: pointer;
+  }
 }
