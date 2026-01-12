@@ -13,12 +13,12 @@ import {
   Phone,
   Globe,
   Clock,
-  Play,
+  ImageIcon,
   FileText,
   Calendar,
   Zap,
   Download,
-  Trophy,
+  Play,
 } from "lucide-react"
 import Breadcrumb from "@/components/breadcrumb"
 import AppHeader from "@/components/app-header"
@@ -147,9 +147,16 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const [addedToPromotions, setAddedToPromotions] = useState(false)
   const [activeMediaType, setActiveMediaType] = useState<"video" | "image">("video")
   const [activeScreenshot, setActiveScreenshot] = useState(0)
+  const [showCalendar, setShowCalendar] = useState(false)
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [calendarMonth, setCalendarMonth] = useState(new Date())
+  const [isBorderBlinking, setIsBorderBlinking] = useState(false)
+  const [isTextShaking, setIsTextShaking] = useState(false)
   const documentsRef = useRef<HTMLDivElement>(null)
   const descriptionContainerRef = useRef<HTMLDivElement>(null)
   const screenshotsRef = useRef<HTMLDivElement>(null)
+  const calendarRef = useRef<HTMLDivElement>(null)
+  const dateButtonRef = useRef<HTMLButtonElement>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -161,18 +168,29 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       ) {
         setIsDescriptionExpanded(false)
       }
+      if (showCalendar && calendarRef.current && !calendarRef.current.contains(event.target as Node)) {
+        setShowCalendar(false)
+      }
     }
 
-    if (isDescriptionExpanded) {
+    if (isDescriptionExpanded || showCalendar) {
       document.addEventListener("mousedown", handleClickOutside)
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [isDescriptionExpanded])
+  }, [isDescriptionExpanded, showCalendar])
 
   const handleAddToPromotions = () => {
+    if (!selectedDate) {
+      setIsBorderBlinking(true)
+      setIsTextShaking(true)
+      setTimeout(() => setIsBorderBlinking(false), 1500)
+      setTimeout(() => setIsTextShaking(false), 1200)
+      return
+    }
+
     setIsAddingToPromotions(true)
     setTimeout(() => {
       setIsAddingToPromotions(false)
@@ -216,6 +234,52 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+  }
+
+  const generateCalendarDays = (date: Date = new Date()) => {
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const firstDay = new Date(year, month, 1).getDay()
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+    const days = []
+
+    // Empty cells for days before the first day of month
+    for (let i = 0; i < firstDay; i++) {
+      days.push(null)
+    }
+
+    // Days of the month
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(i)
+    }
+
+    return { days, year, month }
+  }
+
+  const handleSelectDate = (day: number) => {
+    const { year, month } = generateCalendarDays(calendarMonth)
+    const date = new Date(year, month, day)
+    const formattedDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+    setSelectedDate(formattedDate)
+    setShowCalendar(false)
+  }
+
+  const isPastDate = (day: number) => {
+    const { year, month } = generateCalendarDays(calendarMonth)
+    const selectedDate = new Date(year, month, day)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    return selectedDate < today
+  }
+
+  const getTodayDay = () => {
+    const today = new Date()
+    return today.getDate()
+  }
+
+  const isCurrentMonth = () => {
+    const today = new Date()
+    return calendarMonth.getMonth() === today.getMonth() && calendarMonth.getFullYear() === today.getFullYear()
   }
 
   return (
@@ -271,8 +335,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       <div className="ml-16 flex flex-1 flex-col">
         <AppHeader />
 
-        <main className="flex-1 p-8">
-          <div className="mx-auto max-w-7xl">
+        <main className="flex-1 p-8 flex flex-col items-center justify-center">
+          <div className="mx-auto max-w-7xl w-full">
             {/* Breadcrumb */}
             <Breadcrumb
               items={[
@@ -294,28 +358,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   <div className="flex gap-8">
                     {/* Product Logo */}
                     <div className="flex-shrink-0 relative">
-                      <button
-                        onClick={handleAddToPromotions}
-                        disabled={isAddingToPromotions || addedToPromotions}
-                        className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 py-1 rounded-lg font-semibold text-white text-xs shadow-md transition-all ${
-                          addedToPromotions
-                            ? "bg-green-500 shadow-green-500/25"
-                            : isAddingToPromotions
-                              ? "bg-blue-400 cursor-wait"
-                              : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5"
-                        }`}
-                      >
-                        {addedToPromotions ? (
-                          <span className="flex items-center justify-center gap-0.5">
-                            <CheckCircle2 className="h-3 w-3" />
-                            <span className="hidden">已添加</span>
-                          </span>
-                        ) : isAddingToPromotions ? (
-                          "..."
-                        ) : (
-                          "接"
-                        )}
-                      </button>
                       <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-500/30 ring-4 ring-white">
                         <span className="text-3xl font-bold text-white">NM</span>
                       </div>
@@ -328,33 +370,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                           <div className="flex items-center gap-3 mb-2">
                             <h1 className="text-2xl font-bold text-slate-900">{productData.name}</h1>
                             {/* Progress Badge */}
-                            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200">
-                              {progressSteps.map((step, index) => {
-                                const currentIndex = getProgressIndex()
-                                const isCompleted = index < currentIndex
-                                const isCurrent = index === currentIndex
-                                return (
-                                  <div key={step.id} className="flex items-center gap-0.5">
-                                    <div
-                                      className={`w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-medium ${
-                                        isCompleted
-                                          ? "bg-green-500 text-white"
-                                          : isCurrent
-                                            ? "bg-blue-500 text-white"
-                                            : "bg-slate-200 text-slate-400"
-                                      }`}
-                                    >
-                                      {isCompleted ? <CheckCircle2 className="h-2.5 w-2.5" /> : index + 1}
-                                    </div>
-                                    {index < progressSteps.length - 1 && (
-                                      <div
-                                        className={`w-2 h-0.5 ${index < currentIndex ? "bg-green-500" : "bg-slate-200"}`}
-                                      />
-                                    )}
-                                  </div>
-                                )
-                              })}
-                            </div>
                           </div>
                           <p className="text-slate-500 text-sm leading-relaxed line-clamp-2">
                             {productData.description}
@@ -375,7 +390,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                           {/* Keywords & Timeline Row */}
                           <div className="flex items-center justify-between mt-3">
                             <div className="flex flex-wrap gap-2">
-                              <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium">
+                              <span className="px-3 py-1 rounded-full text-xs font-medium text-slate-600 bg-slate-100">
                                 {productData.category.type}
                               </span>
                               {productData.category.keywords.map((keyword, index) => (
@@ -387,32 +402,43 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                                 </span>
                               ))}
                             </div>
-                            <div className="flex items-center gap-3 text-xs">
-                              <div className="flex items-center gap-1.5 text-slate-500">
-                                <Calendar className="h-3.5 w-3.5" />
-                                <span>期望发布时间</span>
-                                <span className="font-semibold text-slate-700">
-                                  {productData.timeline.developerDeadline}
-                                </span>
-                              </div>
-                              <div className="w-px h-3 bg-slate-200" />
-                              <div className="flex items-center gap-1.5 text-slate-400">
-                                <Clock className="h-3.5 w-3.5" />
-                                <span>确定发布时间</span>
-                                <span className="italic">{productData.timeline.bloggerDeadline || "待定"}</span>
-                              </div>
-                            </div>
                           </div>
                         </div>
 
+                        {/* Price Medal with Button */}
                         <div className="flex-shrink-0 relative">
+                          <button
+                            onClick={handleAddToPromotions}
+                            disabled={isAddingToPromotions || addedToPromotions}
+                            className={`absolute -top-5 left-1/2 rounded-lg font-semibold text-white text-xs shadow-md transition-all w-16 h-auto py-1 z-20 ${
+                              addedToPromotions
+                                ? "bg-green-500 shadow-green-500/25"
+                                : isAddingToPromotions
+                                  ? "bg-blue-400 cursor-wait"
+                                  : isTextShaking // Apply shaking animation
+                                    ? "bg-red-500 shadow-red-500/25 animate-shake-text"
+                                    : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5"
+                            }`}
+                            style={{ transform: "translate(calc(-50% + 23px), 23px)" }}
+                          >
+                            {addedToPromotions ? (
+                              <span className="flex items-center justify-center gap-1">
+                                <CheckCircle2 className="h-2.5 w-2.5" />
+                                <span>已选稿</span>
+                              </span>
+                            ) : isAddingToPromotions ? (
+                              "..."
+                            ) : (
+                              "我要投稿"
+                            )}
+                          </button>
                           <div className="w-24 h-32 relative">
                             {/* Unified Medal and Ribbon SVG */}
                             <svg
                               viewBox="0 0 100 140"
                               className="w-[67px] h-auto drop-shadow-lg absolute top-0 left-1/2"
                               style={{
-                                transform: "translateX(calc(-50% + 10px)) translateY(22px)",
+                                transform: "translateX(calc(-50% + 20px)) translateY(36px)",
                               }}
                             >
                               <defs>
@@ -453,25 +479,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                               <circle cx="50" cy="50" r="28" fill="none" stroke="#DAA520" strokeWidth="1" />
 
                               {/* Laurel wreath left */}
-                              <path
-                                d="M26,50 Q30,42 36,42 Q32,46 32,50 Q32,54 36,58 Q30,58 26,50"
-                                fill="#DAA520"
-                                opacity="0.9"
-                              />
-                              <path d="M28,44 Q33,38 40,40 Q34,44 34,48" fill="#DAA520" opacity="0.8" />
-                              <path d="M28,56 Q33,62 40,60 Q34,56 34,52" fill="#DAA520" opacity="0.8" />
 
                               {/* Laurel wreath right */}
-                              <path
-                                d="M74,50 Q70,42 64,42 Q68,46 68,50 Q68,54 64,58 Q70,58 74,50"
-                                fill="#DAA520"
-                                opacity="0.9"
-                              />
-                              <path d="M72,44 Q67,38 60,40 Q66,44 66,48" fill="#DAA520" opacity="0.8" />
-                              <path d="M72,56 Q67,62 60,60 Q66,56 66,52" fill="#DAA520" opacity="0.8" />
 
                               {/* Red Ribbons - 3D fold effect */}
-                              <g transform="translate(25, 100)">
+                              <g transform="translate(30, 100)">
                                 {/* Left ribbon */}
                                 <polygon points="0,0 12,0 8,28 0,20" fill="#CC2222" />
                                 <polygon points="12,0 16,0 16,4 8,28 8,28" fill="#EE4444" />
@@ -480,21 +492,170 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                                 <polygon points="16,0 20,0 24,28 16,4" fill="#EE4444" />
                               </g>
 
-                              {/* Price text overlay */}
                               <text
                                 x="50"
-                                y="45"
+                                y="50"
                                 textAnchor="middle"
-                                className="text-[7px] font-bold fill-amber-700"
-                                style={{ filter: "drop-shadow(0 1px 0 rgba(255,255,255,0.5))" }}
+                                dominantBaseline="middle"
+                                fontSize="22"
+                                fontWeight="bold"
+                                fill="#FFFFFF"
+                                style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
                               >
-                                {productData.pricing.price.replace("$", "").split("/")[0]}
-                              </text>
-                              {/* Reduced currency symbol size from 24px to 12px */}
-                              <text x="50" y="62" textAnchor="middle" className="text-[12px] font-bold fill-amber-900">
-                                ¥
+                                $69
                               </text>
                             </svg>
+                          </div>
+
+                          <div className="absolute top-[138px] -left-[76px] flex flex-col items-start gap-2 w-48">
+                            {/* Expected publish time */}
+                            <div className="flex items-start gap-1.5 text-xs text-slate-500">
+                              <Calendar className="h-3.5 w-3.5" />
+                              <span>期望发布时间</span>
+                              <span className="font-semibold text-slate-700">
+                                {productData.timeline.developerDeadline}
+                              </span>
+                            </div>
+
+                            {/* Confirmed publish time with calendar picker */}
+                            <div className="relative">
+                              <div className="flex items-start gap-1.5 text-xs text-slate-500">
+                                <Clock className="h-3.5 w-3.5" />
+                                <span>确定发布时间</span>
+                                <button
+                                  ref={dateButtonRef}
+                                  onClick={() => setShowCalendar(!showCalendar)}
+                                  className="font-semibold cursor-pointer hover:text-blue-600 transition-colors text-slate-800"
+                                >
+                                  {selectedDate ? (
+                                    <span>{selectedDate}</span>
+                                  ) : (
+                                    <span
+                                      className={`text-red-400 inline-block ${isTextShaking ? "animate-pulse" : ""}`}
+                                      style={
+                                        isTextShaking
+                                          ? {
+                                              animation: "shake-scale 0.4s ease-in-out 3",
+                                            }
+                                          : undefined
+                                      }
+                                    >
+                                      请选择
+                                    </span>
+                                  )}
+                                </button>
+                              </div>
+
+                              {/* Calendar Picker Dropdown */}
+                              {showCalendar && (
+                                <div
+                                  ref={calendarRef}
+                                  className="fixed z-50 bg-white rounded-xl shadow-xl border border-slate-200 p-4 w-64"
+                                  style={{
+                                    top: `${dateButtonRef.current?.getBoundingClientRect().bottom || 0 + 8}px`,
+                                    left: `${dateButtonRef.current?.getBoundingClientRect().left || 0}px`,
+                                  }}
+                                >
+                                  <div className="flex items-center justify-between mb-4 px-1">
+                                    <button
+                                      onClick={() =>
+                                        setCalendarMonth(
+                                          new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1),
+                                        )
+                                      }
+                                      className="p-1 hover:bg-slate-100 rounded transition-colors"
+                                      aria-label="Previous month"
+                                    >
+                                      <ChevronLeft className="h-4 w-4 text-slate-600" />
+                                    </button>
+                                    <span className="text-sm font-semibold text-slate-700 flex-1 text-center">
+                                      {calendarMonth.toLocaleDateString("zh-CN", { year: "numeric", month: "long" })}
+                                    </span>
+                                    <button
+                                      onClick={() =>
+                                        setCalendarMonth(
+                                          new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1),
+                                        )
+                                      }
+                                      className="p-1 hover:bg-slate-100 rounded transition-colors"
+                                      aria-label="Next month"
+                                    >
+                                      <ChevronRight className="h-4 w-4 text-slate-600" />
+                                    </button>
+                                  </div>
+
+                                  {/* Weekday Headers */}
+                                  <div className="grid grid-cols-7 gap-1 mb-2">
+                                    {["日", "一", "二", "三", "四", "五", "六"].map((day) => (
+                                      <div
+                                        key={day}
+                                        className="text-center text-[10px] text-slate-400 font-medium py-1"
+                                      >
+                                        {day}
+                                      </div>
+                                    ))}
+                                  </div>
+
+                                  {/* Calendar Days */}
+                                  <div className="grid grid-cols-7 gap-1 mb-3">
+                                    {generateCalendarDays(calendarMonth).days.map((day, index) => {
+                                      const isDisabled = day !== null && isPastDate(day)
+                                      const isToday = day !== null && isCurrentMonth() && day === getTodayDay()
+                                      const isSelected =
+                                        day !== null &&
+                                        selectedDate ===
+                                          `${generateCalendarDays(calendarMonth).year}-${String(generateCalendarDays(calendarMonth).month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+
+                                      return (
+                                        <div key={index} className="aspect-square">
+                                          {day !== null ? (
+                                            <button
+                                              onClick={() => !isDisabled && handleSelectDate(day)}
+                                              disabled={isDisabled}
+                                              className={`w-full h-full rounded-lg text-xs font-medium transition-all ${
+                                                isDisabled
+                                                  ? "text-slate-300 cursor-not-allowed bg-slate-50"
+                                                  : isSelected
+                                                    ? "bg-blue-600 text-white font-semibold"
+                                                    : isToday
+                                                      ? "bg-blue-100 text-blue-600 font-semibold border border-blue-300"
+                                                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                                              }`}
+                                            >
+                                              {day}
+                                            </button>
+                                          ) : null}
+                                        </div>
+                                      )
+                                    })}
+                                  </div>
+
+                                  <div className="flex gap-2 pt-2 border-t border-slate-200">
+                                    <button
+                                      onClick={() => {
+                                        setCalendarMonth(new Date())
+                                        const today = new Date()
+                                        const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`
+                                        setSelectedDate(formattedDate)
+                                        setShowCalendar(false)
+                                      }}
+                                      className="flex-1 px-2 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
+                                    >
+                                      今天
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        setSelectedDate(null)
+                                        setShowCalendar(false)
+                                      }}
+                                      className="flex-1 px-2 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
+                                    >
+                                      清空
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -566,7 +727,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   {/* Product Display Section */}
                   <div className="mt-8">
                     <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2 mb-3">
-                      <Play className="h-4 w-4 text-blue-600" />
+                      <ImageIcon className="h-4 w-4 text-blue-600" />
                       产品展示
                     </h3>
                     {/* Main Display */}
@@ -717,7 +878,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 <div className="bg-gradient-to-br from-amber-50 via-amber-100/80 to-orange-50 border border-amber-200/60 shadow-lg shadow-amber-100/50 overflow-hidden rounded-lg">
                   {/* Card Header with Trophy */}
                   <div className="relative px-5 pt-5 pb-3">
-                    
                     <div className="text-xs font-medium text-amber-700/80">激励金计划</div>
                     <div className="text-lg font-bold text-amber-900 mt-0.5">额外奖励</div>
                   </div>
@@ -824,6 +984,53 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           </div>
         </main>
       </div>
+
+      {/* Animation for border blink */}
+      <style>{`
+        @keyframes borderBlink {
+          0%, 100% {
+            border-color: rgba(239, 68, 68, 0.5);
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+          }
+          50% {
+            border-color: rgba(239, 68, 68, 0.9);
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+          }
+        }
+        /* Add keyframes for text shake animation */
+        @keyframes shake-text {
+          0% {
+            transform: scale(1);
+          }
+          25% {
+            transform: scale(1.05) translate(-2px, 0);
+          }
+          50% {
+            transform: scale(1);
+          }
+          75% {
+            transform: scale(1.05) translate(2px, 0);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+        .animate-pulse {
+          animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+        .animate-shake-text {
+          animation: shake-text 0.82s cubic-bezier(.36,.07,.19,.97) both;
+        }
+      `}</style>
     </div>
   )
 }
