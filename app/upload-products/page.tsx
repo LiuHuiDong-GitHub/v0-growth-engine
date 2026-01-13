@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -7,18 +9,18 @@ import {
   ChevronRight,
   ChevronLeft,
   Users,
-  CheckCircle2,
-  ExternalLink,
   Mail,
   Phone,
   Globe,
   Clock,
   ImageIcon,
   FileText,
-  Calendar,
   Zap,
   Download,
   Play,
+  X,
+  Plus,
+  ChevronDown,
 } from "lucide-react"
 import Breadcrumb from "@/components/breadcrumb"
 import AppHeader from "@/components/app-header"
@@ -152,11 +154,135 @@ export default function UploadProductsPage() {
   const [calendarMonth, setCalendarMonth] = useState(new Date())
   const [isBorderBlinking, setIsBorderBlinking] = useState(false)
   const [isTextShaking, setIsTextShaking] = useState(false)
+  const [productLogoUrl, setProductLogoUrl] = useState<string | null>(null)
+  const [productName, setProductName] = useState("")
+  const [productDescription, setProductDescription] = useState("")
+  const [productLink, setProductLink] = useState("")
+  const [linkInputWidth, setLinkInputWidth] = useState(280) // Initial width doubled (140 * 2)
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [showTagDropdown, setShowTagDropdown] = useState(false)
+  const [customTagInput, setCustomTagInput] = useState("")
+  const [isAddingCustomTag, setIsAddingCustomTag] = useState(false)
+  const [documentDescription, setDocumentDescription] = useState(productData.fullDescription)
+
+  // Preset tag options
+  const presetTags = [
+    // 工具类
+    "效率工具",
+    "笔记工具",
+    "生产力APP",
+    "AI工具",
+    "办公软件",
+    "协作工具",
+    "项目管理",
+    "日程管理",
+    "文档工具",
+    "思维导图",
+
+    // 创作与设计
+    "设计工具",
+    "视频编辑",
+    "图片编辑",
+    "音频工具",
+    "写作工具",
+    "创意工具",
+    "3D建模",
+    "UI设计",
+    "插画工具",
+
+    // 开发技术
+    "开发工具",
+    "代码编辑器",
+    "API工具",
+    "数据库工具",
+    "云服务",
+    "DevOps",
+    "低代码平台",
+    "测试工具",
+
+    // 营销与商业
+    "营销工具",
+    "SEO工具",
+    "社交媒体",
+    "电商工具",
+    "客服工具",
+    "CRM系统",
+    "数据分析",
+    "广告投放",
+    "邮件营销",
+
+    // 教育与学习
+    "教育培训",
+    "学习工具",
+    "在线课程",
+    "语言学习",
+    "知识管理",
+    "阅读工具",
+    "技能培训",
+
+    // 生活与娱乐
+    "健康健身",
+    "运动追踪",
+    "饮食管理",
+    "睡眠监测",
+    "冥想放松",
+    "游戏娱乐",
+    "音乐应用",
+    "视频流媒体",
+    "阅读娱乐",
+
+    // 金融与理财
+    "金融理财",
+    "记账工具",
+    "投资理财",
+    "加密货币",
+    "支付工具",
+    "预算管理",
+
+    // 生活服务
+    "生活服务",
+    "旅行出行",
+    "美食外卖",
+    "购物比价",
+    "家居智能",
+    "宠物服务",
+    "社交通讯",
+
+    // 行业垂直
+    "医疗健康",
+    "法律服务",
+    "房产工具",
+    "招聘HR",
+    "物流配送",
+    "农业科技",
+
+    // 硬件与设备
+    "智能硬件",
+    "可穿戴设备",
+    "智能家居",
+    "数码配件",
+    "VR/AR设备",
+
+    // 平台类型
+    "SaaS服务",
+    "移动应用",
+    "浏览器插件",
+    "桌面软件",
+    "小程序",
+    "开源项目",
+  ]
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const documentsRef = useRef<HTMLDivElement>(null)
   const descriptionContainerRef = useRef<HTMLDivElement>(null)
   const screenshotsRef = useRef<HTMLDivElement>(null)
   const calendarRef = useRef<HTMLDivElement>(null)
   const dateButtonRef = useRef<HTMLButtonElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const linkInputRef = useRef<HTMLInputElement>(null)
+  const linkMeasureRef = useRef<HTMLDivElement>(null)
+  const tagDropdownRef = useRef<HTMLDivElement>(null) // Ref for tag dropdown
+  const documentTextareaRef = useRef<HTMLTextAreaElement>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -171,16 +297,44 @@ export default function UploadProductsPage() {
       if (showCalendar && calendarRef.current && !calendarRef.current.contains(event.target as Node)) {
         setShowCalendar(false)
       }
+      if (showTagDropdown && tagDropdownRef.current && !tagDropdownRef.current.contains(event.target as Node)) {
+        setShowTagDropdown(false)
+        setIsAddingCustomTag(false)
+        setCustomTagInput("")
+      }
     }
 
-    if (isDescriptionExpanded || showCalendar) {
+    if (isDescriptionExpanded || showCalendar || showTagDropdown) {
+      // Added showTagDropdown
       document.addEventListener("mousedown", handleClickOutside)
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [isDescriptionExpanded, showCalendar])
+  }, [isDescriptionExpanded, showCalendar, showTagDropdown]) // Added showTagDropdown
+
+  // Calculate link input width based on content
+  useEffect(() => {
+    if (linkMeasureRef.current) {
+      setLinkInputWidth(linkMeasureRef.current.offsetWidth + 20) // Add padding
+    }
+  }, [productLink])
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setProductLogoUrl(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleLogoClick = () => {
+    fileInputRef.current?.click()
+  }
 
   const handleAddToPromotions = () => {
     if (!selectedDate) {
@@ -282,6 +436,59 @@ export default function UploadProductsPage() {
     return calendarMonth.getMonth() === today.getMonth() && calendarMonth.getFullYear() === today.getFullYear()
   }
 
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setProductDescription(e.target.value)
+
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
+    }
+  }
+
+  const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setProductLink(value)
+
+    // Measure the text width using a hidden div
+    if (linkMeasureRef.current) {
+      linkMeasureRef.current.textContent = value || "默认宽度"
+      const measuredWidth = linkMeasureRef.current.offsetWidth
+      // Add padding and minimum width (doubled default)
+      const newWidth = Math.max(measuredWidth + 16, 280)
+      setLinkInputWidth(newWidth)
+    }
+  }
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setSelectedTags(selectedTags.filter((tag) => tag !== tagToRemove))
+  }
+
+  const handleAddTag = (tag: string) => {
+    if (!selectedTags.includes(tag)) {
+      setSelectedTags([...selectedTags, tag])
+    }
+    setShowTagDropdown(false)
+  }
+
+  const handleAddCustomTag = () => {
+    if (customTagInput.trim() && !selectedTags.includes(customTagInput.trim())) {
+      setSelectedTags([...selectedTags, customTagInput.trim()])
+      setCustomTagInput("")
+      setIsAddingCustomTag(false)
+      setShowTagDropdown(false)
+    }
+  }
+
+  const handleCustomTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      handleAddCustomTag()
+    } else if (e.key === "Escape") {
+      setIsAddingCustomTag(false)
+      setCustomTagInput("")
+    }
+  }
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
       {/* Sidebar */}
@@ -342,7 +549,7 @@ export default function UploadProductsPage() {
               items={[
                 { label: "首页", href: "/" },
                 { label: "待推广项目", href: "/select-product" },
-                { label: productData.name },
+                { label: productName === "" ? productData.name : productName },
               ]}
             />
 
@@ -358,8 +565,31 @@ export default function UploadProductsPage() {
                   <div className="flex gap-8">
                     {/* Product Logo */}
                     <div className="flex-shrink-0 relative">
-                      <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-500/30 ring-4 ring-white">
-                        <span className="text-3xl font-bold text-white">NM</span>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                      <div
+                        onClick={handleLogoClick}
+                        className="w-28 h-28 rounded-2xl bg-gray-100 flex items-center justify-center shadow-xl shadow-gray-200/30 ring-4 ring-white cursor-pointer hover:opacity-90 transition-opacity overflow-hidden group"
+                      >
+                        {productLogoUrl ? (
+                          <img
+                            src={productLogoUrl || "/placeholder.svg"}
+                            alt="Product Logo"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex flex-col items-center justify-center gap-1">
+                            <ImageIcon className="h-8 w-8 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                            <span className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
+                              上传图片
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -368,70 +598,147 @@ export default function UploadProductsPage() {
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h1 className="text-2xl font-bold text-slate-900">{productData.name}</h1>
+                            <input
+                              type="text"
+                              value={productName}
+                              onChange={(e) => setProductName(e.target.value)}
+                              placeholder="请输入产品名称.."
+                              className="text-2xl font-bold text-slate-900 bg-transparent outline-none placeholder-slate-300 focus:ring-0 p-0 min-w-0 border-0"
+                            />
                             {/* Progress Badge */}
                           </div>
-                          <p className="text-slate-500 text-sm leading-relaxed line-clamp-2">
-                            {productData.description}
-                          </p>
+
+                          {/* Product Description */}
+                          <textarea
+                            ref={textareaRef}
+                            value={productDescription}
+                            onChange={handleDescriptionChange}
+                            placeholder="请填写产品简介..."
+                            className="w-full text-slate-500 text-sm leading-relaxed bg-transparent outline-none placeholder-slate-400 focus:ring-0 p-0 resize-none border border-slate-300 border-dotted"
+                            rows={2}
+                          />
 
                           {/* Product Link */}
-                          <a
-                            href={productData.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 mt-3 text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
-                          >
-                            <Globe className="h-3.5 w-3.5" />
-                            <span>{productData.link}</span>
-                            <ExternalLink className="h-3 w-3" />
-                          </a>
+                          <div className="inline-flex items-center gap-1.5 mt-3 text-blue-600 text-sm font-medium transition-colors">
+                            <Globe className="h-3.5 w-3.5 flex-shrink-0" />
+                            {/* Use dynamic width for link input */}
+                            <input
+                              ref={linkInputRef}
+                              type="text"
+                              value={productLink}
+                              onChange={handleLinkChange}
+                              placeholder="如果产品有相关链接，请输入产品的链接。没有则无需输入."
+                              className="bg-transparent outline-none placeholder-blue-400 focus:ring-0 p-0 hover:text-blue-700 transition-colors text-blue-600 border border-dashed border-slate-300"
+                              style={{ width: `${linkInputWidth}px` }}
+                            />
+                            {/* Invisible element to measure text width */}
+                            <div
+                              ref={linkMeasureRef}
+                              className="absolute invisible whitespace-nowrap font-medium text-sm"
+                            >
+                              {productLink ||
+                                "If the product has a related link, please enter the product's link. If not, no need to enter."}
+                            </div>
+                          </div>
 
                           {/* Keywords & Timeline Row */}
                           <div className="flex items-center justify-between mt-3">
-                            <div className="flex flex-wrap gap-2">
-                              <span className="px-3 py-1 rounded-full text-xs font-medium text-slate-600 bg-slate-100">
-                                {productData.category.type}
-                              </span>
-                              {productData.category.keywords.map((keyword, index) => (
+                            <div className="flex flex-wrap items-center gap-2" ref={tagDropdownRef}>
+                              {/* Selected Tags */}
+                              {selectedTags.map((tag, index) => (
                                 <span
                                   key={index}
-                                  className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium"
+                                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium text-slate-600 bg-slate-100 group hover:bg-slate-200 transition-colors"
                                 >
-                                  {keyword}
+                                  {tag}
+                                  <button
+                                    onClick={() => handleRemoveTag(tag)}
+                                    className="ml-0.5 text-slate-400 hover:text-red-500 transition-colors"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </button>
                                 </span>
                               ))}
+
+                              {/* Add Tag Button */}
+                              <div className="relative">
+                                <button
+                                  onClick={() => setShowTagDropdown(!showTagDropdown)}
+                                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors border border-dashed border-blue-300"
+                                >
+                                  <Plus className="h-3 w-3" />
+                                  添加标签
+                                  <ChevronDown
+                                    className={`h-3 w-3 transition-transform ${showTagDropdown ? "rotate-180" : ""}`}
+                                  />
+                                </button>
+
+                                {/* Tag Dropdown */}
+                                {showTagDropdown && (
+                                  <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-lg shadow-lg border border-slate-200 z-50 py-2">
+                                    {/* Preset Tags */}
+                                    <div className="px-3 py-1.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                      选择标签
+                                    </div>
+                                    <div className="max-h-40 overflow-y-auto px-2">
+                                      <div className="flex flex-wrap gap-1.5 p-1">
+                                        {presetTags
+                                          .filter((tag) => !selectedTags.includes(tag))
+                                          .map((tag, index) => (
+                                            <button
+                                              key={index}
+                                              onClick={() => handleAddTag(tag)}
+                                              className="px-2.5 py-1 rounded-full text-xs font-medium text-slate-600 bg-slate-100 hover:bg-blue-100 hover:text-blue-600 transition-colors"
+                                            >
+                                              {tag}
+                                            </button>
+                                          ))}
+                                      </div>
+                                    </div>
+
+                                    {/* Divider */}
+                                    <div className="border-t border-slate-100 my-2" />
+
+                                    {/* Custom Tag Input */}
+                                    <div className="px-3">
+                                      {isAddingCustomTag ? (
+                                        <div className="flex items-center gap-2">
+                                          <input
+                                            type="text"
+                                            value={customTagInput}
+                                            onChange={(e) => setCustomTagInput(e.target.value)}
+                                            onKeyDown={handleCustomTagKeyDown}
+                                            placeholder="输入自定义标签..."
+                                            className="flex-1 px-2 py-1.5 text-xs border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                            autoFocus
+                                          />
+                                          <button
+                                            onClick={handleAddCustomTag}
+                                            disabled={!customTagInput.trim()}
+                                            className="px-2 py-1.5 text-xs font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                          >
+                                            添加
+                                          </button>
+                                        </div>
+                                      ) : (
+                                        <button
+                                          onClick={() => setIsAddingCustomTag(true)}
+                                          className="w-full text-left px-2 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center gap-1.5"
+                                        >
+                                          <Plus className="h-3 w-3" />
+                                          自定义标签
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
 
                         {/* Price Medal with Button */}
                         <div className="flex-shrink-0 relative">
-                          <button
-                            onClick={handleAddToPromotions}
-                            disabled={isAddingToPromotions || addedToPromotions}
-                            className={`absolute -top-5 left-1/2 rounded-lg font-semibold text-white text-xs shadow-md transition-all w-16 h-auto py-1 z-20 ${
-                              addedToPromotions
-                                ? "bg-green-500 shadow-green-500/25"
-                                : isAddingToPromotions
-                                  ? "bg-blue-400 cursor-wait"
-                                  : isTextShaking // Apply shaking animation
-                                    ? "bg-red-500 shadow-red-500/25 animate-shake-text"
-                                    : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5"
-                            }`}
-                            style={{ transform: "translate(calc(-50% + 21px), 20px)" }}
-                          >
-                            {addedToPromotions ? (
-                              <span className="flex items-center justify-center gap-1">
-                                <CheckCircle2 className="h-2.5 w-2.5" />
-                                <span>已选稿</span>
-                              </span>
-                            ) : isAddingToPromotions ? (
-                              "..."
-                            ) : (
-                              "我要投稿"
-                            )}
-                          </button>
                           <div className="w-24 h-32 relative">
                             {/* Unified Medal and Ribbon SVG */}
                             <svg
@@ -509,19 +816,12 @@ export default function UploadProductsPage() {
 
                           <div className="absolute top-[138px] -left-[76px] flex flex-col items-start gap-2 w-48">
                             {/* Expected publish time */}
-                            <div className="flex items-start gap-1.5 text-xs text-slate-500">
-                              <Calendar className="h-3.5 w-3.5" />
-                              <span>期望发布时间</span>
-                              <span className="font-semibold text-slate-700">
-                                {productData.timeline.developerDeadline}
-                              </span>
-                            </div>
 
                             {/* Confirmed publish time with calendar picker */}
                             <div className="relative">
                               <div className="flex items-start gap-1.5 text-xs text-slate-500">
                                 <Clock className="h-3.5 w-3.5" />
-                                <span>确定发布时间</span>
+                                <span>期望发布时间</span>
                                 <button
                                   ref={dateButtonRef}
                                   onClick={() => setShowCalendar(!showCalendar)}
@@ -531,11 +831,11 @@ export default function UploadProductsPage() {
                                     <span>{selectedDate}</span>
                                   ) : (
                                     <span
-                                      className={`text-red-400 inline-block ${isTextShaking ? "animate-pulse" : ""}`}
+                                      className={`text-red-400 inline-block ${isTextShaking ? "animate-shake-text" : ""}`}
                                       style={
                                         isTextShaking
                                           ? {
-                                              animation: "shake-scale 0.4s ease-in-out 3",
+                                              animation: "shake-text 0.4s ease-in-out 3",
                                             }
                                           : undefined
                                       }
@@ -700,14 +1000,17 @@ export default function UploadProductsPage() {
                           }
                         }}
                       >
-                        <div
-                          className={`px-6 py-5 text-slate-600 text-sm leading-relaxed whitespace-pre-line transition-all duration-500 ${
+                        <textarea
+                          ref={documentTextareaRef}
+                          value={documentDescription}
+                          onChange={(e) => setDocumentDescription(e.target.value)}
+                          onClick={(e) => e.stopPropagation()}
+                          placeholder="请输入产品描述文档内容..."
+                          className={`w-full min-h-[30rem] px-6 py-5 text-slate-600 text-sm leading-relaxed whitespace-pre-line transition-all duration-500 resize-none bg-transparent outline-none focus:ring-0 border-0 overflow-y-hidden ${
                             isDescriptionExpanded ? "max-h-none" : "overflow-hidden"
                           }`}
                           style={!isDescriptionExpanded ? { maxHeight: "27rem", lineHeight: "1.5rem" } : {}}
-                        >
-                          {productData.fullDescription}
-                        </div>
+                        />
                         {!isDescriptionExpanded && (
                           <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
                             {/* Layer 1: Lightest opacity at top (90% transparent) */}
@@ -856,6 +1159,17 @@ export default function UploadProductsPage() {
                                 {doc.name}
                               </div>
                               <div className="text-[10px] text-slate-400 mt-1">{doc.size}</div>
+                            </div>
+                            {/* Editable document description */}
+                            <div className="mt-2 w-full">
+                              <textarea
+                                ref={documentTextareaRef}
+                                value={documentDescription}
+                                onChange={(e) => setDocumentDescription(e.target.value)}
+                                placeholder={`为 ${doc.name} 添加描述...`}
+                                className="w-full text-xs text-slate-500 leading-relaxed bg-transparent outline-none placeholder-slate-400 focus:ring-0 p-1.5 resize-none border border-slate-200 rounded-md"
+                                rows={1}
+                              />
                             </div>
                           </div>
                         ))}

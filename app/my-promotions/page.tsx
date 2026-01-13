@@ -202,7 +202,7 @@ export default function MyPromotions() {
             <div className="grid gap-6 lg:grid-cols-3">
               {publishedProjects.map((project) => (
                 <Link
-                  href={`/blogger-video/${project.id}`}
+                  href="/blogger-dashboard"
                   key={project.id}
                   className="overflow-hidden rounded-2xl bg-white p-4 shadow-sm transition-shadow hover:shadow-md cursor-pointer"
                 >
