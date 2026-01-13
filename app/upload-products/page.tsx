@@ -28,7 +28,7 @@ const productData = {
   id: "1",
   name: "NoteMaster Pro",
   description:
-    "NoteMaster Pro 是一款革命性的智能笔记应用，结合AI技术帮助用户更高效地整理、搜索和回顾笔记内容。支持多平台同步，语音转文字，智能标签分类等功能。",
+    "NoteMaster Pro 是一款革命性的智能笔记应用，结合AI技术帮助用户更高效地整理、搜索和回顾笔记内容。支持多平台同步，语音转文字,智能标签分类等功能。",
   fullDescription: `【职场人士的绝命痛点】：每天面对海量信息，难以有效整理和回顾，让NoteMaster Pro瞬间解决，再也不用天天加班要疯掉！
 
 NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计，一劳永逸解决信息整理难题。
@@ -141,7 +141,7 @@ const progressSteps = [
   { id: "published", label: "已发布" },
 ]
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+export default function UploadProductsPage() {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
   const [isAddingToPromotions, setIsAddingToPromotions] = useState(false)
   const [addedToPromotions, setAddedToPromotions] = useState(false)
