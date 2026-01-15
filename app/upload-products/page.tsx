@@ -196,6 +196,8 @@ export default function UploadProductsPage() {
     productLink: "",
   })
 
+  const [agreed, setAgreed] = useState(false) // Added for agreement checkbox
+
   // Preset tag options
   const presetTags = [
     // 工具类
@@ -1649,7 +1651,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                       value={baseReward}
                       onChange={handleBaseRewardChange}
                       onBlur={() => updateValidationError("baseReward", baseReward)}
-                      placeholder="请输入基础佣金"
+                      placeholder="请输入佣金"
                       className={`border border-dotted border-slate-300 bg-transparent text-slate-800 font-semibold ${
                         validationErrors.baseReward ? "border-red-500 bg-red-50" : ""
                       }`}
@@ -1862,6 +1864,34 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                             <span className="text-[7px] text-slate-500">/ 100</span>
                           </div>
                         </div>
+
+                        <div className="mt-3 border-t border-slate-200 pt-3">
+                          <div className="flex flex-col items-center gap-1">
+                            <div className="relative">
+                              <input
+                                type="checkbox"
+                                checked={agreed}
+                                onChange={(e) => setAgreed(e.target.checked)}
+                                id="agree-investment"
+                                className="peer h-6 w-6 cursor-pointer appearance-none rounded-full border-slate-300 transition-all checked:border-0 checked:bg-gradient-to-br checked:from-purple-500 checked:to-pink-600 hover:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500/30 leading-7 border-2"
+                              />
+                              <svg
+                                className="pointer-events-none absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-[63%] text-white opacity-0 transition-opacity peer-checked:opacity-100"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
+                            </div>
+                            <label
+                              htmlFor="agree-investment"
+                              className="cursor-pointer font-medium text-slate-500 leading-3 text-xs"
+                            >
+                              我接受早期投资
+                            </label>
+                          </div>
+                        </div>
                       </div>
 
                       {/* Score Popup - moved closer to the card */}
@@ -1909,6 +1939,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                             ))}
                           </div>
 
+                          {/* Based on your score improvements */}
                           <div className="rounded-lg bg-blue-50 p-3">
                             <h5 className="mb-2 text-xs font-bold text-slate-900">
                               基于您的评分（{productScore}.0）的改进建议
@@ -1919,6 +1950,36 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                               <li>• 竞品弱度不足：分析1-2个弱竞品，突出您的独特卖点。</li>
                               <li>• 实现难度高：简化MVP，优先交付关键功能。</li>
                             </ul>
+                          </div>
+
+                          {/* Divider */}
+                          <div className="border-t border-slate-200 my-4" />
+
+                          {/* Agreement Checkbox */}
+                          <div className="flex flex-col items-center gap-1">
+                            <div className="relative">
+                              <input
+                                type="checkbox"
+                                checked={agreed}
+                                onChange={(e) => setAgreed(e.target.checked)}
+                                id="agree-score"
+                                className="peer h-6 w-6 cursor-pointer appearance-none rounded-full border-slate-300 transition-all checked:border-0 checked:bg-gradient-to-br checked:from-purple-500 checked:to-pink-600 hover:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500/30 leading-7 border-2"
+                              />
+                              <svg
+                                className="pointer-events-none absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-[63%] text-white opacity-0 transition-opacity peer-checked:opacity-100"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
+                            </div>
+                            <label
+                              htmlFor="agree-score"
+                              className="cursor-pointer text-sm font-medium text-slate-500 leading-3"
+                            >
+                              我接受早期投资
+                            </label>
                           </div>
                         </div>
                       )}
