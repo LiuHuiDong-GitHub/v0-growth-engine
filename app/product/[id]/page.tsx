@@ -507,7 +507,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                             </svg>
                           </div>
 
-                          <div className="absolute top-[138px] -left-[76px] flex flex-col items-start gap-2 w-48">
+                          <div className="absolute top-[148px] -left-[76px] flex flex-col items-start gap-2 w-48">
                             {/* Expected publish time */}
                             <div className="flex items-start gap-1.5 text-xs text-slate-500">
                               <Calendar className="h-3.5 w-3.5" />
@@ -531,7 +531,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                                     <span>{selectedDate}</span>
                                   ) : (
                                     <span
-                                      className={`text-red-400 inline-block ${isTextShaking ? "animate-pulse" : ""}`}
+                                      className={`text-red-400 inline-block ${isTextShaking ? "animate-shake-text" : ""}`}
                                       style={
                                         isTextShaking
                                           ? {
@@ -539,6 +539,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                                             }
                                           : undefined
                                       }
+                                      title="建议选择在3日之后的时间，给博主留下足够的视频创作时间"
                                     >
                                       请选择
                                     </span>

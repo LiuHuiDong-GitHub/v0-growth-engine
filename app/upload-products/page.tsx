@@ -21,9 +21,13 @@ import {
   X,
   Plus,
   ChevronDown,
+  ImagePlus,
+  CheckCircle2,
+  Sparkles,
 } from "lucide-react"
 import Breadcrumb from "@/components/breadcrumb"
 import AppHeader from "@/components/app-header"
+import { PhoneInput } from "@/components/ui/phone-input"
 
 // Mock product data
 const productData = {
@@ -31,7 +35,7 @@ const productData = {
   name: "NoteMaster Pro",
   description:
     "NoteMaster Pro 是一款革命性的智能笔记应用，结合AI技术帮助用户更高效地整理、搜索和回顾笔记内容。支持多平台同步，语音转文字,智能标签分类等功能。",
-  fullDescription: `【职场人士的绝命痛点】：每天面对海量信息，难以有效整理和回顾，让NoteMaster Pro瞬间解决，再也不用天天加班要疯掉！
+  fullDescription: `【职场人士的绝命痛点】：每天面对海量信息，难以有效整理和回顾，让NoteMaster Pro瞬间解决，再 whenever要天天加班要疯掉！
 
 NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计，一劳永逸解决信息整理难题。
 
@@ -46,7 +50,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
 5. 智能搜索：基于语义的全文搜索，快速找到您需要的内容
 
 市面普通产品：只能手动分类、不支持多平台同步、语音转文字功能单一、无法团队协作、搜索功能有限；
-我们的产品：AI智能分类、跨平台同步、高精度语音转文字、团队协作、智能搜索，一步到位解决所有痛点。
+我们的产品：AI智能分类、跨平台同步、高精度语音转文字、团队协作、智能搜索，一步到位解决所有痛点.
 
 场景1：
 博主在办公室接收到一个紧急会议通知，使用NoteMaster Pro的语音转文字功能快速记录会议内容，并在会议结束后自动分类整理。
@@ -80,10 +84,10 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
 `,
   link: "https://notemaster.pro",
   contact: {
-    name: "张明",
-    email: "marketing@notemaster.pro",
-    phone: "+86 138-0000-0000",
-    website: "https://notemaster.pro",
+    name: "",
+    email: "",
+    phone: "",
+    website: "",
   },
   category: {
     type: "效率工具",
@@ -147,13 +151,8 @@ export default function UploadProductsPage() {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
   const [isAddingToPromotions, setIsAddingToPromotions] = useState(false)
   const [addedToPromotions, setAddedToPromotions] = useState(false)
-  const [activeMediaType, setActiveMediaType] = useState<"video" | "image">("video")
-  const [activeScreenshot, setActiveScreenshot] = useState(0)
-  const [showCalendar, setShowCalendar] = useState(false)
-  const [selectedDate, setSelectedDate] = useState<string | null>(null)
-  const [calendarMonth, setCalendarMonth] = useState(new Date())
   const [isBorderBlinking, setIsBorderBlinking] = useState(false)
-  const [isTextShaking, setIsTextShaking] = useState(false)
+  const [isTextShaking, setIsTextShaking] = useState(false) // Added for text shaking effect
   const [productLogoUrl, setProductLogoUrl] = useState<string | null>(null)
   const [productName, setProductName] = useState("")
   const [productDescription, setProductDescription] = useState("")
@@ -164,6 +163,38 @@ export default function UploadProductsPage() {
   const [customTagInput, setCustomTagInput] = useState("")
   const [isAddingCustomTag, setIsAddingCustomTag] = useState(false)
   const [documentDescription, setDocumentDescription] = useState(productData.fullDescription)
+  const [uploadedFiles, setUploadedFiles] = useState<Array<{ name: string; size: string; url: string }>>([])
+  const [uploadedMedia, setUploadedMedia] = useState<Array<{ type: "image" | "video"; url: string; name: string }>>([])
+  const [activeMediaIndex, setActiveMediaIndex] = useState<number | null>(null)
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false)
+
+  // Calendar states
+  const [showCalendar, setShowCalendar] = useState(false)
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [calendarMonth, setCalendarMonth] = useState(new Date())
+
+  const [baseReward, setBaseReward] = useState("")
+  const [contactName, setContactName] = useState(productData.contact.name)
+  const [contactEmail, setContactEmail] = useState(productData.contact.email)
+  const [contactPhone, setContactPhone] = useState(productData.contact.phone)
+
+  const [bonusTargetViews, setBonusTargetViews] = useState<Array<{ value: string; unit: "k" | "w" }>>(
+    productData.incentive.bonusTargets.map((target) => ({
+      value: (target.views / 10000).toFixed(0),
+      unit: "w" as const,
+    })),
+  )
+  const [bonusTargetBonuses, setBonusTargetBonuses] = useState<string[]>(
+    productData.incentive.bonusTargets.map((target) => target.bonus.toString()),
+  )
+
+  const [validationErrors, setValidationErrors] = useState({
+    contactName: "",
+    contactEmail: "",
+    contactPhone: "",
+    baseReward: "",
+    productLink: "",
+  })
 
   // Preset tag options
   const presetTags = [
@@ -283,7 +314,75 @@ export default function UploadProductsPage() {
   const linkMeasureRef = useRef<HTMLDivElement>(null)
   const tagDropdownRef = useRef<HTMLDivElement>(null) // Ref for tag dropdown
   const documentTextareaRef = useRef<HTMLTextAreaElement>(null)
+  const documentFileInputRef = useRef<HTMLInputElement>(null)
+  const mediaFileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
+
+  const [productScore, setProductScore] = useState<number | null>(null)
+  const [showScorePopup, setShowScorePopup] = useState(false)
+
+  const scoreBreakdown = [
+    {
+      icon: "🎯",
+      name: "痛苦度",
+      description: "用户需求强烈且未被满足",
+      score: 20,
+    },
+    {
+      icon: "💰",
+      name: "支付意愿",
+      description: "用户明确表示愿意付费",
+      score: 20,
+    },
+    {
+      icon: "⚔️",
+      name: "竞品弱度",
+      description: "市场竞争弱，或有独特优势",
+      score: 20,
+    },
+    {
+      icon: "🔧",
+      name: "实现难度",
+      description: "产品开发技术难度适中",
+      score: 20,
+    },
+    {
+      icon: "⚡",
+      name: "病毒系数",
+      description: "品易于传播，用户自发推广",
+      score: 8,
+    },
+  ]
+
+  const handleMouseEnter = () => {
+    setShowScorePopup(true)
+  }
+
+  const handleMouseLeave = () => {
+    setShowScorePopup(false)
+  }
+
+  // Use a separate state for logo file to track if it's uploaded
+  const [logoFile, setLogoFile] = useState<File | null>(null)
+
+  // Calculate score based on form completion
+  useEffect(() => {
+    // Condition 1: Logo uploaded AND product link entered AND description entered
+    const condition1 = logoFile && productLink.trim() !== "" && documentDescription.trim() !== ""
+    // Condition 2: Has uploaded media files
+    const condition2 = uploadedMedia.length > 0
+
+    if (condition1 || condition2) {
+      // Calculate score automatically
+      const score = 88
+      setProductScore(score)
+    } else {
+      setProductScore(88)
+    }
+  }, [logoFile, productLink, documentDescription, uploadedMedia])
+
+  const shouldShowScore = productScore !== null
+  // </CHANGE>
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -321,6 +420,17 @@ export default function UploadProductsPage() {
     }
   }, [productLink])
 
+  const getTextFontSize = () => {
+    const baseRewardStr = baseReward.toString()
+    // Medal inner circle diameter is ~68px (radius 34), with padding consider ~56px usable width
+    // Base font size 22 fits ~3 characters comfortably
+    if (baseRewardStr.length <= 3) return 22
+    if (baseRewardStr.length === 4) return 18
+    if (baseRewardStr.length === 5) return 14
+    if (baseRewardStr.length === 6) return 12
+    return 10 // Minimum font size for very long numbers
+  }
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file && file.type.startsWith("image/")) {
@@ -329,6 +439,7 @@ export default function UploadProductsPage() {
         setProductLogoUrl(e.target?.result as string)
       }
       reader.readAsDataURL(file)
+      setLogoFile(file) // <-- Set the logoFile state
     }
   }
 
@@ -388,6 +499,99 @@ export default function UploadProductsPage() {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+  }
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (files && files.length > 0) {
+      const newFiles = Array.from(files).map((file) => {
+        const url = URL.createObjectURL(file)
+        const sizeInMB = (file.size / (1024 * 1024)).toFixed(2)
+        return {
+          name: file.name,
+          size: `${sizeInMB} MB`,
+          url: url,
+        }
+      })
+      setUploadedFiles([...uploadedFiles, ...newFiles])
+    }
+    // Reset input value to allow re-upload of same file
+    if (event.target) {
+      event.target.value = ""
+    }
+  }
+
+  const handleUploadClick = () => {
+    documentFileInputRef.current?.click()
+  }
+
+  const handleDownloadUploadedFile = (file: { name: string; url: string }) => {
+    const link = document.createElement("a")
+    link.href = file.url
+    link.download = file.name
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const handleDeleteFile = (indexToDelete: number, e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent download action when clicking delete button
+    const newFiles = uploadedFiles.filter((_, index) => index !== indexToDelete)
+    setUploadedFiles(newFiles)
+  }
+
+  const handleMediaUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (files && files.length > 0) {
+      const newMedia = Array.from(files)
+        .map((file) => {
+          const url = URL.createObjectURL(file)
+          const type = file.type.startsWith("image/") ? "image" : file.type.startsWith("video/") ? "video" : null
+
+          if (!type) {
+            alert(`文件 "${file.name}" 不是图片或视频格式，已跳过`)
+            return null
+          }
+
+          return {
+            type,
+            url,
+            name: file.name,
+          }
+        })
+        .filter((item) => item !== null) as Array<{ type: "image" | "video"; url: string; name: string }>
+
+      setUploadedMedia([...uploadedMedia, ...newMedia])
+      // Auto-select first uploaded media
+      if (uploadedMedia.length === 0 && newMedia.length > 0) {
+        setActiveMediaIndex(0)
+      }
+    }
+    // Reset input
+    if (event.target) {
+      event.target.value = ""
+    }
+  }
+
+  const handleMediaUploadClick = () => {
+    mediaFileInputRef.current?.click()
+  }
+
+  const handleSelectMedia = (index: number) => {
+    setActiveMediaIndex(index)
+  }
+
+  const handleDeleteMedia = (indexToDelete: number, e: React.MouseEvent) => {
+    e.stopPropagation()
+    const newMedia = uploadedMedia.filter((_, index) => index !== indexToDelete)
+    setUploadedMedia(newMedia)
+
+    // Reset active media index if needed
+    if (activeMediaIndex === indexToDelete) {
+      setActiveMediaIndex(newMedia.length > 0 ? 0 : null)
+    } else if (activeMediaIndex !== null && activeMediaIndex > indexToDelete) {
+      setActiveMediaIndex(activeMediaIndex - 1)
+    }
   }
 
   const generateCalendarDays = (date: Date = new Date()) => {
@@ -489,6 +693,161 @@ export default function UploadProductsPage() {
     }
   }
 
+  const handleAIGenerateDescription = () => {
+    setIsGeneratingDescription(true)
+    setTimeout(() => {
+      setDocumentDescription(
+        `【职场人士的绝命痛点】：每天面对海量信息，难以有效整理和回顾，让NoteMaster Pro瞬间解决，再也不要天天加班要疯掉！
+
+NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计，一劳永逸解决信息整理难题。
+
+- 年龄/性别/地域：18-45岁，男女不限，国内外均可
+- 生活场景：办公室、学习、家庭
+- 核心痛点：信息过载，难以有效整理和回顾
+
+1. AI智能分类：自动识别笔记内容并归类，让您的笔记井井有条
+2. 跨平台同步：支持iOS、Android、Web、桌面端，随时随地访问您的笔记
+3. 语音转文字：高精度语音识别，支持多种语言，会议记录更轻松
+4. 协作功能：团队共享笔记空间，实时协作编辑
+5. 智能搜索：基于语义的全文搜索，快速找到您需要的内容
+
+市面普通产品：只能手动分类、不支持多平台同步、语音转文字功能单一、无法团队协作、搜索功能有限；
+我们的产品：AI智能分类、跨平台同步、高精度语音转文字、团队协作、智能搜索，一步到位解决所有痛点.`,
+      )
+      setIsGeneratingDescription(false)
+    }, 2000)
+  }
+
+  const validateContactName = (value: string) => {
+    if (!value.trim()) {
+      return "联系人名称不能为空"
+    }
+    if (value.trim().length < 2) {
+      return "联系人名称至少需要2个字符"
+    }
+    return ""
+  }
+
+  const validateEmail = (value: string) => {
+    if (!value.trim()) {
+      return "邮箱不能为空"
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(value.trim())) {
+      return "请输入有效的邮箱地址"
+    }
+    return ""
+  }
+
+  const validatePhone = (value: string) => {
+    // Removed validation for phone input as PhoneInput component handles it.
+    // If specific localizations or additional checks are needed, they can be added here.
+    // For now, we'll just check if it's not empty and has a reasonable length.
+    if (!value.trim()) {
+      return "电话号码不能为空"
+    }
+    // Basic check for reasonable length, PhoneInput will provide more precise validation.
+    if (value.trim().length < 7) {
+      return "请输入有效的电话号码"
+    }
+    return ""
+  }
+
+  const validateBaseReward = (value: string) => {
+    if (!value.trim()) {
+      return "基础佣金不能为空"
+    }
+    const num = Number.parseFloat(value)
+    if (isNaN(num) || num < 0) {
+      return "请输入有效的数字"
+    }
+    return ""
+  }
+
+  const validateProductLink = (value: string) => {
+    if (!value.trim()) {
+      return "" // Link is optional
+    }
+
+    const trimmedValue = value.trim()
+
+    // Check if it's a valid URL with protocol
+    try {
+      new URL(trimmedValue)
+      return ""
+    } catch {
+      // If standard URL parsing fails, check for www.*.* format
+      const wwwRegex = /^www\..+\..+$/i
+      if (wwwRegex.test(trimmedValue)) {
+        return ""
+      }
+      return "请输入有效的URL（如 https://example.com 或 www.example.com）"
+    }
+  }
+
+  const updateValidationError = (field: keyof typeof validationErrors, value: string) => {
+    let error = ""
+    if (field === "contactName") {
+      error = validateContactName(value)
+    } else if (field === "contactEmail") {
+      error = validateEmail(value)
+    } else if (field === "contactPhone") {
+      error = validatePhone(value) // Use the new validation function
+    } else if (field === "baseReward") {
+      error = validateBaseReward(value)
+    } else if (field === "productLink") {
+      error = validateProductLink(value)
+    }
+    setValidationErrors((prev) => ({ ...prev, [field]: error }))
+  }
+
+  const handleContactNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setContactName(value)
+    updateValidationError("contactName", value)
+  }
+
+  const handleContactEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setContactEmail(value)
+    updateValidationError("contactEmail", value)
+  }
+
+  const handleContactPhoneChange = (value: string) => {
+    setContactPhone(value)
+    updateValidationError("contactPhone", value) // Pass the value directly to updateValidationError
+  }
+
+  const handleBaseRewardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setBaseReward(value)
+    updateValidationError("baseReward", value)
+  }
+
+  const handleLinkChangeWithValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setProductLink(value)
+    updateValidationError("productLink", value)
+
+    // Keep existing link width logic
+    if (linkMeasureRef.current) {
+      linkMeasureRef.current.textContent = value || "默认宽度"
+      const measuredWidth = linkMeasureRef.current.offsetWidth
+      const newWidth = Math.max(measuredWidth + 16, 280)
+      setLinkInputWidth(newWidth)
+    }
+  }
+
+  const scrollFiles = (direction: "left" | "right") => {
+    if (documentsRef.current) {
+      const scrollAmount = 200
+      documentsRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      })
+    }
+  }
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
       {/* Sidebar */}
@@ -542,7 +901,7 @@ export default function UploadProductsPage() {
       <div className="ml-16 flex flex-1 flex-col">
         <AppHeader />
 
-        <main className="flex-1 p-8 flex flex-col items-center justify-center">
+        <main className="flex-1 p-8 flex items-center justify-center">
           <div className="mx-auto max-w-7xl w-full">
             {/* Breadcrumb */}
             <Breadcrumb
@@ -584,9 +943,9 @@ export default function UploadProductsPage() {
                           />
                         ) : (
                           <div className="flex flex-col items-center justify-center gap-1">
-                            <ImageIcon className="h-8 w-8 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                            <ImagePlus className="h-8 w-8 text-gray-400 group-hover:text-gray-600 transition-colors" />
                             <span className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
-                              上传图片
+                              上传logo图
                             </span>
                           </div>
                         )}
@@ -603,7 +962,7 @@ export default function UploadProductsPage() {
                               value={productName}
                               onChange={(e) => setProductName(e.target.value)}
                               placeholder="请输入产品名称.."
-                              className="text-2xl font-bold text-slate-900 bg-transparent outline-none placeholder-slate-300 focus:ring-0 p-0 min-w-0 border-0"
+                              className="text-2xl font-bold bg-transparent outline-none focus:ring-0 p-0 min-w-0 border border-dotted border-slate-300 text-slate-600"
                             />
                             {/* Progress Badge */}
                           </div>
@@ -614,7 +973,7 @@ export default function UploadProductsPage() {
                             value={productDescription}
                             onChange={handleDescriptionChange}
                             placeholder="请填写产品简介..."
-                            className="w-full text-slate-500 text-sm leading-relaxed bg-transparent outline-none placeholder-slate-400 focus:ring-0 p-0 resize-none border border-slate-300 border-dotted"
+                            className="w-full text-sm leading-relaxed bg-transparent outline-none focus:ring-0 p-0 resize-none border border-dotted border-slate-300 text-slate-700"
                             rows={2}
                           />
 
@@ -626,9 +985,12 @@ export default function UploadProductsPage() {
                               ref={linkInputRef}
                               type="text"
                               value={productLink}
-                              onChange={handleLinkChange}
-                              placeholder="如果产品有相关链接，请输入产品的链接。没有则无需输入."
-                              className="bg-transparent outline-none placeholder-blue-400 focus:ring-0 p-0 hover:text-blue-700 transition-colors text-blue-600 border border-dashed border-slate-300"
+                              onChange={handleLinkChangeWithValidation}
+                              onBlur={() => updateValidationError("productLink", productLink)}
+                              placeholder="https://..."
+                              className={`bg-transparent outline-none placeholder-slate-400 placeholder:font-normal placeholder:text-xs focus:ring-0 p-0 transition-colors border border-dotted ${
+                                validationErrors.productLink ? "border-red-500 bg-red-50" : "border-slate-300"
+                              } `}
                               style={{ width: `${linkInputWidth}px` }}
                             />
                             {/* Invisible element to measure text width */}
@@ -640,6 +1002,9 @@ export default function UploadProductsPage() {
                                 "If the product has a related link, please enter the product's link. If not, no need to enter."}
                             </div>
                           </div>
+                          {validationErrors.productLink && (
+                            <p className="text-red-500 text-xs mt-1">{validationErrors.productLink}</p>
+                          )}
 
                           {/* Keywords & Timeline Row */}
                           <div className="flex items-center justify-between mt-3">
@@ -664,7 +1029,7 @@ export default function UploadProductsPage() {
                               <div className="relative">
                                 <button
                                   onClick={() => setShowTagDropdown(!showTagDropdown)}
-                                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors border border-dashed border-blue-300"
+                                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium hover:bg-blue-100 transition-colors border border-dashed border-blue-300 bg-gray-50 text-slate-500"
                                 >
                                   <Plus className="h-3 w-3" />
                                   添加标签
@@ -739,6 +1104,31 @@ export default function UploadProductsPage() {
 
                         {/* Price Medal with Button */}
                         <div className="flex-shrink-0 relative">
+                          <button
+                            onClick={handleAddToPromotions}
+                            disabled={isAddingToPromotions || addedToPromotions}
+                            className={`absolute -top-5 left-1/2 rounded-lg font-semibold text-white text-xs shadow-md transition-all w-16 h-auto py-1 z-20 ${
+                              addedToPromotions
+                                ? "bg-green-500 shadow-green-500/25"
+                                : isAddingToPromotions
+                                  ? "bg-blue-400 cursor-wait"
+                                  : isTextShaking // Use isTextShaking for the shake animation
+                                    ? "bg-red-500 shadow-red-500/25 animate-shake-text"
+                                    : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5"
+                            }`}
+                            style={{ transform: "translate(calc(-50% + 21px), 20px)" }}
+                          >
+                            {addedToPromotions ? (
+                              <span className="flex items-center justify-center gap-1">
+                                <CheckCircle2 className="h-2.5 w-2.5" />
+                                <span>已发布</span>
+                              </span>
+                            ) : isAddingToPromotions ? (
+                              "..."
+                            ) : (
+                              "发布"
+                            )}
+                          </button>
                           <div className="w-24 h-32 relative">
                             {/* Unified Medal and Ribbon SVG */}
                             <svg
@@ -804,12 +1194,12 @@ export default function UploadProductsPage() {
                                 y="50"
                                 textAnchor="middle"
                                 dominantBaseline="middle"
-                                fontSize="22"
+                                fontSize={getTextFontSize()}
                                 fontWeight="bold"
                                 fill="#FFFFFF"
                                 style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
                               >
-                                $69
+                                {baseReward}
                               </text>
                             </svg>
                           </div>
@@ -818,7 +1208,7 @@ export default function UploadProductsPage() {
                             {/* Expected publish time */}
 
                             {/* Confirmed publish time with calendar picker */}
-                            <div className="relative">
+                            <div className="relative mt-3 ml-[20px]">
                               <div className="flex items-start gap-1.5 text-xs text-slate-500">
                                 <Clock className="h-3.5 w-3.5" />
                                 <span>期望发布时间</span>
@@ -904,7 +1294,7 @@ export default function UploadProductsPage() {
                                       const isSelected =
                                         day !== null &&
                                         selectedDate ===
-                                          `${generateCalendarDays(calendarMonth).year}-${String(generateCalendarDays(calendarMonth).month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                                          `${calendarMonth.getFullYear()}-${String(calendarMonth.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
 
                                       return (
                                         <div key={index} className="aspect-square">
@@ -966,63 +1356,64 @@ export default function UploadProductsPage() {
                   <div className="mt-8" ref={descriptionContainerRef}>
                     <div className="rounded-2xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
                       {/* Document Header */}
-                      <div className="flex items-center gap-3 px-5 py-3 border-b border-slate-200 bg-white">
-                        <div className="flex gap-1.5">
-                          <button
-                            onClick={() => setIsDescriptionExpanded(false)}
-                            className="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all shadow-sm hover:shadow-md group relative"
-                            title="Collapse"
-                          >
-                            <div className="flex items-center justify-center w-full h-full">
-                              <div className="w-2 h-0.5 bg-white" />
-                            </div>
-                          </button>
-                          <button
-                            onClick={() => setIsDescriptionExpanded(true)}
-                            className="w-3.5 h-3.5 rounded-full bg-green-500 hover:bg-green-600 flex items-center justify-center transition-all shadow-sm hover:shadow-md group relative"
-                            title="Expand"
-                          >
-                            <div className="flex items-center justify-center w-full h-full">
-                              <div className="text-white text-xs font-bold">⤡</div>
-                            </div>
-                          </button>
+                      <div className="flex items-center gap-3 px-5 py-3 border-b border-slate-200 bg-white justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="flex gap-1.5">
+                            <button
+                              onClick={() => setIsDescriptionExpanded(false)}
+                              className="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all shadow-sm hover:shadow-md group relative"
+                              title="Collapse"
+                            >
+                              <div className="flex items-center justify-center w-full h-full">
+                                <div className="w-2 h-0.5 bg-white" />
+                              </div>
+                            </button>
+                            <button
+                              onClick={() => setIsDescriptionExpanded(true)}
+                              className="w-3.5 h-3.5 rounded-full bg-green-500 hover:bg-green-600 flex items-center justify-center transition-all shadow-sm hover:shadow-md group relative"
+                              title="Expand"
+                            >
+                              <div className="flex items-center justify-center w-full h-full">
+                                <div className="text-white text-xs font-bold">⤡</div>
+                              </div>
+                            </button>
+                          </div>
+                          <span className="text-sm font-medium text-slate-600 flex items-center gap-2">
+                            <FileText className="h-4 w-4" />
+                            产品描述文档
+                          </span>
                         </div>
-                        <span className="text-sm font-medium text-slate-600 flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
-                          产品描述文档
-                        </span>
+
+                        <button
+                          onClick={handleAIGenerateDescription}
+                          disabled={isGeneratingDescription}
+                          className="group relative overflow-hidden rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 mr-2"
+                        >
+                          <div className="relative z-10 flex items-center gap-2">
+                            <Sparkles className="w-3 h-3" />
+                            <span>{isGeneratingDescription ? "生成中..." : "AI生成描述"}</span>
+                          </div>
+                          <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 opacity-0 transition-opacity group-hover:opacity-100" />
+                        </button>
                       </div>
                       <div
-                        className="relative cursor-pointer"
                         onClick={() => {
                           if (!isDescriptionExpanded) {
                             setIsDescriptionExpanded(true)
                           }
                         }}
+                        className="relative rounded-none bg-white shadow-md cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
                       >
                         <textarea
                           ref={documentTextareaRef}
                           value={documentDescription}
                           onChange={(e) => setDocumentDescription(e.target.value)}
-                          onClick={(e) => e.stopPropagation()}
                           placeholder="请输入产品描述文档内容..."
-                          className={`w-full min-h-[30rem] px-6 py-5 text-slate-600 text-sm leading-relaxed whitespace-pre-line transition-all duration-500 resize-none bg-transparent outline-none focus:ring-0 border-0 overflow-y-hidden ${
-                            isDescriptionExpanded ? "max-h-none" : "overflow-hidden"
+                          className={`w-full px-6 py-5 text-slate-600 text-sm leading-relaxed whitespace-pre-line transition-all duration-500 overflow-y-auto min-h-[36.25rem] opacity-100 border-0 focus:border focus:border-slate-400 focus:outline-none ${
+                            isDescriptionExpanded ? "max-h-none" : "max-h-[30rem]"
                           }`}
-                          style={!isDescriptionExpanded ? { maxHeight: "27rem", lineHeight: "1.5rem" } : {}}
+                          onClick={(e) => e.stopPropagation()}
                         />
-                        {!isDescriptionExpanded && (
-                          <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
-                            {/* Layer 1: Lightest opacity at top (90% transparent) */}
-                            <div className="h-8 bg-gradient-to-t from-white/10 to-transparent backdrop-blur-[1px]" />
-                            {/* Layer 2: Gradually increasing opacity */}
-                            <div className="h-6 bg-gradient-to-t from-white/25 to-white/10 backdrop-blur-[3px]" />
-                            {/* Layer 3: More opacity increase */}
-                            <div className="h-6 bg-gradient-to-t from-white/50 to-white/25 backdrop-blur-[5px]" />
-                            {/* Layer 4: Heaviest opacity at bottom (30% transparent) */}
-                            <div className="h-6 bg-gradient-to-t from-white/70 to-white/50 backdrop-blur-[8px]" />
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -1030,36 +1421,52 @@ export default function UploadProductsPage() {
                   {/* Product Display Section */}
                   <div className="mt-8">
                     <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2 mb-3">
-                      <ImageIcon className="h-4 w-4 text-blue-600" />
-                      产品展示
+                      <Download className="h-4 w-4 text-blue-600" />
+                      产品展示上传
                     </h3>
-                    {/* Main Display */}
                     <div className="aspect-video rounded-xl overflow-hidden relative shadow-lg border border-slate-200">
-                      {activeMediaType === "video" ? (
-                        <div className="w-full h-full bg-slate-900 flex items-center justify-center group cursor-pointer">
-                          <img
-                            src="/product-demo-video-thumbnail.jpg"
-                            alt="Demo Video"
-                            className="w-full h-full object-cover opacity-80 group-hover:opacity-70 transition-opacity"
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-16 h-16 rounded-full bg-white/95 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                              <Play className="h-6 w-6 text-blue-600 ml-1" fill="currentColor" />
+                      {/* Hidden file input for images and videos only */}
+                      <input
+                        ref={mediaFileInputRef}
+                        type="file"
+                        accept="image/*,video/*"
+                        multiple
+                        onChange={handleMediaUpload}
+                        className="hidden"
+                      />
+
+                      {uploadedMedia.length === 0 || activeMediaIndex === null ? (
+                        // Upload prompt when no media
+                        <div
+                          onClick={handleMediaUploadClick}
+                          className="w-full h-full bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center cursor-pointer hover:from-blue-50 hover:to-indigo-50 transition-all group shadow-none"
+                        >
+                          <div className="text-center">
+                            <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-white shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                              <ImagePlus className="h-10 w-10 text-slate-400 group-hover:text-blue-500 transition-colors" />
                             </div>
+
+                            <div className="text-sm text-slate-500">上传图片/视频</div>
                           </div>
                         </div>
+                      ) : // Display selected media
+                      uploadedMedia[activeMediaIndex].type === "video" ? (
+                        <video
+                          src={uploadedMedia[activeMediaIndex].url}
+                          controls
+                          className="w-full h-full object-cover bg-black"
+                        />
                       ) : (
                         <img
-                          src={productData.attachments.screenshots[activeScreenshot] || "/placeholder.svg"}
-                          alt="Product Screenshot"
+                          src={uploadedMedia[activeMediaIndex].url || "/placeholder.svg"}
+                          alt="Product Media"
                           className="w-full h-full object-cover"
                         />
                       )}
                     </div>
 
-                    {/* Thumbnails - Video + Screenshots */}
-                    <div className="relative group border border-slate-200 rounded-lg bg-white p-3">
-                      {/* Left navigation button for screenshots */}
+                    <div className="relative group border border-slate-200 rounded-lg bg-white p-2.5 mt-2 shadow-sm">
+                      {/* Left navigation button */}
                       <button
                         onClick={() => scrollScreenshots("left")}
                         style={{ background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(3px)" }}
@@ -1071,52 +1478,58 @@ export default function UploadProductsPage() {
                       {/* Scrollable thumbnails container */}
                       <div
                         ref={screenshotsRef}
-                        className="flex gap-2 overflow-x-auto scrollbar-hide px-10"
+                        className={`flex gap-2 overflow-x-auto scrollbar-hide px-10 ${
+                          uploadedMedia.length === 0 ? "justify-center" : "justify-start"
+                        }`}
                         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                       >
-                        {/* Video Thumbnail */}
+                        {/* Always show upload button */}
                         <button
-                          onClick={() => setActiveMediaType("video")}
-                          className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all relative ${
-                            activeMediaType === "video"
-                              ? "border-blue-500 ring-2 ring-blue-200"
-                              : "border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100"
-                          }`}
+                          onClick={handleMediaUploadClick}
+                          className="flex-shrink-0 w-36 h-36 rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center group"
                         >
-                          <img
-                            src="/product-demo-video-thumbnail.jpg"
-                            alt="Video"
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                            <Play className="h-4 w-4 text-white" fill="currentColor" />
+                          <div className="w-20 h-20 rounded-full bg-white shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Plus className="h-10 w-10 text-slate-400 group-hover:text-blue-500 transition-colors" />
                           </div>
                         </button>
 
-                        {/* Screenshot Thumbnails */}
-                        {productData.attachments.screenshots.map((screenshot, index) => (
+                        {/* Show uploaded media thumbnails to the right of upload button */}
+                        {uploadedMedia.map((media, index) => (
                           <button
                             key={index}
-                            onClick={() => {
-                              setActiveMediaType("image")
-                              setActiveScreenshot(index)
-                            }}
-                            className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                              activeMediaType === "image" && activeScreenshot === index
+                            onClick={() => handleSelectMedia(index)}
+                            className={`group flex-shrink-0 w-36 h-36 rounded-lg overflow-hidden border-2 transition-all relative ${
+                              activeMediaIndex === index
                                 ? "border-blue-500 ring-2 ring-blue-200"
                                 : "border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100"
                             }`}
                           >
-                            <img
-                              src={screenshot || "/placeholder.svg"}
-                              alt={`Screenshot ${index + 1}`}
-                              className="w-full h-full object-cover"
-                            />
+                            {media.type === "video" ? (
+                              <>
+                                <video src={media.url} className="w-full h-full object-cover" />
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                                  <Play className="h-4 w-4 text-white" fill="currentColor" />
+                                </div>
+                              </>
+                            ) : (
+                              <img
+                                src={media.url || "/placeholder.svg"}
+                                alt={`Media ${index + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            )}
+                            <button
+                              onClick={(e) => handleDeleteMedia(index, e)}
+                              className="absolute top-1 right-1 bg-red-500/80 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              title="删除媒体"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
                           </button>
                         ))}
                       </div>
 
-                      {/* Right navigation button for screenshots */}
+                      {/* Right navigation button */}
                       <button
                         onClick={() => scrollScreenshots("right")}
                         style={{ background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(3px)" }}
@@ -1131,56 +1544,88 @@ export default function UploadProductsPage() {
                   <div className="mt-8">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                        <Download className="h-4 w-4 text-blue-600" />
-                        相关资料
+                        <ImageIcon className="h-4 w-4 text-blue-600" />
+                        相关资料上传
                       </h3>
                     </div>
-                    <div className="relative group">
-                      <button
-                        onClick={() => scrollDocuments("left")}
-                        style={{ background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(3px)" }}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
-                      >
-                        <ChevronLeft className="h-4 w-4 text-slate-600" />
-                      </button>
-                      <div
-                        ref={documentsRef}
-                        className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 cursor-grab active:cursor-grabbing px-10"
-                        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-                      >
-                        {productData.attachments.documents.map((doc, index) => (
-                          <div key={index} className="flex-shrink-0 flex flex-col items-center">
-                            <div
-                              onClick={() => handleDownloadDocument(doc.name)}
-                              className="w-36 p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:shadow-md transition-all group text-center cursor-pointer"
+                    <div className="relative">
+                      {/* Hidden file input accepting all formats */}
+                      <input
+                        ref={documentFileInputRef}
+                        type="file"
+                        multiple
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+
+                      <div className="flex items-center gap-2">
+                        {/* Left Navigation Button */}
+                        {uploadedFiles.length > 0 && (
+                          <button
+                            onClick={() => scrollFiles("left")}
+                            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-slate-200/30 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                          >
+                            <ChevronLeft className="h-4 w-4 text-slate-600" />
+                          </button>
+                        )}
+
+                        <div
+                          className="flex items-start gap-4 flex-nowrap"
+                          ref={documentsRef}
+                          style={{ overflowX: "auto", scrollBehavior: "smooth", width: "100%" }}
+                        >
+                          {/* Upload Button */}
+                          <div className="flex-shrink-0 flex justify-center items-center">
+                            <button
+                              onClick={handleUploadClick}
+                              className="w-36 p-4 rounded-xl border border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-blue-50 transition-all group text-center cursor-pointer flex flex-col items-center justify-center gap-2"
                             >
-                              <div className="text-3xl mb-2">{doc.icon}</div>
-                              <div className="text-xs font-medium text-slate-700 group-hover:text-blue-700 truncate">
-                                {doc.name}
+                              <Plus className="h-8 w-8 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                              <div className="text-sm font-medium text-slate-600 group-hover:text-blue-600 transition-colors">
+                                上传文件
                               </div>
-                              <div className="text-[10px] text-slate-400 mt-1">{doc.size}</div>
-                            </div>
-                            {/* Editable document description */}
-                            <div className="mt-2 w-full">
-                              <textarea
-                                ref={documentTextareaRef}
-                                value={documentDescription}
-                                onChange={(e) => setDocumentDescription(e.target.value)}
-                                placeholder={`为 ${doc.name} 添加描述...`}
-                                className="w-full text-xs text-slate-500 leading-relaxed bg-transparent outline-none placeholder-slate-400 focus:ring-0 p-1.5 resize-none border border-slate-200 rounded-md"
-                                rows={1}
-                              />
-                            </div>
+                              <div className="text-xs text-slate-400">支持任意格式</div>
+                            </button>
                           </div>
-                        ))}
+
+                          {/* Uploaded Files List */}
+                          {uploadedFiles.length > 0 && (
+                            <div className="flex gap-3 flex-nowrap">
+                              {uploadedFiles.map((file, index) => (
+                                <div
+                                  key={index}
+                                  onClick={() => handleDownloadUploadedFile(file)}
+                                  className="w-36 p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:shadow-md transition-all group text-center cursor-pointer relative flex-shrink-0"
+                                >
+                                  <FileText className="h-7 w-7 mx-auto mb-2 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                                  <div className="text-[10px] font-medium text-slate-700 group-hover:text-blue-700 break-words leading-tight">
+                                    {file.name}
+                                  </div>
+                                  <div className="text-[10px] text-slate-400 mt-1">{file.size}</div>
+
+                                  <button
+                                    onClick={(e) => handleDeleteFile(index, e)}
+                                    className="absolute top-1 right-1 bg-red-500/80 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    title="删除文件"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Right Navigation Button */}
+                        {uploadedFiles.length > 0 && (
+                          <button
+                            onClick={() => scrollFiles("right")}
+                            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-slate-200/30 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                          >
+                            <ChevronRight className="h-4 w-4 text-slate-600" />
+                          </button>
+                        )}
                       </div>
-                      <button
-                        onClick={() => scrollDocuments("right")}
-                        style={{ background: "rgba(255, 255, 255, 0.15)", backdropFilter: "blur(3px)" }}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
-                      >
-                        <ChevronRight className="h-4 w-4 text-slate-600" />
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -1196,10 +1641,22 @@ export default function UploadProductsPage() {
                     <div className="text-lg font-bold text-amber-900 mt-0.5">额外奖励</div>
                   </div>
 
-                  {/* Base Reward */}
-                  <div className="mx-4 px-3 py-2.5 rounded-xl bg-white/80 border border-amber-200/50 mb-3">
-                    <div className="text-[10px] text-amber-600/80 uppercase tracking-wide">基础推广费</div>
-                    <div className="text-xl font-bold text-amber-900">¥{productData.incentive.baseReward}</div>
+                  {/* Base Reward Card */}
+                  <div className="px-4 pt-4 pb-2">
+                    <div className="text-[10px] text-amber-700/70 mb-1">基础佣金</div>
+                    <input
+                      type="number"
+                      value={baseReward}
+                      onChange={handleBaseRewardChange}
+                      onBlur={() => updateValidationError("baseReward", baseReward)}
+                      placeholder="请输入基础佣金"
+                      className={`border border-dotted border-slate-300 bg-transparent text-slate-800 font-semibold ${
+                        validationErrors.baseReward ? "border-red-500 bg-red-50" : ""
+                      }`}
+                    />
+                    {validationErrors.baseReward && (
+                      <p className="text-xs text-red-500 mt-1">{validationErrors.baseReward}</p>
+                    )}
                   </div>
 
                   {/* Bonus Targets */}
@@ -1213,14 +1670,47 @@ export default function UploadProductsPage() {
                         >
                           <div className="flex items-center gap-1.5">
                             <Zap className="h-3 w-3 text-amber-500" />
-                            <span className="text-[11px] text-amber-800">{(target.views / 10000).toFixed(0)}万</span>
+                            <div className="flex items-center gap-0.5">
+                              <input
+                                type="number"
+                                value={bonusTargetViews[index].value}
+                                onChange={(e) => {
+                                  const newViews = [...bonusTargetViews]
+                                  newViews[index].value = e.target.value
+                                  setBonusTargetViews(newViews)
+                                }}
+                                className="w-10 text-[11px] text-amber-800 bg-transparent border-b focus:border-amber-500 focus:outline-none px-0.5 border-dashed border-amber-400"
+                                min="0"
+                                step="1"
+                              />
+                              <select
+                                value={bonusTargetViews[index].unit}
+                                onChange={(e) => {
+                                  const newViews = [...bonusTargetViews]
+                                  newViews[index].unit = e.target.value as "k" | "w"
+                                  setBonusTargetViews(newViews)
+                                }}
+                                className="py-0 text-[10px] text-amber-800 bg-transparent border-b focus:border-amber-500 focus:outline-none cursor-pointer appearance-none px-px w-2.5 border-amber-400 border-dashed"
+                              >
+                                <option value="w">w</option>
+                                <option value="k">k</option>
+                              </select>
+                            </div>
                           </div>
-                          <span className="text-xs font-semibold text-amber-600">+¥{target.bonus}</span>
+                          <input
+                            type="number"
+                            value={bonusTargetBonuses[index] || ""}
+                            onChange={(e) => {
+                              const newBonuses = [...bonusTargetBonuses]
+                              newBonuses[index] = e.target.value
+                              setBonusTargetBonuses(newBonuses)
+                            }}
+                            placeholder="0"
+                            className="text-xs font-semibold text-amber-600 border border-dotted border-slate-300 bg-transparent w-12 px-1 py-0 focus:border-amber-500 focus:outline-none"
+                          />
                         </div>
                       ))}
                     </div>
-
-                    {/* Max Reward */}
                   </div>
 
                   {/* Decorative bottom */}
@@ -1247,52 +1737,194 @@ export default function UploadProductsPage() {
                     {/* Contact Name */}
                     <div className="flex items-start gap-2">
                       <Users className="h-3.5 w-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <div className="text-[10px] text-blue-600/70 uppercase tracking-wide">联系人</div>
-                        <div className="text-sm font-semibold text-slate-800">{productData.contact.name}</div>
+                        <input
+                          type="text"
+                          value={contactName}
+                          onChange={handleContactNameChange}
+                          onBlur={() => updateValidationError("contactName", contactName)}
+                          placeholder="请输入联系人名称"
+                          className={`border border-dotted border-slate-300 bg-transparent text-slate-800 placeholder:text-xs ${
+                            validationErrors.contactName ? "border-red-500 bg-red-50" : ""
+                          }`}
+                        />
+                        {validationErrors.contactName && (
+                          <p className="text-xs text-red-500 mt-1">{validationErrors.contactName}</p>
+                        )}
                       </div>
                     </div>
 
                     {/* Email */}
                     <div className="flex items-start gap-2">
                       <Mail className="h-3.5 w-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
-                      <div className="break-all min-w-0">
+                      <div className="break-all min-w-0 flex-1">
                         <div className="text-[10px] text-blue-600/70 uppercase tracking-wide">邮箱</div>
-                        <div className="text-[11px] text-slate-700 leading-tight truncate">
-                          {productData.contact.email}
-                        </div>
+                        <input
+                          type="email"
+                          value={contactEmail}
+                          onChange={handleContactEmailChange}
+                          onBlur={() => updateValidationError("contactEmail", contactEmail)}
+                          placeholder="请输入邮箱"
+                          className={`border border-dotted border-slate-300 bg-transparent text-slate-800 placeholder:text-xs ${
+                            validationErrors.contactEmail ? "border-red-500 bg-red-50" : ""
+                          }`}
+                        />
+                        {validationErrors.contactEmail && (
+                          <p className="text-xs text-red-500 mt-1">{validationErrors.contactEmail}</p>
+                        )}
                       </div>
                     </div>
 
                     {/* Phone */}
                     <div className="flex items-start gap-2">
                       <Phone className="h-3.5 w-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
-                      <div>
+                      <div className="flex-1">
                         <div className="text-[10px] text-blue-600/70 uppercase tracking-wide">电话</div>
-                        <div className="text-xs text-slate-700">{productData.contact.phone}</div>
+                        {/* Replace the old phone input in the contact card section with the new PhoneInput component */}
+                        <PhoneInput
+                          value={contactPhone}
+                          onChange={handleContactPhoneChange}
+                          onBlur={() => updateValidationError("contactPhone", contactPhone)}
+                          error={validationErrors.contactPhone}
+                          placeholder="Enter phone number"
+                          defaultCountry="CN"
+                        />
                       </div>
                     </div>
 
                     {/* Website */}
-                    <div className="flex items-start gap-2 pt-1 border-t border-blue-100">
-                      <Globe className="h-3.5 w-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
-                      <div className="break-all min-w-0">
-                        <div className="text-[10px] text-blue-600/70 uppercase tracking-wide">网站</div>
-                        <a
-                          href={productData.contact.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[11px] text-blue-600 hover:text-blue-700 underline underline-offset-2 truncate block"
-                        >
-                          {productData.contact.website}
-                        </a>
-                      </div>
-                    </div>
                   </div>
 
                   {/* Decorative bottom */}
                   <div className="h-1.5 bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-400" />
                 </div>
+
+                {shouldShowScore && (
+                  <div className="relative mt-6">
+                    {/* Backdrop blur overlay */}
+                    {showScorePopup && (
+                      <div className="fixed inset-0 z-40 bg-white/40 backdrop-blur-sm transition-all duration-300" />
+                    )}
+
+                    <div
+                      className="relative z-50 border border-slate-200 bg-white p-6 shadow-sm transition-all rounded-xl"
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                    >
+                      <div className="mb-4 flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
+                          <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138z"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-slate-900">产品评分</h3>
+                          <p className="text-xs text-slate-600">基于 Lovable 打分表</p>
+                        </div>
+                      </div>
+
+                      {/* Circular score display */}
+                      <div className="flex items-center justify-center">
+                        <div className="relative h-32 w-32">
+                          <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 120 120">
+                            {/* Background circle */}
+                            <circle cx="60" cy="60" r="54" stroke="#e2e8f0" strokeWidth="8" fill="none" />
+                            {/* Progress circle */}
+                            <circle
+                              cx="60"
+                              cy="60"
+                              r="54"
+                              stroke="url(#gradient-score)"
+                              strokeWidth="8"
+                              fill="none"
+                              strokeLinecap="round"
+                              strokeDasharray={`${2 * Math.PI * 54}`}
+                              strokeDashoffset={`${2 * Math.PI * 54 * (1 - (productScore || 0) / 100)}`}
+                              className="transition-all duration-1000"
+                            />
+                            {/* Gradient definition */}
+                            <defs>
+                              <linearGradient id="gradient-score" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#3b82f6" />
+                                <stop offset="100%" stopColor="#6366f1" />
+                              </linearGradient>
+                            </defs>
+                          </svg>
+                          {/* Score text in center */}
+                          <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <span className="text-lg font-bold text-blue-600">{productScore}</span>
+                            <span className="text-[7px] text-slate-500">/ 100</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Score Popup - moved closer to the card */}
+                      {showScorePopup && (
+                        <div
+                          className="absolute -left-[390px] top-0 z-50 w-[374px] rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl transition-opacity duration-300"
+                          style={{ opacity: showScorePopup ? 1 : 0 }}
+                        >
+                          {/* Triangle pointer with white background matching popup */}
+                          <div className="absolute -right-[11px] top-8 h-0 w-0 border-l-[12px] border-r-0 border-t-[12px] border-b-[12px] border-l-white border-t-transparent border-b-transparent z-10" />
+                          <div className="absolute -right-[12px] top-8 h-0 w-0 border-l-[12px] border-r-0 border-t-[12px] border-b-[12px] border-l-slate-200 border-t-transparent border-b-transparent" />
+
+                          <div className="mb-4 flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
+                              <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138z"
+                                />
+                              </svg>
+                            </div>
+                            <h4 className="text-base font-bold text-slate-900">打分评估模型</h4>
+                          </div>
+
+                          <p className="mb-4 text-[11px] leading-relaxed text-slate-600">
+                            本评分基于 Lovable 内部真实打分表模型（已迭代 7
+                            次），总分100分制，评估您的软件产品在5个维度：痛苦度（Pain Point）、支付意愿（Willingness to
+                            Pay）、竞品弱度（Competitive Weakness）、实现难度（Ease of
+                            Implementation）和病毒系数（Virality
+                            Factor）。每个维度满分20分，总分计算公式：∑维度分。阈值：92+立即开发；&lt;85建议放弃。
+                          </p>
+
+                          <div className="mb-4 space-y-2 rounded-lg bg-slate-50 p-3">
+                            {scoreBreakdown.map((item, index) => (
+                              <div key={index} className="flex items-center justify-between text-[11px]">
+                                <div className="flex items-center gap-2">
+                                  <span>{item.icon}</span>
+                                  <span className="font-medium text-slate-700">{item.name}</span>
+                                  <span className="text-slate-500">{item.description}</span>
+                                </div>
+                                <span className="font-bold text-slate-900">{item.score}分</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div className="rounded-lg bg-blue-50 p-3">
+                            <h5 className="mb-2 text-xs font-bold text-slate-900">
+                              基于您的评分（{productScore}.0）的改进建议
+                            </h5>
+                            <ul className="space-y-1 text-[11px] text-slate-700">
+                              <li>• 痛苦度低：调研更多用户反馈，确保过去48h内至少20人表达明确痛点。</li>
+                              <li>• 支付意愿弱：优化定价模型，目标用户应明确表示愿意月付$10+。</li>
+                              <li>• 竞品弱度不足：分析1-2个弱竞品，突出您的独特卖点。</li>
+                              <li>• 实现难度高：简化MVP，优先交付关键功能。</li>
+                            </ul>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1343,6 +1975,15 @@ export default function UploadProductsPage() {
         }
         .animate-shake-text {
           animation: shake-text 0.82s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        /* Hide number input spinners */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        input[type="number"] {
+          -moz-appearance: textfield;
         }
       `}</style>
     </div>

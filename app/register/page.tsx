@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Lock, MessageSquare, Chrome, Apple } from "lucide-react"
 import { useRouter } from "next/navigation"
 import AppHeader from "@/components/app-header"
+import { PhoneInput } from "@/components/ui/phone-input"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -51,26 +52,12 @@ export default function RegisterPage() {
               {/* Phone Number Input */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">手机号</label>
-                <div className="flex gap-2">
-                  <select
-                    value={countryCode}
-                    onChange={(e) => setCountryCode(e.target.value)}
-                    className="w-24 px-3 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                  >
-                    <option value="+86">+86</option>
-                    <option value="+1">+1</option>
-                    <option value="+44">+44</option>
-                    <option value="+81">+81</option>
-                  </select>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="请输入手机号"
-                    className="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    required
-                  />
-                </div>
+                <PhoneInput
+                  value={phone}
+                  onChange={setPhone}
+                  defaultCountry="CN"
+                  placeholder="Enter your phone number"
+                />
               </div>
 
               {/* Verification Code */}

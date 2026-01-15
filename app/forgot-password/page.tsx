@@ -3,8 +3,8 @@
 import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
-import { ChevronDown } from "lucide-react"
 import AppHeader from "@/components/app-header"
+import { PhoneInput } from "@/components/ui/phone-input"
 
 export default function ForgotPasswordPage() {
   const [method, setMethod] = useState<"phone" | "email">("phone")
@@ -85,33 +85,12 @@ export default function ForgotPasswordPage() {
                 /* Phone Number Field */
                 <div>
                   <label className="block text-lg font-medium text-slate-900 mb-3">手机号</label>
-                  <div className="flex gap-3">
-                    {/* Country Code Selector */}
-                    <div className="relative">
-                      <select
-                        value={countryCode}
-                        onChange={(e) => setCountryCode(e.target.value)}
-                        className="appearance-none w-28 pl-4 pr-10 py-4 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-lg bg-white"
-                      >
-                        <option value="+86">+86</option>
-                        <option value="+1">+1</option>
-                        <option value="+44">+44</option>
-                        <option value="+81">+81</option>
-                        <option value="+82">+82</option>
-                      </select>
-                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
-                    </div>
-
-                    {/* Phone Input */}
-                    <input
-                      type="tel"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      placeholder="请输入手机号"
-                      className="flex-1 px-5 py-4 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-lg"
-                      required
-                    />
-                  </div>
+                  <PhoneInput
+                    value={phoneNumber}
+                    onChange={setPhoneNumber}
+                    defaultCountry="CN"
+                    placeholder="Enter your phone number"
+                  />
                 </div>
               ) : (
                 /* Email Field */
