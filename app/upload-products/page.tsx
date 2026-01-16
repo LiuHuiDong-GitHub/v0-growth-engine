@@ -463,7 +463,8 @@ export default function UploadProductsPage() {
       setIsAddingToPromotions(false)
       setAddedToPromotions(true)
       setTimeout(() => {
-        router.push("/my-promotions")
+        // </CHANGE> redirect to /my-product instead of /my-promotions
+        router.push("/my-product")
       }, 1500)
     }, 800)
   }
@@ -1109,7 +1110,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                           <button
                             onClick={handleAddToPromotions}
                             disabled={isAddingToPromotions || addedToPromotions}
-                            className={`absolute -top-5 left-1/2 rounded-lg font-semibold text-white text-xs shadow-md transition-all w-16 h-auto py-1 z-20 ${
+                            className={`absolute -top-5 left-1/2 rounded-lg font-semibold text-white shadow-md transition-all w-16 z-20 h-[26px] text-sm py-0.5 ${
                               addedToPromotions
                                 ? "bg-green-500 shadow-green-500/25"
                                 : isAddingToPromotions
