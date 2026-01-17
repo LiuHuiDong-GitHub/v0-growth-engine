@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import AppHeader from "@/components/app-header"
 import Breadcrumb from "@/components/breadcrumb"
 import {
@@ -16,55 +16,141 @@ import {
   MessageCircle,
   Star,
   PlayCircle,
+  Play,
+  ExternalLink,
 } from "lucide-react"
 
 export default function BloggerDashboard() {
   const [selectedQuality, setSelectedQuality] = useState("中")
   const [hoveredStat, setHoveredStat] = useState<number | null>(null)
+  const [hoveredVideo, setHoveredVideo] = useState<number | null>(null)
 
-  const stats = [
+  const videoProjects = [
     {
-      icon: PlayCircle,
-      label: "播放量",
-      value: "15,000",
-      color: "text-purple-600", // swapped from pink to purple
-      ringColor: "#a855f7", // swapped from #f9a8d4 to #a855f7
-      percentage: 95,
-    },
-    { icon: Heart, label: "点赞量", value: "1,800", color: "text-red-600", ringColor: "#fca5a5", percentage: 85 },
-    {
-      icon: Share2,
-      label: "分享量",
-      value: "2,500",
-      color: "text-pink-600", // swapped from purple to pink
-      ringColor: "#f9a8d4", // swapped from #a855f7 to #f9a8d4
-      percentage: 70,
-    },
-    {
-      icon: MessageCircle,
-      label: "评论量",
-      value: "1,200",
-      color: "text-orange-600",
-      ringColor: "#f97316",
-      percentage: 60,
-    },
-    { icon: Star, label: "收藏量", value: "5,000", color: "text-green-600", ringColor: "#10b981", percentage: 90 },
-  ]
-
-  const videoCollaborations = [
-    {
+      id: 1,
       title: "产品发布宣传视频",
       duration: "2:35",
       thumbnail: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=300&fit=crop",
+      videoLink: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       progress: 75,
+      // Pre-loaded metrics for this video
+      metrics: {
+        plays: "8,500",
+        likes: "1,200",
+        shares: "1,800",
+        comments: "650",
+        favorites: "2,800",
+        percentages: [92, 80, 65, 55, 88],
+      },
     },
     {
+      id: 2,
       title: "用户案例分享",
       duration: "1:40",
       thumbnail: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=300&fit=crop",
-      progress: 75,
+      videoLink: "https://www.bilibili.com/video/BV1xx411c7XW",
+      progress: 60,
+      metrics: {
+        plays: "6,500",
+        likes: "600",
+        shares: "700",
+        comments: "550",
+        favorites: "2,200",
+        percentages: [85, 70, 60, 50, 82],
+      },
     },
   ]
+
+  const totalMetrics = useMemo(() => {
+    const totals = {
+      plays: 0,
+      likes: 0,
+      shares: 0,
+      comments: 0,
+      favorites: 0,
+      percentages: [0, 0, 0, 0, 0],
+    }
+
+    videoProjects.forEach((video) => {
+      totals.plays += Number.parseInt(video.metrics.plays.replace(/,/g, ""))
+      totals.likes += Number.parseInt(video.metrics.likes.replace(/,/g, ""))
+      totals.shares += Number.parseInt(video.metrics.shares.replace(/,/g, ""))
+      totals.comments += Number.parseInt(video.metrics.comments.replace(/,/g, ""))
+      totals.favorites += Number.parseInt(video.metrics.favorites.replace(/,/g, ""))
+      video.metrics.percentages.forEach((p, i) => {
+        totals.percentages[i] += p
+      })
+    })
+
+    // Average the percentages
+    totals.percentages = totals.percentages.map((p) => Math.round(p / videoProjects.length))
+
+    return {
+      plays: totals.plays.toLocaleString(),
+      likes: totals.likes.toLocaleString(),
+      shares: totals.shares.toLocaleString(),
+      comments: totals.comments.toLocaleString(),
+      favorites: totals.favorites.toLocaleString(),
+      percentages: totals.percentages,
+    }
+  }, [])
+
+  const currentMetrics = useMemo(() => {
+    if (hoveredVideo !== null) {
+      return videoProjects[hoveredVideo].metrics
+    }
+    return totalMetrics
+  }, [hoveredVideo, totalMetrics])
+
+  const stats = useMemo(
+    () => [
+      {
+        icon: PlayCircle,
+        label: "播放量",
+        value: currentMetrics.plays,
+        color: "text-purple-600",
+        ringColor: "#a855f7",
+        percentage: currentMetrics.percentages[0],
+      },
+      {
+        icon: Heart,
+        label: "点赞量",
+        value: currentMetrics.likes,
+        color: "text-red-600",
+        ringColor: "#fca5a5",
+        percentage: currentMetrics.percentages[1],
+      },
+      {
+        icon: Share2,
+        label: "分享量",
+        value: currentMetrics.shares,
+        color: "text-pink-600",
+        ringColor: "#f9a8d4",
+        percentage: currentMetrics.percentages[2],
+      },
+      {
+        icon: MessageCircle,
+        label: "评论量",
+        value: currentMetrics.comments,
+        color: "text-orange-600",
+        ringColor: "#f97316",
+        percentage: currentMetrics.percentages[3],
+      },
+      {
+        icon: Star,
+        label: "收藏量",
+        value: currentMetrics.favorites,
+        color: "text-green-600",
+        ringColor: "#10b981",
+        percentage: currentMetrics.percentages[4],
+      },
+    ],
+    [currentMetrics],
+  )
+
+  const handleVideoClick = (videoLink: string) => {
+    window.open(videoLink, "_blank", "noopener,noreferrer")
+  }
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -131,30 +217,33 @@ export default function BloggerDashboard() {
           <div className="mb-12 grid gap-8 lg:grid-cols-2">
             <div>
               <h2 className="mb-4 text-xl font-bold text-slate-900 pl-5">曝光目标</h2>
-              <p className="mb-6 text-sm text-slate-600 pl-5">您的产品正曝光在世界各地多数。</p>
+              <p className="mb-6 text-sm text-slate-600 pl-5">
+                {hoveredVideo !== null
+                  ? `正在查看: ${videoProjects[hoveredVideo].title}`
+                  : "您的产品正曝光在世界各地多数。（显示所有视频总和）"}
+              </p>
 
               {/* Stats Grid */}
               <div className="space-y-4 ml-[30%] w-[26.25%]">
                 {stats.map((stat, index) => (
-                  <div key={index} className="relative">
-                    <div
-                      className="inline-flex items-center gap-1.5 cursor-pointer transition-all duration-300 py-1.5"
-                      onMouseEnter={() => setHoveredStat(index)}
-                      onMouseLeave={() => setHoveredStat(null)}
+                  <div
+                    key={index}
+                    className="inline-flex items-center gap-1.5 cursor-pointer transition-all duration-300 py-1.5"
+                    onMouseEnter={() => setHoveredStat(index)}
+                    onMouseLeave={() => setHoveredStat(null)}
+                  >
+                    <stat.icon
+                      className={`h-5 w-5 transition-all duration-300 ${hoveredStat === index ? "scale-110" : ""}`}
+                      style={{ color: stat.ringColor }}
+                    />
+                    <span
+                      className={`text-sm font-semibold transition-all duration-300 ${
+                        hoveredStat === index ? "scale-105" : ""
+                      }`}
+                      style={{ color: stat.ringColor }}
                     >
-                      <stat.icon
-                        className={`h-5 w-5 transition-all duration-300 ${hoveredStat === index ? "scale-110" : ""}`}
-                        style={{ color: stat.ringColor }}
-                      />
-                      <span
-                        className={`text-sm font-semibold transition-all duration-300 ${
-                          hoveredStat === index ? "scale-105" : ""
-                        }`}
-                        style={{ color: stat.ringColor }}
-                      >
-                        {stat.label} : {stat.value}
-                      </span>
-                    </div>
+                      {stat.label} : {stat.value}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -167,29 +256,51 @@ export default function BloggerDashboard() {
                 style={{ left: "-120px", width: "calc(100% + 120px)", height: "100%" }}
               >
                 {stats.map((stat, index) => {
-                  const startX = 120
-                  const startY = 140 + index * 40
-                  const endX = 280
-                  const centerY = 200
-                  const radius = 180 - index * 30
-                  const endY = centerY - radius
+                  // Calculate label positions (left side)
+                  const labelStartX = 120
+                  const labelY = 140 + index * 40
 
-                  const needsTurn = Math.abs(startY - endY) > 5
+                  // Calculate ring positions (right side - center of chart)
+                  const chartCenterX = 320
+                  const chartCenterY = 200
+                  const radius = 180 - index * 30
+
+                  // Calculate the point on the ring where the line should connect
+                  // Connect to the left side of each ring (at 180 degrees / PI radians)
+                  const ringPointX = chartCenterX - radius
+                  const ringPointY = chartCenterY
+
+                  // Create smooth bezier curve that doesn't cross
+                  // Control points to create nice curves
+                  const controlX1 = labelStartX + 60
+                  const controlY1 = labelY
+                  const controlX2 = ringPointX - 40
+                  const controlY2 = ringPointY
 
                   return (
-                    <path
-                      key={index}
-                      d={
-                        needsTurn
-                          ? `M ${startX} ${startY} L ${endX - 20} ${startY} L ${endX} ${endY}`
-                          : `M ${startX} ${startY} L ${endX} ${endY}`
-                      }
-                      fill="none"
-                      stroke={stat.ringColor}
-                      strokeWidth="1.5"
-                      opacity={hoveredStat !== null && hoveredStat !== index ? 0.2 : 0.5}
-                      className="transition-all duration-300"
-                    />
+                    <g key={index}>
+                      {/* Connection line with bezier curve */}
+                      <path
+                        d={`M ${labelStartX} ${labelY} 
+                            C ${controlX1} ${controlY1}, 
+                              ${controlX2} ${controlY2}, 
+                              ${ringPointX} ${ringPointY}`}
+                        fill="none"
+                        stroke={stat.ringColor}
+                        strokeWidth="1.5"
+                        opacity={hoveredStat !== null && hoveredStat !== index ? 0.15 : 0.6}
+                        className="transition-all duration-300"
+                      />
+                      {/* Small dot at the end of the line on the ring */}
+                      <circle
+                        cx={ringPointX}
+                        cy={ringPointY}
+                        r="4"
+                        fill={stat.ringColor}
+                        opacity={hoveredStat !== null && hoveredStat !== index ? 0.15 : 0.8}
+                        className="transition-all duration-300"
+                      />
+                    </g>
                   )
                 })}
               </svg>
@@ -239,7 +350,9 @@ export default function BloggerDashboard() {
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                   <div className="text-center">
-                    <div className="font-medium text-xs text-slate-500">总曝光</div>
+                    <div className="font-medium text-xs text-slate-500">
+                      {hoveredVideo !== null ? "视频播放" : "总曝光"}
+                    </div>
                     <div className="mt-2 font-bold text-slate-900 text-xl">{stats[0].value}</div>
                   </div>
                 </div>
@@ -258,31 +371,47 @@ export default function BloggerDashboard() {
           </div>
 
           {/* Collaborated Videos Section */}
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-4">已合作视频案例</h2>
-
-            <div className="rounded-xl bg-slate-50 p-6 py-5 px-5 mb-6">
-              <h3 className="mb-2 text-lg font-semibold text-slate-900">视频合作成果一览</h3>
-              <p className="text-sm text-slate-600">探测数据、点击率数据优化推广数据的推广。</p>
-            </div>
+          <div className="mb-24">
+            <h2 className="text-2xl font-bold text-slate-900 mb-4">视频</h2>
 
             <div className="grid gap-6 md:grid-cols-2">
-              {videoCollaborations.map((video, index) => (
+              {videoProjects.map((video, index) => (
                 <div
-                  key={index}
-                  className="flex items-center bg-white p-6 gap-6 opacity-100 rounded-lg shadow-none transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer mx-0 px-2 py-2 border border-slate-200"
+                  key={video.id}
+                  className={`flex items-center bg-white p-6 gap-6 rounded-lg transition-all duration-300 cursor-pointer mx-0 px-2 py-2 border ${
+                    hoveredVideo === index
+                      ? "border-blue-400 shadow-lg -translate-y-1 bg-blue-50/30"
+                      : "border-slate-200 hover:shadow-lg hover:-translate-y-1"
+                  }`}
+                  onMouseEnter={() => setHoveredVideo(index)}
+                  onMouseLeave={() => setHoveredVideo(null)}
+                  onClick={() => handleVideoClick(video.videoLink)}
                 >
-                  <div className="relative h-32 w-48 flex-shrink-0 overflow-hidden rounded-3xl bg-slate-200">
+                  <div className="relative h-32 w-48 flex-shrink-0 overflow-hidden rounded-3xl bg-slate-200 group">
                     <img
                       src={video.thumbnail || "/placeholder.svg?height=128&width=192"}
                       alt={video.title}
                       className="h-full w-full object-cover rounded-xs"
                     />
+                    {/* Play button overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="w-14 h-14 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-colors">
+                        <Play className="w-7 h-7 text-white ml-1" fill="currentColor" />
+                      </div>
+                    </div>
+                    {/* External link indicator */}
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <ExternalLink className="w-4 h-4 text-white drop-shadow-lg" />
+                    </div>
                   </div>
 
                   <div className="flex-1">
                     <h3 className="font-bold text-slate-900 text-base">{video.title}</h3>
                     <p className="mt-2 text-slate-400 text-sm">时长: {video.duration}</p>
+                    <div className="mt-2 flex items-center gap-1 text-xs text-blue-500">
+                      <ExternalLink className="w-3 h-3" />
+                      <span className="truncate max-w-[150px]">{video.videoLink}</span>
+                    </div>
                   </div>
 
                   <div className="flex flex-col items-center gap-2">
@@ -315,6 +444,8 @@ export default function BloggerDashboard() {
               ))}
             </div>
           </div>
+
+          <div className="h-16"></div>
 
           {/* Footer */}
           <footer className="mt-16 border-t border-slate-200 py-8 text-center">

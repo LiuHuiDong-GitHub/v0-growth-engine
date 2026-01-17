@@ -1,392 +1,340 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useRef } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import AppHeader from "@/components/app-header"
+import { useState, useRef, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Plus, Trash2, Video, Upload, Play, Link } from "lucide-react"
 import Breadcrumb from "@/components/breadcrumb"
-import { LinkIcon, Play, Check, X, Upload, Info, ChevronDown } from "lucide-react"
+import AppHeader from "@/components/app-header"
 
-export default function SubmitVideo() {
+// Mock product data
+const productData = {
+  id: "1",
+  name: "NoteMaster Pro",
+  logoUrl: "/generic-app-logo.png",
+  tags: ["效率工具", "笔记工具", "AI工具"],
+}
+
+interface VideoItem {
+  id: string
+  imageUrl: string | null
+  videoLink: string
+  linkError: string
+  linkSubmitted: boolean
+}
+
+export default function SubmitVideoPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const projectId = searchParams.get("projectId")
-  const projectName = searchParams.get("projectName") || "示例产品名称"
-  const projectCategory = searchParams.get("category") || "电子产品"
+  const [videoItems, setVideoItems] = useState<VideoItem[]>([
+    { id: "1", imageUrl: null, videoLink: "", linkError: "", linkSubmitted: false },
+    { id: "2", imageUrl: null, videoLink: "", linkError: "", linkSubmitted: false },
+    { id: "3", imageUrl: null, videoLink: "", linkError: "", linkSubmitted: false },
+  ])
+  const [focusedItemId, setFocusedItemId] = useState<string | null>(null)
 
-  const [videoUrl, setVideoUrl] = useState("")
-  const [thumbnail, setThumbnail] = useState<string | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isDragging, setIsDragging] = useState(false)
-  const [videoLinks, setVideoLinks] = useState([{ platform: "", url: "", customName: "" }])
-  const [activeDropdownIndex, setActiveDropdownIndex] = useState<number | null>(null)
-  const [platformSearch, setPlatformSearch] = useState("")
-  const dropdownRef = useRef<HTMLDivElement>(null)
-
-  const platforms = [
-    "YouTube",
-    "Instagram",
-    "TikTok",
-    "Facebook",
-    "WhatsApp",
-    "Snapchat",
-    "Pinterest",
-    "Reddit",
-    "LinkedIn",
-    "X (Twitter)",
-    "小红书",
-    "Bilibili",
-    "抖音",
-    "快手",
-    "自定义",
-  ]
-
-  const getAvailablePlatforms = (currentIndex: number) => {
-    const selectedPlatforms = videoLinks
-      .map((link, index) => (index !== currentIndex ? link.platform : null))
-      .filter((p) => p !== null && p !== "自定义")
-    return platforms.filter((p) => !selectedPlatforms.includes(p))
-  }
-
-  const filteredPlatforms = (currentIndex: number) =>
-    getAvailablePlatforms(currentIndex).filter((p) => p.toLowerCase().includes(platformSearch.toLowerCase()))
+  const fileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({})
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setActiveDropdownIndex(null)
-        setPlatformSearch("")
+    const handlePaste = (e: ClipboardEvent) => {
+      if (!focusedItemId) return
+
+      const items = e.clipboardData?.items
+      if (!items) return
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.startsWith("image/")) {
+          const file = items[i].getAsFile()
+          if (file) {
+            const reader = new FileReader()
+            reader.onload = (event) => {
+              setVideoItems((prevItems) =>
+                prevItems.map((item) =>
+                  item.id === focusedItemId ? { ...item, imageUrl: event.target?.result as string } : item,
+                ),
+              )
+            }
+            reader.readAsDataURL(file)
+            e.preventDefault()
+            break
+          }
+        }
       }
     }
 
-    if (activeDropdownIndex !== null) {
-      document.addEventListener("mousedown", handleClickOutside)
+    window.addEventListener("paste", handlePaste)
+    return () => window.removeEventListener("paste", handlePaste)
+  }, [focusedItemId])
+
+  const validateVideoLink = (value: string): string => {
+    if (!value.trim()) return ""
+
+    const wwwPattern = /^www\.[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/.*)?$/
+    if (wwwPattern.test(value)) {
+      return ""
     }
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
+    try {
+      new URL(value)
+      return ""
+    } catch {
+      return "请输入有效的链接格式 (如: https://example.com 或 www.example.com)"
     }
-  }, [activeDropdownIndex])
+  }
 
-  const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
+  const handleImageUpload = (itemId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file && file.type.startsWith("image/")) {
       const reader = new FileReader()
       reader.onload = (e) => {
-        setThumbnail(e.target?.result as string)
+        setVideoItems((items) =>
+          items.map((item) => (item.id === itemId ? { ...item, imageUrl: e.target?.result as string } : item)),
+        )
       }
       reader.readAsDataURL(file)
     }
+    if (event.target) {
+      event.target.value = ""
+    }
   }
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    alert("提交成功！我们的审核团队将在24小时内处理并通过邮件通知您。")
-    router.push("/blogger-dashboard")
-  }
-
-  const handleCancel = () => {
-    router.back()
-  }
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(true)
-  }
-
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(false)
-  }
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(false)
-
-    const files = e.dataTransfer.files
-    if (files && files[0] && files[0].type.startsWith("image/")) {
-      const file = files[0]
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setThumbnail(e.target?.result as string)
+  const handleImageClick = (itemId: string) => {
+    const item = videoItems.find((i) => i.id === itemId)
+    if (item?.imageUrl && item?.videoLink && !item.linkError) {
+      let url = item.videoLink
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        url = "https://" + url
       }
-      reader.readAsDataURL(file)
+      window.open(url, "_blank")
+    } else if (!item?.imageUrl) {
+      fileInputRefs.current[itemId]?.click()
     }
   }
 
-  const handlePlatformSelect = (platform: string, index: number) => {
-    const newLinks = [...videoLinks]
-    newLinks[index].platform = platform
-    if (platform !== "自定义") {
-      newLinks[index].customName = ""
-    }
-    setVideoLinks(newLinks)
-    setPlatformSearch("")
-    setActiveDropdownIndex(null)
+  const handleLinkChange = (itemId: string, value: string) => {
+    const error = validateVideoLink(value)
+    setVideoItems((items) =>
+      items.map((item) =>
+        item.id === itemId ? { ...item, videoLink: value, linkError: error, linkSubmitted: false } : item,
+      ),
+    )
   }
 
-  const handleVideoUrlChange = (index: number, value: string) => {
-    const newLinks = [...videoLinks]
-    newLinks[index].url = value
-    setVideoLinks(newLinks)
+  const handleLinkBlur = (itemId: string) => {
+    setVideoItems((items) =>
+      items.map((item) => {
+        if (item.id === itemId && item.videoLink && !item.linkError) {
+          return { ...item, linkSubmitted: true }
+        }
+        return item
+      }),
+    )
   }
 
-  const handleCustomNameChange = (index: number, value: string) => {
-    const newLinks = [...videoLinks]
-    newLinks[index].customName = value
-    setVideoLinks(newLinks)
-  }
-
-  const handleAddVideoLink = () => {
-    setVideoLinks([...videoLinks, { platform: "", url: "", customName: "" }])
-  }
-
-  const handleRemoveVideoLink = (index: number) => {
-    if (videoLinks.length > 1) {
-      setVideoLinks(videoLinks.filter((_, i) => i !== index))
+  const handleLinkKeyDown = (e: React.KeyboardEvent, itemId: string) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      handleLinkBlur(itemId)
+      ;(e.target as HTMLInputElement).blur()
     }
   }
 
-  const handleCustomPlatformInput = (index: number, value: string) => {
-    const newLinks = [...videoLinks]
-    newLinks[index].customName = value
-    setVideoLinks(newLinks)
+  const handleLinkTextClick = (itemId: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setVideoItems((items) => items.map((item) => (item.id === itemId ? { ...item, linkSubmitted: false } : item)))
+  }
+
+  const handleDeleteItem = (itemId: string) => {
+    if (videoItems.length <= 1) return
+    setVideoItems((items) => items.filter((item) => item.id !== itemId))
+  }
+
+  const handleAddItem = () => {
+    const newId = Date.now().toString()
+    setVideoItems([...videoItems, { id: newId, imageUrl: null, videoLink: "", linkError: "", linkSubmitted: false }])
+  }
+
+  const canOpenLink = (item: VideoItem) => {
+    return item.imageUrl && item.videoLink && !item.linkError
+  }
+
+  const formatLinkDisplay = (link: string) => {
+    try {
+      let url = link
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        url = "https://" + url
+      }
+      const urlObj = new URL(url)
+      const domain = urlObj.hostname.replace("www.", "")
+      return domain.length > 20 ? domain.substring(0, 20) + "..." : domain
+    } catch {
+      return link.length > 20 ? link.substring(0, 20) + "..." : link
+    }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
       <AppHeader />
 
-      <main className="mx-auto max-w-4xl px-6 py-12">
-        <Breadcrumb
-          items={[
-            { label: "首页", href: "/" },
-            { label: "我的推广", href: "/my-promotions" },
-            { label: "提交视频信息" },
-          ]}
-        />
+      <main className="pt-20 pb-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          {/* Breadcrumb */}
+          <Breadcrumb />
 
-        <div className="mt-8 text-center mb-5">
-          <h1 className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text font-bold text-transparent text-3xl">
-            提交视频信息
-          </h1>
-          <p className="text-slate-600 leading-7 text-base">此表单用于提交您的视频链接和视频封面图片</p>
-        </div>
+          {/* Main Card */}
+          <div className="mt-6 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            {/* Header Section */}
+            <div className="px-8 pt-8 pb-6">
+              {/* Product Name */}
+              <h1 className="text-center text-xl font-bold text-slate-900 mb-4">{productData.name}</h1>
 
-        <div className="rounded-2xl bg-white p-8 shadow-lg">
-          {/* Section 1: 推广产品 */}
-          <div className="border-b border-slate-200 pb-8">
-            <h2 className="mb-4 text-2xl font-bold text-slate-800">推广产品</h2>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-5">
-                <div className="overflow-hidden shadow-md ring-2 ring-blue-100 rounded-lg">
+              {/* Circular Logo */}
+              <div className="flex justify-center mb-4">
+                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg">
                   <img
-                    src="/vintage-camera-still-life.png"
-                    alt="Product"
-                    className="object-cover w-28 h-28 rounded-md"
+                    src={productData.logoUrl || "/placeholder.svg"}
+                    alt={productData.name}
+                    className="w-full h-full object-cover"
                   />
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-slate-800">{projectName}</h3>
-                  <span className="mt-1 inline-block rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
-                    {projectCategory}
+              </div>
+
+              {/* Product Tags */}
+              <div className="flex flex-wrap justify-center gap-2">
+                {productData.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 rounded-full text-xs font-medium text-slate-600 bg-slate-100 border border-slate-200"
+                  >
+                    {tag}
                   </span>
-                </div>
+                ))}
               </div>
             </div>
-          </div>
 
-          {/* Section 2: 视频链接 */}
-          <div className="border-b border-slate-200 py-8">
-            <h2 className="mb-4 font-bold text-slate-800 text-lg">视频链接 (URL)</h2>
-            {videoLinks.map((link, index) => (
-              <div key={index} className="mb-4">
-                <div className="flex gap-[4px] items-start">
-                  <div className="relative w-40" ref={activeDropdownIndex === index ? dropdownRef : null}>
-                    {link.platform === "自定义" ? (
-                      <input
-                        type="text"
-                        placeholder="输入平台名称"
-                        value={link.customName}
-                        onChange={(e) => handleCustomPlatformInput(index, e.target.value)}
-                        className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-800 transition-all placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 py-2 text-sm px-3"
-                        autoFocus
-                      />
-                    ) : (
+            {/* Divider */}
+            <div className="border-t border-slate-200" />
+
+            {/* Video Items Grid */}
+            <div className="p-8">
+              <div className="grid grid-cols-2 gap-6">
+                {videoItems.map((item) => (
+                  <div key={item.id} className="relative group">
+                    {videoItems.length > 1 && (
                       <button
-                        onClick={() => {
-                          setActiveDropdownIndex(activeDropdownIndex === index ? null : index)
-                          setPlatformSearch("")
-                        }}
-                        className="rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-800 transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 text-sm text-left font-medium hover:border-blue-300 py-2 flex items-center justify-between px-2 w-full"
+                        onClick={() => handleDeleteItem(item.id)}
+                        className="absolute top-2 right-2 z-10 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-md"
                       >
-                        <span className={`truncate ${!link.platform ? "text-slate-400" : "text-slate-800"}`}>
-                          {link.platform || "选择视频平台"}
-                        </span>
-                        <ChevronDown className="h-4 w-4 flex-shrink-0 text-slate-400" />
+                        <Trash2 className="w-3 h-3" />
                       </button>
                     )}
-                    {activeDropdownIndex === index && link.platform !== "自定义" && (
-                      <div className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-slate-200 rounded-xl shadow-lg z-10 max-h-60 overflow-y-auto">
-                        <input
-                          type="text"
-                          placeholder="搜索平台..."
-                          value={platformSearch}
-                          onChange={(e) => setPlatformSearch(e.target.value)}
-                          className="w-full px-3 py-2 border-b border-slate-200 text-sm focus:outline-none sticky top-0 bg-white"
-                          autoFocus
-                        />
-                        {filteredPlatforms(index).map((platform) => (
-                          <button
-                            key={platform}
-                            onClick={() => handlePlatformSelect(platform, index)}
-                            className="w-full text-left px-3 py-2 hover:bg-blue-50 text-sm text-slate-700 transition-colors"
-                          >
-                            {platform}
-                          </button>
-                        ))}
-                        {filteredPlatforms(index).length === 0 && (
-                          <div className="px-3 py-2 text-sm text-slate-400 text-center">没有可用的平台</div>
-                        )}
+
+                    <div
+                      onClick={() => handleImageClick(item.id)}
+                      onMouseEnter={() => setFocusedItemId(item.id)}
+                      onMouseLeave={() => setFocusedItemId(null)}
+                      className={`relative w-full aspect-video rounded-xl border-2 border-dashed overflow-hidden transition-all cursor-pointer ${
+                        item.imageUrl
+                          ? "border-transparent"
+                          : "border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-blue-50"
+                      } ${canOpenLink(item) ? "hover:ring-2 hover:ring-blue-400 hover:ring-offset-2" : ""}`}
+                    >
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        ref={(el) => {
+                          fileInputRefs.current[item.id] = el
+                        }}
+                        onChange={(e) => handleImageUpload(item.id, e)}
+                      />
+
+                      {item.imageUrl ? (
+                        <>
+                          <img
+                            src={item.imageUrl || "/placeholder.svg"}
+                            alt="Video thumbnail"
+                            className="w-full h-full object-cover"
+                          />
+                          {canOpenLink(item) && (
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                              <div className="w-16 h-16 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-colors">
+                                <Play className="w-8 h-8 text-white/80 drop-shadow-lg" fill="currentColor" />
+                              </div>
+                            </div>
+                          )}
+                          {item.videoLink && !item.linkError && item.linkSubmitted && (
+                            <div
+                              onClick={(e) => handleLinkTextClick(item.id, e)}
+                              className="absolute bottom-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-sm rounded-md flex items-center gap-1 cursor-pointer hover:bg-black/70 transition-all animate-in slide-in-from-bottom-2 fade-in duration-300"
+                            >
+                              <Link className="w-3 h-3 text-white/80" />
+                              <span className="text-[10px] text-white/90 font-medium truncate max-w-[100px]">
+                                {formatLinkDisplay(item.videoLink)}
+                              </span>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                          <div className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center">
+                            <Upload className="w-5 h-5 text-slate-400" />
+                          </div>
+                          <span className="text-xs text-slate-500">上传封面图</span>
+                          {focusedItemId === item.id && (
+                            <span className="text-[10px] text-blue-500 animate-pulse">按 Ctrl+V 粘贴截图</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {(!item.linkSubmitted || !item.videoLink) && (
+                      <div className="mt-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                        <div className="flex items-center gap-2">
+                          <Video className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                          <input
+                            type="text"
+                            value={item.videoLink}
+                            onChange={(e) => handleLinkChange(item.id, e.target.value)}
+                            onBlur={() => handleLinkBlur(item.id)}
+                            onKeyDown={(e) => handleLinkKeyDown(e, item.id)}
+                            placeholder="请输入视频链接..."
+                            className={`flex-1 text-sm bg-transparent border-b transition-colors outline-none py-1 placeholder:text-slate-400 placeholder:font-normal placeholder:text-xs ${
+                              item.linkError
+                                ? "border-red-300 text-red-600 focus:border-red-500"
+                                : item.videoLink
+                                  ? "border-blue-300 text-blue-600 focus:border-blue-500"
+                                  : "border-slate-200 text-slate-600 focus:border-blue-400"
+                            }`}
+                          />
+                        </div>
+                        {item.linkError && <p className="mt-1 text-xs text-red-500">{item.linkError}</p>}
                       </div>
                     )}
                   </div>
+                ))}
 
-                  {/* URL Input */}
-                  <div className="relative flex-1">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                      <LinkIcon className="h-5 w-5 text-blue-500" />
-                    </div>
-                    <input
-                      type="url"
-                      value={link.url}
-                      onChange={(e) => handleVideoUrlChange(index, e.target.value)}
-                      placeholder="输入完整的视频URL地址"
-                      className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-800 transition-all placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 py-2 text-sm pl-10 pr-3"
-                    />
-                  </div>
-
-                  {/* Remove Button */}
-                  {videoLinks.length > 1 && (
-                    <button
-                      onClick={() => handleRemoveVideoLink(index)}
-                      className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
-                    >
-                      <X className="h-5 w-5" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-
-            {/* Add Video Link Button */}
-            <button
-              onClick={handleAddVideoLink}
-              className="px-4 py-[0.22rem] text-sm text-blue-600 hover:text-blue-700 font-medium bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors mt-0.55"
-            >
-              + URL
-            </button>
-            <p className="mt-2 text-slate-400 text-xs px-4">请选择对应的自媒体平台，并输入完整的视频URL地址</p>
-          </div>
-
-          {/* Section 3: 视频首屏截图 */}
-          <div className="border-b border-slate-200 py-8">
-            <h2 className="mb-4 font-bold text-slate-800 text-lg">视频首屏截图</h2>
-            <label className="block cursor-pointer">
-              <input type="file" accept="image/*" onChange={handleThumbnailUpload} className="hidden" />
-              <div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                className={`group flex items-center justify-center gap-3 rounded-xl border-2 border-dashed transition-all py-[88px] px-1 min-h-[352px] mx-auto w-[90%] ${
-                  isDragging
-                    ? "border-blue-500 bg-blue-100"
-                    : "border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-blue-50"
-                }`}
-              >
-                <Upload
-                  className={`h-6 w-6 transition-colors ${isDragging ? "text-blue-500" : "text-slate-400 group-hover:text-blue-500"}`}
-                />
-                <span
-                  className={`text-base font-medium transition-colors ${isDragging ? "text-blue-600" : "text-slate-600 group-hover:text-blue-600"}`}
+                <div
+                  onClick={handleAddItem}
+                  className="relative w-full aspect-video rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-blue-50 transition-all cursor-pointer flex flex-col items-center justify-center gap-2"
                 >
-                  点击上传封面图片
-                </span>
+                  <div className="w-14 h-14 rounded-full bg-white shadow-md flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Plus className="w-7 h-7 text-slate-400" />
+                  </div>
+                  <span className="text-sm text-slate-500 font-medium">添加视频</span>
+                </div>
               </div>
-            </label>
-            <p className="mt-2 text-sm text-slate-500 text-center leading-4">支持PNG, JPG, GIF文件，最大5MB</p>
-          </div>
+            </div>
 
-          {/* Section 4: 视频预览 */}
-          <div className="pt-8">
-            <h2 className="mb-4 font-bold text-slate-800 text-lg">视频预览</h2>
-            <div className="flex items-center justify-center rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 min-h-[352px] w-[90%] mx-auto">
-              {thumbnail ? (
-                <div className="relative">
-                  <img
-                    src={thumbnail || "/placeholder.svg"}
-                    alt="Video thumbnail"
-                    className="max-h-80 rounded-xl object-cover shadow-2xl ring-4 ring-white"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <button className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 shadow-xl transition-transform hover:scale-110">
-                      <Play className="h-10 w-10 text-white" fill="white" />
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center gap-4">
-                  <div className="rounded-full bg-slate-300 p-6">
-                    <Play className="h-12 w-12 text-slate-500" />
-                  </div>
-                  <p className="text-slate-500">视频预览将在此显示</p>
-                </div>
-              )}
+            {/* Submit Button */}
+            <div className="px-8 pb-8 flex justify-center">
+              <button
+                onClick={() => router.push("/blogger-dashboard")}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all py-2.5 h-auto w-[30%]"
+              >
+                提交视频
+              </button>
             </div>
           </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex items-center justify-center gap-4 pt-6 mt-3.5 flex-row leading-3">
-          <button
-            onClick={handleSubmit}
-            disabled={
-              isSubmitting || videoLinks.some((link) => !link.url || (link.platform === "自定义" && !link.customName))
-            }
-            className="group flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transition-all hover:shadow-xl hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:shadow-lg disabled:hover:brightness-100 leading-3 py-2 px-4 rounded-lg font-bold"
-          >
-            {isSubmitting ? (
-              <>
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                提交中...
-              </>
-            ) : (
-              <>
-                <Check className="h-5 w-5" />
-                提交
-              </>
-            )}
-          </button>
-          <button
-            onClick={handleCancel}
-            disabled={isSubmitting}
-            className="flex items-center gap-2 border-2 border-slate-300 bg-white text-slate-700 shadow-md transition-all hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 leading-3 font-bold px-5 rounded-lg py-1.5"
-          >
-            <X className="h-5 w-5" />
-            取消
-          </button>
-        </div>
-
-        {/* Info Alert */}
-        <div className="flex gap-4 rounded-xl bg-blue-50 p-5 items-center mt-8 justify-end py-0">
-          <Info className="h-6 w-6 shrink-0 text-slate-400" />
-          <p className="text-sm leading-relaxed text-slate-400">
-            提交后我们的审核团队将在24小时内处理并通过邮件通知您。
-          </p>
         </div>
       </main>
     </div>
