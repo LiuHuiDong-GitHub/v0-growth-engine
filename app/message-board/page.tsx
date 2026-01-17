@@ -97,9 +97,7 @@ export default function MessageBoardPage() {
 
             {/* Message Input */}
             <div className="flex items-end gap-3 pt-6 border-t-0">
-              <button className="flex h-12 w-12 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600">
-                <Upload className="h-5 w-5" />
-              </button>
+              
               <div className="flex-1 rounded-full border-2 border-slate-200 bg-white px-6 py-3 transition-colors focus-within:border-blue-400">
                 <input
                   type="text"

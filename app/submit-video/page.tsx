@@ -83,7 +83,7 @@ export default function SubmitVideo() {
     setIsSubmitting(true)
     await new Promise((resolve) => setTimeout(resolve, 1500))
     alert("提交成功！我们的审核团队将在24小时内处理并通过邮件通知您。")
-    router.push(`/blogger-video/${projectId}?status=submitted`)
+    router.push("/blogger-dashboard")
   }
 
   const handleCancel = () => {
