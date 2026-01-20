@@ -206,10 +206,10 @@ export default function Page() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         {/* Header */}
         <header className="border-b border-blue-100 bg-white/42 backdrop-blur-md sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:pl-0 lg:pr-2.5">
-            <div className="flex justify-between items-center py-[1.8] leading-3">
-              <div className="flex items-center gap-2">
-                <div className="bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center rounded-full w-[50px] h-[50px] leading-7">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 lg:pl-0 lg:pr-2.5">
+            <div className="flex justify-between items-center py-2 sm:py-[1.8] leading-3">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <div className="bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center rounded-full w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] leading-7">
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -217,17 +217,17 @@ export default function Page() {
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="w-5 h-5"
+                    className="w-4 h-4 sm:w-5 sm:h-5"
                   >
                     <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
                   </svg>
                 </div>
-                <span className="font-[family-name:var(--font-space-grotesk)] font-bold text-xl text-gray-900">
+                <span className="font-[family-name:var(--font-space-grotesk)] font-bold text-base sm:text-lg md:text-xl text-gray-900">
                   GrowthEngine
                 </span>
               </div>
 
-              <nav className="hidden md:flex items-center gap-8">
+              <nav className="hidden md:flex items-center gap-6 lg:gap-8">
                 <a href="#features" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
                   Features
                 </a>
@@ -239,7 +239,7 @@ export default function Page() {
                 </a>
               </nav>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="relative flex items-center rounded-full bg-slate-100 p-1 px-0 py-1 w-fit h-auto">
                   {/* Sliding background */}
                   <div
@@ -252,7 +252,7 @@ export default function Page() {
                   <Link href="/login" className="relative z-10">
                     <Button
                       variant="ghost"
-                      className={`relative text-sm font-medium rounded-full px-6 transition-colors !bg-transparent hover:!bg-transparent ${
+                      className={`relative text-xs sm:text-sm font-medium rounded-full px-3 sm:px-6 transition-colors !bg-transparent hover:!bg-transparent ${
                         activeAuthButton === "login" ? "!text-white" : "!text-gray-700 hover:!text-white"
                       }`}
                       onMouseEnter={() => setActiveAuthButton("login")}
@@ -266,7 +266,7 @@ export default function Page() {
                   <Link href="/register" className="relative z-10">
                     <Button
                       variant="ghost"
-                      className={`relative text-sm font-medium rounded-full px-6 transition-colors !bg-transparent hover:!bg-transparent ${
+                      className={`relative text-xs sm:text-sm font-medium rounded-full px-3 sm:px-6 transition-colors !bg-transparent hover:!bg-transparent ${
                         activeAuthButton === "register" ? "!text-white" : "!text-gray-700 hover:!text-white"
                       }`}
                       onMouseEnter={() => setActiveAuthButton("register")}
@@ -279,13 +279,13 @@ export default function Page() {
                 {/* End of sliding capsule background */}
 
                 {/* Notification Bell */}
-                <div className="relative">
+                <div className="relative hidden sm:block">
                   <button
                     onClick={() => setShowNotifications(!showNotifications)}
                     className="relative text-slate-400 transition-colors hover:text-slate-600 p-2"
                   >
-                    <Bell className="h-5 w-5" />
-                    <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
+                    <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <span className="absolute right-1 top-1 flex h-3.5 w-3.5 sm:h-4 sm:w-4 items-center justify-center rounded-full bg-red-500 text-[9px] sm:text-[10px] text-white">
                       3
                     </span>
                   </button>
@@ -367,12 +367,12 @@ export default function Page() {
         </header>
 
         {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32 lg:pr-8 lg:pl-8 sm:pt-[100px] sm:pb-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 md:py-32 lg:pr-8 lg:pl-8 sm:pt-[100px] sm:pb-20">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="font-[family-name:var(--font-space-grotesk)] text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight text-balance">
+            <h1 className="font-[family-name:var(--font-space-grotesk)] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight text-balance px-2">
               你的产品准备好被看见了吗?
             </h1>
-            <p className="text-lg sm:text-xl text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto px-4">
               GrowthEngine — 独立创作者的首选引擎，帮助产品高效曝光出圈。
             </p>
             <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-lg px-8 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all">
@@ -853,84 +853,7 @@ export default function Page() {
         </section>
 
         {/* Reddit Leads Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-          <div className="mb-12">
-            <h2 className="font-[family-name:var(--font-space-grotesk)] text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
-              Reddit线索预览区
-            </h2>
-            <p className="text-lg text-gray-600">A海日至截至，来促进您的产品广告。</p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                title: "求助：如何作为新的并申请用具单独计算基础资源配置",
-                desc: "我想知道如何在Reddit社区中有效推广我的产品。我看到很多成功案例，但不知道从何开始。有没有经验丰富的朋友可以分享一些技巧？",
-                votes: 343,
-                comments: 28,
-              },
-              {
-                title: "分析：Top10 独立软件开发者背后的增长策略",
-                desc: "深度分析了10位独立开发者的增长路径，发现他们都有7个以上持续的增长策略其中Reddit是最重要的渠道之一",
-                votes: 678,
-                comments: 134,
-              },
-              {
-                title: "讨论：独立开发者如何在竞争中求生存?需要必备的工具是...",
-                desc: "作为一个独立开发者，在当前竞争激烈的市场中，我们需要掌握哪些必备工具和技能才能脱颖而出？",
-                votes: 512,
-                comments: 67,
-              },
-              {
-                title: "分享：我如何一个 গৌরব内一获取到5000个精准用户",
-                desc: "一个月前推出了一个简单的效率工具，通过Reddit和其他社区的精准投放，成功获取了5000个用户，这里是我的完整步骤...",
-                votes: 892,
-                comments: 156,
-              },
-              {
-                title: "产品发布：一款全新的团队协作管理工具 - 极简但强大",
-                desc: "大家好！我花了6个月开发了一款团队协作工具，它的设计理念是极简但功能强大，现在免费开放给前1000个用户使用",
-                votes: 240,
-                comments: 45,
-              },
-              {
-                title: "这是：好手段开有效性理念辅助集合AI备来着创建",
-                desc: "最近一直在思考如何把AI真正融入到产品设计流程中，而不是只是当作一个噱头。分享一些我的实践经验和踩过的坑",
-                votes: 456,
-                comments: 89,
-              },
-            ].map((lead, i) => (
-              <Card
-                key={i}
-                className="p-6 border-2 border-gray-100 hover:border-blue-200 transition-all hover:shadow-lg group"
-              >
-                <h3 className="font-semibold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors leading-snug">
-                  {lead.title}
-                </h3>
-                <p className="text-sm text-gray-600 mb-4 line-clamp-3 leading-relaxed">{lead.desc}</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
-                    <span className="flex items-center gap-1">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-                        <path d="M18 15l-6-6-6 6"></path>
-                      </svg>
-                      {lead.votes}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                      </svg>
-                      {lead.comments}
-                    </span>
-                  </div>
-                  <button className="text-sm text-blue-600 hover:text-blue-700 font-medium hover:underline">
-                    查看详情 →
-                  </button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </section>
+        
 
         {/* Footer */}
         <footer id="contact" className="border-t border-blue-100 bg-white">

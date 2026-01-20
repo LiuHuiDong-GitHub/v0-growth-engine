@@ -200,10 +200,10 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
   return (
     <>
       <header className="border-b border-blue-100 bg-white/42 backdrop-blur-md fixed top-0 left-0 right-0 z-50">
-        <div className="flex items-center justify-between px-8 py-[1.8]">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between px-3 sm:px-8 py-2 sm:py-[1.8]">
+          <div className="flex items-center gap-2 sm:gap-4">
             {isScrolled && breadcrumbItems && breadcrumbItems.length > 0 ? (
-              <nav className="flex items-center gap-2 text-sm">
+              <nav className="hidden sm:flex items-center gap-2 text-sm">
                 {breadcrumbItems.map((item, index) => (
                   <div key={index} className="flex items-center gap-2">
                     {index > 0 && <span className="text-slate-400">/</span>}
@@ -219,17 +219,17 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
               </nav>
             ) : (
               <>
-                <Search className="h-5 w-5 text-slate-400" />
-                <span className="text-lg font-semibold text-slate-900">Dashboard</span>
+                <Search className="hidden sm:block h-5 w-5 text-slate-400" />
+                <span className="hidden sm:block text-lg font-semibold text-slate-900">Dashboard</span>
               </>
             )}
           </div>
 
-          <Link href="/" className="text-xl font-bold text-blue-600">
+          <Link href="/" className="text-base sm:text-xl font-bold text-blue-600">
             GrowthEngine
           </Link>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             {/* Notification Bell */}
             <div className="relative">
               <button
@@ -346,7 +346,7 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
         </div>
       </header>
 
-      <div className="h-[57px]" />
+      <div className="h-[50px] sm:h-[57px]" />
 
       {showSettingsModal && (
         <div

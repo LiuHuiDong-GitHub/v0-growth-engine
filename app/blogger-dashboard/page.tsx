@@ -154,8 +154,8 @@ export default function BloggerDashboard() {
 
   return (
     <div className="flex min-h-screen bg-white">
-      {/* Sidebar */}
-      <aside className="fixed left-0 top-0 z-40 h-screen w-16 border-r border-slate-200 bg-white pt-20">
+      {/* Sidebar - Hidden on mobile */}
+      <aside className="hidden md:fixed md:left-0 md:top-0 md:z-40 md:h-screen md:w-16 md:border-r md:border-slate-200 md:bg-white md:pt-20 md:block">
         <nav className="flex flex-col items-center gap-6 py-6">
           <button className="group flex flex-col items-center gap-1 text-blue-600 cursor-pointer">
             <Lightbulb className="h-6 w-6" />
@@ -192,7 +192,7 @@ export default function BloggerDashboard() {
         </nav>
       </aside>
 
-      <div className="ml-16 flex-1">
+      <div className="md:ml-16 flex-1">
         <AppHeader
           breadcrumbItems={[
             { label: "首页", href: "/" },
@@ -201,7 +201,7 @@ export default function BloggerDashboard() {
           ]}
         />
 
-        <main className="px-12 py-8">
+        <main className="px-4 sm:px-6 md:px-12 py-6 sm:py-8">
           {/* Breadcrumb - shown by default, will be moved to header on scroll */}
           <Breadcrumb
             items={[
@@ -211,20 +211,20 @@ export default function BloggerDashboard() {
             ]}
           />
 
-          <h1 className="mb-8 mt-6 text-3xl font-bold text-slate-900">我的仪表盘</h1>
+          <h1 className="mb-6 sm:mb-8 mt-4 sm:mt-6 text-2xl sm:text-3xl font-bold text-slate-900">我的仪表盘</h1>
 
           {/* Exposure Goals Section */}
-          <div className="mb-12 grid gap-8 lg:grid-cols-2">
+          <div className="mb-8 sm:mb-12 grid gap-6 sm:gap-8 lg:grid-cols-2">
             <div>
-              <h2 className="mb-4 text-xl font-bold text-slate-900 pl-5">曝光目标</h2>
-              <p className="mb-6 text-sm text-slate-600 pl-5">
+              <h2 className="mb-3 sm:mb-4 text-lg sm:text-xl font-bold text-slate-900 pl-0 sm:pl-5">曝光目标</h2>
+              <p className="mb-4 sm:mb-6 text-xs sm:text-sm text-slate-600 pl-0 sm:pl-5">
                 {hoveredVideo !== null
                   ? `正在查看: ${videoProjects[hoveredVideo].title}`
                   : "您的产品正曝光在世界各地多数。（显示所有视频总和）"}
               </p>
 
-              {/* Stats Grid */}
-              <div className="space-y-4 ml-[30%] w-[26.25%]">
+              {/* Stats Grid - Mobile friendly */}
+              <div className="space-y-3 sm:space-y-4 ml-0 sm:ml-[30%] w-full sm:w-[26.25%]">
                 {stats.map((stat, index) => (
                   <div
                     key={index}
@@ -249,15 +249,15 @@ export default function BloggerDashboard() {
               </div>
             </div>
 
-            {/* Data Visualization */}
-            <div className="relative flex items-center justify-center">
+            {/* Data Visualization - Hidden on mobile, shown on larger screens */}
+            <div className="relative hidden sm:flex items-center justify-center">
               <svg
                 className="absolute inset-0 pointer-events-none"
                 style={{ left: "-120px", width: "calc(100% + 120px)", height: "100%" }}
               >
                 {stats.map((stat, index) => {
-                  // Calculate label positions (left side)
-                  const labelStartX = 120
+                  // Calculate label positions (left side) - moved closer to text
+                  const labelStartX = 250
                   const labelY = 140 + index * 40
 
                   // Calculate ring positions (right side - center of chart)
@@ -272,7 +272,7 @@ export default function BloggerDashboard() {
 
                   // Create smooth bezier curve that doesn't cross
                   // Control points to create nice curves
-                  const controlX1 = labelStartX + 60
+                  const controlX1 = labelStartX + 40
                   const controlY1 = labelY
                   const controlX2 = ringPointX - 40
                   const controlY2 = ringPointY
@@ -361,24 +361,24 @@ export default function BloggerDashboard() {
           </div>
 
           {/* Quality Level Selector */}
-          <div className="mb-12 flex justify-center">
+          <div className="mb-8 sm:mb-12 flex justify-center">
             <div className="inline-flex gap-4">
-              <button className="flex h-24 w-24 flex-col items-center justify-center rounded-full border-blue-500 bg-blue-50 transition-all cursor-pointer border-2">
-                <span className="text-2xl font-bold text-blue-600">中</span>
-                <span className="mt-1 text-xs text-slate-600">表现程度</span>
+              <button className="flex h-20 w-20 sm:h-24 sm:w-24 flex-col items-center justify-center rounded-full border-blue-500 bg-blue-50 transition-all cursor-pointer border-2">
+                <span className="text-xl sm:text-2xl font-bold text-blue-600">中</span>
+                <span className="mt-1 text-[10px] sm:text-xs text-slate-600">表现程度</span>
               </button>
             </div>
           </div>
 
           {/* Collaborated Videos Section */}
-          <div className="mb-24">
-            <h2 className="text-2xl font-bold text-slate-900 mb-4">视频</h2>
+          <div className="mb-16 sm:mb-24">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4">视频</h2>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
               {videoProjects.map((video, index) => (
                 <div
                   key={video.id}
-                  className={`flex items-center bg-white p-6 gap-6 rounded-lg transition-all duration-300 cursor-pointer mx-0 px-2 py-2 border ${
+                  className={`flex flex-col sm:flex-row items-start sm:items-center bg-white p-3 sm:p-6 gap-3 sm:gap-6 rounded-lg transition-all duration-300 cursor-pointer mx-0 px-2 sm:px-2 py-2 border ${
                     hoveredVideo === index
                       ? "border-blue-400 shadow-lg -translate-y-1 bg-blue-50/30"
                       : "border-slate-200 hover:shadow-lg hover:-translate-y-1"
@@ -387,36 +387,36 @@ export default function BloggerDashboard() {
                   onMouseLeave={() => setHoveredVideo(null)}
                   onClick={() => handleVideoClick(video.videoLink)}
                 >
-                  <div className="relative h-32 w-48 flex-shrink-0 overflow-hidden rounded-3xl bg-slate-200 group">
+                  <div className="relative h-40 w-full sm:h-32 sm:w-48 flex-shrink-0 overflow-hidden rounded-xl sm:rounded-3xl bg-slate-200 group">
                     <img
                       src={video.thumbnail || "/placeholder.svg?height=128&width=192"}
                       alt={video.title}
                       className="h-full w-full object-cover rounded-xs"
                     />
                     {/* Play button overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="w-14 h-14 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-colors">
-                        <Play className="w-7 h-7 text-white ml-1" fill="currentColor" />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-colors">
+                        <Play className="w-6 h-6 sm:w-7 sm:h-7 text-white ml-1" fill="currentColor" />
                       </div>
                     </div>
                     {/* External link indicator */}
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute top-2 right-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                       <ExternalLink className="w-4 h-4 text-white drop-shadow-lg" />
                     </div>
                   </div>
 
-                  <div className="flex-1">
-                    <h3 className="font-bold text-slate-900 text-base">{video.title}</h3>
-                    <p className="mt-2 text-slate-400 text-sm">时长: {video.duration}</p>
-                    <div className="mt-2 flex items-center gap-1 text-xs text-blue-500">
+                  <div className="flex-1 w-full">
+                    <h3 className="font-bold text-slate-900 text-sm sm:text-base">{video.title}</h3>
+                    <p className="mt-1 sm:mt-2 text-slate-400 text-xs sm:text-sm">时长: {video.duration}</p>
+                    <div className="mt-1 sm:mt-2 flex items-center gap-1 text-xs text-blue-500">
                       <ExternalLink className="w-3 h-3" />
-                      <span className="truncate max-w-[150px]">{video.videoLink}</span>
+                      <span className="truncate max-w-[200px] sm:max-w-[150px]">{video.videoLink}</span>
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="relative h-20 w-20">
-                      <svg className="h-20 w-20 -rotate-90" viewBox="0 0 80 80">
+                  <div className="flex flex-row sm:flex-col items-center gap-2 w-full sm:w-auto justify-between sm:justify-start mt-2 sm:mt-0">
+                    <div className="relative h-16 w-16 sm:h-20 sm:w-20">
+                      <svg className="h-16 w-16 sm:h-20 sm:w-20 -rotate-90" viewBox="0 0 80 80">
                         <circle cx="40" cy="40" r="34" fill="none" stroke="#e5e7eb" strokeWidth="6" />
                         <circle
                           cx="40"
@@ -432,10 +432,10 @@ export default function BloggerDashboard() {
                         />
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-lg font-bold text-slate-900">{video.progress}%</span>
+                        <span className="text-sm sm:text-lg font-bold text-slate-900">{video.progress}%</span>
                       </div>
                     </div>
-                    <div className="text-center text-xs text-slate-500">
+                    <div className="text-center text-[10px] sm:text-xs text-slate-500">
                       <div>{""}</div>
                       <div>目标量/曝光量</div>
                     </div>

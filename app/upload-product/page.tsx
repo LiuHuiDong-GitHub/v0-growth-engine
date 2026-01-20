@@ -853,8 +853,8 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
-      {/* Sidebar */}
-      <aside className="fixed left-0 top-0 flex h-screen flex-col items-center gap-8 border-r border-slate-200/80 bg-white/80 backdrop-blur-sm z-40 w-7 py-9">
+      {/* Sidebar - Hidden on mobile */}
+      <aside className="hidden md:flex fixed left-0 top-0 h-screen flex-col items-center gap-8 border-r border-slate-200/80 bg-white/80 backdrop-blur-sm z-40 w-7 py-9">
         <Link href="/" className="mb-8">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25">
             <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -901,10 +901,10 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
       </aside>
 
       {/* Main Content */}
-      <div className="ml-16 flex flex-1 flex-col">
+      <div className="md:ml-16 flex flex-1 flex-col">
         <AppHeader />
 
-        <main className="flex-1 p-8 flex items-center justify-center">
+        <main className="flex-1 p-4 sm:p-6 md:p-8 flex items-center justify-center">
           <div className="mx-auto max-w-7xl w-full">
             {/* Breadcrumb */}
             <Breadcrumb
@@ -916,17 +916,17 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
             />
 
             {/* Main Layout: Hero Card + Right Sidebar Cards */}
-            <div className="mt-6 flex gap-6">
+            <div className="mt-4 sm:mt-6 flex flex-col lg:flex-row gap-4 sm:gap-6">
               {/* Hero Section - Main Card */}
-              <div className="flex-1 rounded-3xl bg-white p-8 shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
+              <div className="flex-1 rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
                 {/* Decorative background */}
                 <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full -translate-y-1/2 translate-x-1/2 opacity-50" />
 
                 <div className="relative">
                   {/* Top Section: Logo, Info, Price Medal */}
-                  <div className="flex gap-8">
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 md:gap-8">
                     {/* Product Logo */}
-                    <div className="flex-shrink-0 relative">
+                    <div className="flex-shrink-0 relative mx-auto sm:mx-0">
                       <input
                         ref={fileInputRef}
                         type="file"
@@ -936,7 +936,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                       />
                       <div
                         onClick={handleLogoClick}
-                        className="w-28 h-28 rounded-2xl bg-gray-100 flex items-center justify-center shadow-xl shadow-gray-200/30 ring-4 ring-white cursor-pointer hover:opacity-90 transition-opacity overflow-hidden group"
+                        className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-xl sm:rounded-2xl bg-gray-100 flex items-center justify-center shadow-xl shadow-gray-200/30 ring-2 sm:ring-4 ring-white cursor-pointer hover:opacity-90 transition-opacity overflow-hidden group"
                       >
                         {productLogoUrl ? (
                           <img
@@ -946,8 +946,8 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                           />
                         ) : (
                           <div className="flex flex-col items-center justify-center gap-1">
-                            <ImagePlus className="h-8 w-8 text-gray-400 group-hover:text-gray-600 transition-colors" />
-                            <span className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
+                            <ImagePlus className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                            <span className="text-[10px] sm:text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
                               上传logo图
                             </span>
                           </div>
@@ -957,15 +957,15 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
 
                     {/* Product Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
+                      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                        <div className="flex-1 w-full">
+                          <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2">
                             <input
                               type="text"
                               value={productName}
                               onChange={(e) => setProductName(e.target.value)}
                               placeholder="请输入产品名称.."
-                              className="text-2xl font-bold bg-transparent outline-none focus:ring-0 p-0 min-w-0 border border-dotted border-slate-300 text-slate-600"
+                              className="text-lg sm:text-2xl font-bold bg-transparent outline-none focus:ring-0 p-0 min-w-0 border border-dotted border-slate-300 text-slate-600 text-center sm:text-left w-full sm:w-auto"
                             />
                             {/* Progress Badge */}
                           </div>
@@ -976,13 +976,13 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                             value={productDescription}
                             onChange={handleDescriptionChange}
                             placeholder="请填写产品简介..."
-                            className="w-full text-sm leading-relaxed bg-transparent outline-none focus:ring-0 p-0 resize-none border border-dotted border-slate-300 text-slate-700"
+                            className="w-full text-xs sm:text-sm leading-relaxed bg-transparent outline-none focus:ring-0 p-0 resize-none border border-dotted border-slate-300 text-slate-700 text-center sm:text-left"
                             rows={2}
                           />
 
                           {/* Product Link */}
-                          <div className="inline-flex items-center gap-1.5 mt-3 text-blue-600 text-sm font-medium transition-colors">
-                            <Globe className="h-3.5 w-3.5 flex-shrink-0" />
+                          <div className="inline-flex items-center gap-1 sm:gap-1.5 mt-2 sm:mt-3 text-blue-600 text-xs sm:text-sm font-medium transition-colors w-full justify-center sm:justify-start">
+                            <Globe className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
                             {/* Use dynamic width for link input */}
                             <input
                               ref={linkInputRef}
@@ -991,10 +991,10 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                               onChange={handleLinkChangeWithValidation}
                               onBlur={() => updateValidationError("productLink", productLink)}
                               placeholder="https://..."
-                              className={`bg-transparent outline-none placeholder-slate-400 placeholder:font-normal placeholder:text-xs focus:ring-0 p-0 transition-colors border border-dotted ${
+                              className={`bg-transparent outline-none placeholder-slate-400 placeholder:font-normal placeholder:text-[10px] sm:placeholder:text-xs focus:ring-0 p-0 transition-colors border border-dotted max-w-full ${
                                 validationErrors.productLink ? "border-red-500 bg-red-50" : "border-slate-300"
                               } `}
-                              style={{ width: `${linkInputWidth}px` }}
+                              style={{ width: `min(${linkInputWidth}px, 100%)` }}
                             />
                             {/* Invisible element to measure text width */}
                             <div
@@ -1006,17 +1006,17 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                             </div>
                           </div>
                           {validationErrors.productLink && (
-                            <p className="text-red-500 text-xs mt-1">{validationErrors.productLink}</p>
+                            <p className="text-red-500 text-[10px] sm:text-xs mt-1 text-center sm:text-left">{validationErrors.productLink}</p>
                           )}
 
                           {/* Keywords & Timeline Row */}
-                          <div className="flex items-center justify-between mt-3">
-                            <div className="flex flex-wrap items-center gap-2" ref={tagDropdownRef}>
+                          <div className="flex items-center justify-center sm:justify-between mt-2 sm:mt-3">
+                            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 sm:gap-2" ref={tagDropdownRef}>
                               {/* Selected Tags */}
                               {selectedTags.map((tag, index) => (
                                 <span
                                   key={index}
-                                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium text-slate-600 bg-slate-100 group hover:bg-slate-200 transition-colors"
+                                  className="inline-flex items-center gap-0.5 sm:gap-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium text-slate-600 bg-slate-100 group hover:bg-slate-200 transition-colors"
                                 >
                                   {tag}
                                   <button
@@ -1032,7 +1032,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                               <div className="relative">
                                 <button
                                   onClick={() => setShowTagDropdown(!showTagDropdown)}
-                                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium hover:bg-blue-100 transition-colors border border-dashed border-blue-300 bg-gray-50 text-slate-500"
+                                  className="inline-flex items-center gap-0.5 sm:gap-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium hover:bg-blue-100 transition-colors border border-dashed border-blue-300 bg-gray-50 text-slate-500"
                                 >
                                   <Plus className="h-3 w-3" />
                                   添加标签
@@ -1106,11 +1106,11 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                         </div>
 
                         {/* Price Medal with Button */}
-                        <div className="flex-shrink-0 relative">
+                        <div className="flex-shrink-0 relative mx-auto sm:mx-0 mt-4 sm:mt-0">
                           <button
                             onClick={handleAddToPromotions}
                             disabled={isAddingToPromotions || addedToPromotions}
-                            className={`absolute -top-5 left-1/2 rounded-lg font-semibold text-white shadow-md transition-all w-16 z-20 h-[26px] text-sm py-0.5 ${
+                            className={`absolute -top-5 left-1/2 rounded-lg font-semibold text-white shadow-md transition-all w-14 sm:w-16 z-20 h-[24px] sm:h-[26px] text-[10px] sm:text-sm py-0.5 ${
                               addedToPromotions
                                 ? "bg-green-500 shadow-green-500/25"
                                 : isAddingToPromotions
@@ -1132,11 +1132,11 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                               "发布"
                             )}
                           </button>
-                          <div className="w-24 h-32 relative">
+                          <div className="w-20 h-28 sm:w-24 sm:h-32 relative">
                             {/* Unified Medal and Ribbon SVG */}
                             <svg
                               viewBox="0 0 100 140"
-                              className="w-[67px] h-auto drop-shadow-lg absolute top-0 left-1/2"
+                              className="w-[55px] sm:w-[67px] h-auto drop-shadow-lg absolute top-0 left-1/2"
                               style={{
                                 transform: "translateX(calc(-50% + 20px)) translateY(36px)",
                               }}
@@ -1207,13 +1207,13 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                             </svg>
                           </div>
 
-                          <div className="absolute top-[138px] -left-[76px] flex flex-col items-start gap-2 w-48">
+                          <div className="hidden sm:flex absolute top-[120px] sm:top-[138px] -left-[50px] sm:-left-[76px] flex-col items-start gap-2 w-40 sm:w-48">
                             {/* Expected publish time */}
 
                             {/* Confirmed publish time with calendar picker */}
                             <div className="relative mt-3 ml-[20px]">
-                              <div className="flex items-start gap-1.5 text-xs text-slate-500">
-                                <Clock className="h-3.5 w-3.5" />
+                              <div className="flex items-start gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-slate-500">
+                                <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
                                 <span>期望发布时间</span>
                                 <button
                                   ref={dateButtonRef}
@@ -1355,12 +1355,38 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                     </div>
                   </div>
 
+                  {/* Mobile Timeline Section - shown only on small screens */}
+                  <div className="flex sm:hidden mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <div className="flex flex-col gap-2 w-full">
+                      {/* Confirmed publish time with calendar picker */}
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                        <Clock className="h-3.5 w-3.5 flex-shrink-0" />
+                        <span>期望发布时间</span>
+                        <button
+                          onClick={() => setShowCalendar(!showCalendar)}
+                          className="font-semibold cursor-pointer hover:text-blue-600 transition-colors text-slate-800 ml-auto"
+                        >
+                          {selectedDate ? (
+                            <span>{selectedDate}</span>
+                          ) : (
+                            <span
+                              className={`text-red-400 inline-block ${isTextShaking ? "animate-shake-text" : ""}`}
+                              title="建议选择在3日之后的时间，给博主留下足够的视频创作时间"
+                            >
+                              请选择
+                            </span>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Description Section */}
-                  <div className="mt-8" ref={descriptionContainerRef}>
-                    <div className="rounded-2xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
+                  <div className="mt-6 sm:mt-8" ref={descriptionContainerRef}>
+                    <div className="rounded-xl sm:rounded-2xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
                       {/* Document Header */}
-                      <div className="flex items-center gap-3 px-5 py-3 border-b border-slate-200 bg-white justify-between">
-                        <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 border-b border-slate-200 bg-white justify-between">
+                        <div className="flex items-center gap-2 sm:gap-3">
                           <div className="flex gap-1.5">
                             <button
                               onClick={() => setIsDescriptionExpanded(false)}
@@ -1381,8 +1407,8 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                               </div>
                             </button>
                           </div>
-                          <span className="text-sm font-medium text-slate-600 flex items-center gap-2">
-                            <FileText className="h-4 w-4" />
+                          <span className="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 sm:gap-2">
+                            <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             产品描述文档
                           </span>
                         </div>
@@ -1390,10 +1416,10 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                         <button
                           onClick={handleAIGenerateDescription}
                           disabled={isGeneratingDescription}
-                          className="group relative overflow-hidden rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 mr-2"
+                          className="group relative overflow-hidden rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 mr-1 sm:mr-2"
                         >
-                          <div className="relative z-10 flex items-center gap-2">
-                            <Sparkles className="w-3 h-3" />
+                          <div className="relative z-10 flex items-center gap-1 sm:gap-2">
+                            <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                             <span>{isGeneratingDescription ? "生成中..." : "AI生成描述"}</span>
                           </div>
                           <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -1412,8 +1438,8 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                           value={documentDescription}
                           onChange={(e) => setDocumentDescription(e.target.value)}
                           placeholder="请输入产品描述文档内容..."
-                          className={`w-full px-6 py-5 text-slate-600 text-sm leading-relaxed whitespace-pre-line transition-all duration-500 overflow-y-auto min-h-[36.25rem] opacity-100 border-0 focus:border focus:border-slate-400 focus:outline-none ${
-                            isDescriptionExpanded ? "max-h-none" : "max-h-[30rem]"
+                          className={`w-full px-4 sm:px-6 py-4 sm:py-5 text-slate-600 text-xs sm:text-sm leading-relaxed whitespace-pre-line transition-all duration-500 overflow-y-auto min-h-[20rem] sm:min-h-[36.25rem] opacity-100 border-0 focus:border focus:border-slate-400 focus:outline-none ${
+                            isDescriptionExpanded ? "max-h-none" : "max-h-[20rem] sm:max-h-[30rem]"
                           }`}
                           onClick={(e) => e.stopPropagation()}
                         />
@@ -1422,12 +1448,12 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                   </div>
 
                   {/* Product Display Section */}
-                  <div className="mt-8">
-                    <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2 mb-3">
-                      <Download className="h-4 w-4 text-blue-600" />
+                  <div className="mt-6 sm:mt-8">
+                    <h3 className="text-xs sm:text-sm font-semibold text-slate-900 flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                      <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600" />
                       产品展示上传
                     </h3>
-                    <div className="aspect-video rounded-xl overflow-hidden relative shadow-lg border border-slate-200">
+                    <div className="aspect-video rounded-lg sm:rounded-xl overflow-hidden relative shadow-lg border border-slate-200">
                       {/* Hidden file input for images and videos only */}
                       <input
                         ref={mediaFileInputRef}
@@ -1445,11 +1471,11 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                           className="w-full h-full bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center cursor-pointer hover:from-blue-50 hover:to-indigo-50 transition-all group shadow-none"
                         >
                           <div className="text-center">
-                            <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-white shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                              <ImagePlus className="h-10 w-10 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                            <div className="w-14 h-14 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 rounded-full bg-white shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                              <ImagePlus className="h-7 w-7 sm:h-10 sm:w-10 text-slate-400 group-hover:text-blue-500 transition-colors" />
                             </div>
 
-                            <div className="text-sm text-slate-500">上传图片/视频</div>
+                            <div className="text-xs sm:text-sm text-slate-500">上传图片/视频</div>
                           </div>
                         </div>
                       ) : // Display selected media
@@ -1468,20 +1494,20 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                       )}
                     </div>
 
-                    <div className="relative group border border-slate-200 rounded-lg bg-white p-2.5 mt-2 shadow-sm">
+                    <div className="relative group border border-slate-200 rounded-lg bg-white p-2 sm:p-2.5 mt-2 shadow-sm">
                       {/* Left navigation button */}
                       <button
                         onClick={() => scrollScreenshots("left")}
                         style={{ background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(3px)" }}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                        className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-10 w-5 h-5 sm:w-6 sm:h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
                       >
-                        <ChevronLeft className="h-4 w-4 text-slate-600" />
+                        <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4 text-slate-600" />
                       </button>
 
                       {/* Scrollable thumbnails container */}
                       <div
                         ref={screenshotsRef}
-                        className={`flex gap-2 overflow-x-auto scrollbar-hide px-10 ${
+                        className={`flex gap-1.5 sm:gap-2 overflow-x-auto scrollbar-hide px-6 sm:px-10 ${
                           uploadedMedia.length === 0 ? "justify-center" : "justify-start"
                         }`}
                         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
@@ -1489,10 +1515,10 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                         {/* Always show upload button */}
                         <button
                           onClick={handleMediaUploadClick}
-                          className="flex-shrink-0 w-36 h-36 rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center group"
+                          className="flex-shrink-0 w-24 h-24 sm:w-36 sm:h-36 rounded-md sm:rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center group"
                         >
-                          <div className="w-20 h-20 rounded-full bg-white shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <Plus className="h-10 w-10 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                          <div className="w-12 h-12 sm:w-20 sm:h-20 rounded-full bg-white shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Plus className="h-6 w-6 sm:h-10 sm:w-10 text-slate-400 group-hover:text-blue-500 transition-colors" />
                           </div>
                         </button>
 
@@ -1501,7 +1527,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                           <button
                             key={index}
                             onClick={() => handleSelectMedia(index)}
-                            className={`group flex-shrink-0 w-36 h-36 rounded-lg overflow-hidden border-2 transition-all relative ${
+                            className={`group flex-shrink-0 w-24 h-24 sm:w-36 sm:h-36 rounded-md sm:rounded-lg overflow-hidden border-2 transition-all relative ${
                               activeMediaIndex === index
                                 ? "border-blue-500 ring-2 ring-blue-200"
                                 : "border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100"
@@ -1536,18 +1562,18 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                       <button
                         onClick={() => scrollScreenshots("right")}
                         style={{ background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(3px)" }}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                        className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-10 w-5 h-5 sm:w-6 sm:h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
                       >
-                        <ChevronRight className="h-4 w-4 text-slate-600" />
+                        <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-slate-600" />
                       </button>
                     </div>
                   </div>
 
                   {/* Documents Section */}
-                  <div className="mt-8">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                        <ImageIcon className="h-4 w-4 text-blue-600" />
+                  <div className="mt-6 sm:mt-8">
+                    <div className="flex items-center justify-between mb-2 sm:mb-3">
+                      <h3 className="text-xs sm:text-sm font-semibold text-slate-900 flex items-center gap-1.5 sm:gap-2">
+                        <ImageIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600" />
                         相关资料上传
                       </h3>
                     </div>
@@ -1561,19 +1587,19 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                         className="hidden"
                       />
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
                         {/* Left Navigation Button */}
                         {uploadedFiles.length > 0 && (
                           <button
                             onClick={() => scrollFiles("left")}
-                            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-slate-200/30 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-5 h-5 sm:w-6 sm:h-6 rounded-full hover:bg-slate-200/30 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
                           >
-                            <ChevronLeft className="h-4 w-4 text-slate-600" />
+                            <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4 text-slate-600" />
                           </button>
                         )}
 
                         <div
-                          className="flex items-start gap-4 flex-nowrap"
+                          className="flex items-start gap-2 sm:gap-4 flex-nowrap"
                           ref={documentsRef}
                           style={{ overflowX: "auto", scrollBehavior: "smooth", width: "100%" }}
                         >
@@ -1581,30 +1607,30 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                           <div className="flex-shrink-0 flex justify-center items-center">
                             <button
                               onClick={handleUploadClick}
-                              className="w-36 p-4 rounded-xl border border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-blue-50 transition-all group text-center cursor-pointer flex flex-col items-center justify-center gap-2"
+                              className="w-28 sm:w-36 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-blue-50 transition-all group text-center cursor-pointer flex flex-col items-center justify-center gap-1.5 sm:gap-2"
                             >
-                              <Plus className="h-8 w-8 text-slate-400 group-hover:text-blue-500 transition-colors" />
-                              <div className="text-sm font-medium text-slate-600 group-hover:text-blue-600 transition-colors">
+                              <Plus className="h-6 w-6 sm:h-8 sm:w-8 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                              <div className="text-xs sm:text-sm font-medium text-slate-600 group-hover:text-blue-600 transition-colors">
                                 上传文件
                               </div>
-                              <div className="text-xs text-slate-400">支持任意格式</div>
+                              <div className="text-[10px] sm:text-xs text-slate-400">支持任意格式</div>
                             </button>
                           </div>
 
                           {/* Uploaded Files List */}
                           {uploadedFiles.length > 0 && (
-                            <div className="flex gap-3 flex-nowrap">
+                            <div className="flex gap-2 sm:gap-3 flex-nowrap">
                               {uploadedFiles.map((file, index) => (
                                 <div
                                   key={index}
                                   onClick={() => handleDownloadUploadedFile(file)}
-                                  className="w-36 p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:shadow-md transition-all group text-center cursor-pointer relative flex-shrink-0"
+                                  className="w-28 sm:w-36 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:shadow-md transition-all group text-center cursor-pointer relative flex-shrink-0"
                                 >
-                                  <FileText className="h-7 w-7 mx-auto mb-2 text-slate-400 group-hover:text-blue-500 transition-colors" />
-                                  <div className="text-[10px] font-medium text-slate-700 group-hover:text-blue-700 break-words leading-tight">
+                                  <FileText className="h-5 w-5 sm:h-7 sm:w-7 mx-auto mb-1.5 sm:mb-2 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                                  <div className="text-[9px] sm:text-[10px] font-medium text-slate-700 group-hover:text-blue-700 break-words leading-tight">
                                     {file.name}
                                   </div>
-                                  <div className="text-[10px] text-slate-400 mt-1">{file.size}</div>
+                                  <div className="text-[9px] sm:text-[10px] text-slate-400 mt-0.5 sm:mt-1">{file.size}</div>
 
                                   <button
                                     onClick={(e) => handleDeleteFile(index, e)}
@@ -1623,9 +1649,9 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                         {uploadedFiles.length > 0 && (
                           <button
                             onClick={() => scrollFiles("right")}
-                            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-slate-200/30 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-5 h-5 sm:w-6 sm:h-6 rounded-full hover:bg-slate-200/30 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
                           >
-                            <ChevronRight className="h-4 w-4 text-slate-600" />
+                            <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-slate-600" />
                           </button>
                         )}
                       </div>
@@ -1635,7 +1661,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
               </div>
 
               {/* Right Sidebar Cards */}
-              <div className="w-56 flex-shrink-0 space-y-4">
+              <div className="w-full lg:w-56 flex-shrink-0 space-y-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 sm:gap-4 lg:space-y-4">
                 {/* Incentive Card */}
                 <div className="bg-gradient-to-br from-amber-50 via-amber-100/80 to-orange-50 border border-amber-200/60 shadow-lg shadow-amber-100/50 overflow-hidden rounded-lg">
                   {/* Card Header with Trophy */}
@@ -1898,12 +1924,12 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                       {/* Score Popup - moved closer to the card */}
                       {showScorePopup && (
                         <div
-                          className="absolute -left-[390px] top-0 z-50 w-[374px] rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl transition-opacity duration-300"
+                          className="fixed inset-x-4 top-1/2 -translate-y-1/2 sm:absolute sm:inset-auto sm:-left-[390px] sm:top-0 sm:translate-y-0 z-50 w-auto sm:w-[374px] rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl transition-opacity duration-300 max-h-[80vh] overflow-y-auto"
                           style={{ opacity: showScorePopup ? 1 : 0 }}
                         >
-                          {/* Triangle pointer with white background matching popup */}
-                          <div className="absolute -right-[11px] top-8 h-0 w-0 border-l-[12px] border-r-0 border-t-[12px] border-b-[12px] border-l-white border-t-transparent border-b-transparent z-10" />
-                          <div className="absolute -right-[12px] top-8 h-0 w-0 border-l-[12px] border-r-0 border-t-[12px] border-b-[12px] border-l-slate-200 border-t-transparent border-b-transparent" />
+                          {/* Triangle pointer with white background matching popup - hidden on mobile */}
+                          <div className="hidden sm:block absolute -right-[11px] top-8 h-0 w-0 border-l-[12px] border-r-0 border-t-[12px] border-b-[12px] border-l-white border-t-transparent border-b-transparent z-10" />
+                          <div className="hidden sm:block absolute -right-[12px] top-8 h-0 w-0 border-l-[12px] border-r-0 border-t-[12px] border-b-[12px] border-l-slate-200 border-t-transparent border-b-transparent" />
 
                           <div className="mb-4 flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">

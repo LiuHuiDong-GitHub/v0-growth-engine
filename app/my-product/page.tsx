@@ -42,8 +42,8 @@ export default function MyProductPage() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Sidebar */}
-      <aside className="w-16 flex-shrink-0 border-r bg-white">
+      {/* Sidebar - Hidden on mobile */}
+      <aside className="hidden md:block w-16 flex-shrink-0 border-r bg-white">
         <div className="flex h-full flex-col items-center py-6">
           <div className="mb-8">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
@@ -152,7 +152,7 @@ export default function MyProductPage() {
         <AppHeader />
 
         {/* Page Content */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 sm:p-6 md:p-8">
           <Breadcrumb
             items={[
               { label: "注册", href: "/register" },
@@ -162,32 +162,32 @@ export default function MyProductPage() {
             ]}
           />
 
-          <h1 className="mb-8 text-3xl font-bold text-slate-900">我的项目</h1>
+          <h1 className="mb-4 sm:mb-6 md:mb-8 text-xl sm:text-2xl md:text-3xl font-bold text-slate-900">我的项目</h1>
 
-          <div className="grid gap-[0.9rem] lg:grid-cols-3">
+          <div className="grid gap-3 sm:gap-[0.9rem] md:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => (
               <Link
                 key={product.id}
                 href={`/product-details/${product.id}`}
-                className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.01] cursor-pointer"
+                className="group rounded-xl sm:rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.01] cursor-pointer"
               >
-                <div className="mb-4 flex items-start gap-4">
-                  <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-full bg-slate-100">
+                <div className="mb-3 sm:mb-4 flex items-start gap-3 sm:gap-4">
+                  <div className="h-12 w-12 sm:h-16 sm:w-16 flex-shrink-0 overflow-hidden rounded-full bg-slate-100">
                     <img
                       src={product.avatar || "/placeholder.svg"}
                       alt={product.name}
                       className="h-full w-full object-cover"
                     />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="mb-2 text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="mb-1 sm:mb-2 text-base sm:text-lg md:text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
                       {product.name}
                     </h3>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1 sm:gap-2">
                       {product.tags.map((tag, index) => (
                         <span
                           key={index}
-                          className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600 transition-colors group-hover:bg-blue-100 group-hover:text-blue-700"
+                          className="rounded-full bg-slate-100 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs text-slate-600 transition-colors group-hover:bg-blue-100 group-hover:text-blue-700"
                         >
                           {tag}
                         </span>
@@ -195,7 +195,7 @@ export default function MyProductPage() {
                     </div>
                   </div>
                 </div>
-                <p className="text-sm leading-relaxed text-slate-600">{product.description}</p>
+                <p className="text-xs sm:text-sm leading-relaxed text-slate-600 line-clamp-3">{product.description}</p>
               </Link>
             ))}
           </div>

@@ -20,24 +20,24 @@ export default function SelectRolePage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <AppHeader breadcrumbItems={[{ label: "注册", href: "/register" }, { label: "选择角色" }]} />
 
-      <main className="container mx-auto px-4 py-16 pt-24">
+      <main className="container mx-auto px-4 py-8 sm:py-16 pt-20 sm:pt-24">
         <div className="mx-auto max-w-4xl">
           {/* Title Section */}
-          <div className="mb-16 text-center">
-            <h1 className="mb-4 text-4xl font-bold text-slate-900">选择您的角色</h1>
-            <p className="text-lg text-slate-600">请选择您的身份，以便我们为您显示相应的页面</p>
+          <div className="mb-8 sm:mb-16 text-center">
+            <h1 className="mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900">选择您的角色</h1>
+            <p className="text-sm sm:text-base md:text-lg text-slate-600 px-2">请选择您的身份，以便我们为您显示相应的页面</p>
           </div>
 
           {/* Role Cards */}
-          <div className="grid gap-8 md:grid-cols-2">
+          <div className="grid gap-4 sm:gap-8 md:grid-cols-2">
             {/* Creator/Blogger Card */}
             <button
               onClick={() => handleRoleSelect("creator")}
-              className="group relative overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-8 text-center transition-all duration-300 hover:border-blue-500 hover:shadow-xl hover:-translate-y-1"
+              className="group relative overflow-hidden rounded-xl sm:rounded-2xl border-2 border-slate-200 bg-white p-5 sm:p-8 text-center transition-all duration-300 hover:border-blue-500 hover:shadow-xl hover:-translate-y-1"
             >
-              <div className="mb-6 flex justify-center">
-                <div className="rounded-2xl bg-blue-100 p-6 transition-colors group-hover:bg-blue-200">
-                  <svg className="h-12 w-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="mb-4 sm:mb-6 flex justify-center">
+                <div className="rounded-xl sm:rounded-2xl bg-blue-100 p-4 sm:p-6 transition-colors group-hover:bg-blue-200">
+                  <svg className="h-8 w-8 sm:h-12 sm:w-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -47,8 +47,8 @@ export default function SelectRolePage() {
                   </svg>
                 </div>
               </div>
-              <h2 className="mb-3 text-2xl font-bold text-slate-900">我是博主/创作者</h2>
-              <p className="text-slate-600">想赚钱接推广</p>
+              <h2 className="mb-2 sm:mb-3 text-lg sm:text-xl md:text-2xl font-bold text-slate-900">我是博主/创作者</h2>
+              <p className="text-sm sm:text-base text-slate-600">想赚钱接推广</p>
 
               {/* Hover indicator */}
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 transition-transform group-hover:scale-x-100" />
@@ -57,11 +57,11 @@ export default function SelectRolePage() {
             {/* Investor/Developer Card */}
             <button
               onClick={() => handleRoleSelect("investor")}
-              className="group relative overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-8 text-center transition-all duration-300 hover:border-indigo-500 hover:shadow-xl hover:-translate-y-1"
+              className="group relative overflow-hidden rounded-xl sm:rounded-2xl border-2 border-slate-200 bg-white p-5 sm:p-8 text-center transition-all duration-300 hover:border-indigo-500 hover:shadow-xl hover:-translate-y-1"
             >
-              <div className="mb-6 flex justify-center">
-                <div className="rounded-2xl bg-indigo-100 p-6 transition-colors group-hover:bg-indigo-200">
-                  <svg className="h-12 w-12 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="mb-4 sm:mb-6 flex justify-center">
+                <div className="rounded-xl sm:rounded-2xl bg-indigo-100 p-4 sm:p-6 transition-colors group-hover:bg-indigo-200">
+                  <svg className="h-8 w-8 sm:h-12 sm:w-12 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -71,8 +71,8 @@ export default function SelectRolePage() {
                   </svg>
                 </div>
               </div>
-              <h2 className="mb-3 text-2xl font-bold text-slate-900">我是投流者/开发者</h2>
-              <p className="text-slate-600">想找博主推广产品</p>
+              <h2 className="mb-2 sm:mb-3 text-lg sm:text-xl md:text-2xl font-bold text-slate-900">我是投流者/开发者</h2>
+              <p className="text-sm sm:text-base text-slate-600">想找博主推广产品</p>
 
               {/* Hover indicator */}
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 transform scale-x-0 transition-transform group-hover:scale-x-100" />
@@ -80,11 +80,11 @@ export default function SelectRolePage() {
           </div>
 
           {/* Navigation Links */}
-          <div className="mt-12 flex items-center justify-between">
-            <Link href="/login" className="text-blue-600 hover:text-blue-700 transition-colors hover:underline">
+          <div className="mt-8 sm:mt-12 flex items-center justify-between px-2">
+            <Link href="/login" className="text-sm sm:text-base text-blue-600 hover:text-blue-700 transition-colors hover:underline">
               返回
             </Link>
-            <Link href="/" className="text-slate-500 hover:text-slate-700 transition-colors hover:underline">
+            <Link href="/" className="text-sm sm:text-base text-slate-500 hover:text-slate-700 transition-colors hover:underline">
               跳过
             </Link>
           </div>

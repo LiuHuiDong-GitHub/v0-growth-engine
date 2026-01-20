@@ -107,9 +107,9 @@ export default function BloggerVideoPage() {
   ]
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Sidebar */}
-      <aside className="fixed left-0 top-0 z-40 flex h-screen w-16 flex-col items-center gap-8 border-r border-slate-200 bg-white py-6">
+    <div className="flex min-h-screen md:h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      {/* Sidebar - Hidden on mobile */}
+      <aside className="hidden md:flex fixed left-0 top-0 z-40 h-screen w-16 flex-col items-center gap-8 border-r border-slate-200 bg-white py-6">
         <Link href="/" className="flex h-10 w-10 items-center justify-center">
           <Lightbulb className="h-6 w-6 text-blue-600" />
         </Link>
@@ -162,22 +162,22 @@ export default function BloggerVideoPage() {
       </aside>
 
       {/* Main Content */}
-      <div className="ml-16 flex-1 flex flex-col overflow-hidden">
+      <div className="md:ml-16 flex-1 flex flex-col overflow-hidden">
         <AppHeader />
 
-        <main className="flex-1 overflow-y-auto px-8 py-6">
+        <main className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
           <Breadcrumb
             items={[{ label: "首页", href: "/" }, { label: "我的推广", href: "/my-promotions" }, { label: "视频表现" }]}
           />
 
           {/* Product Progress Card */}
-          <div className="mb-8 mt-6 overflow-hidden rounded-2xl bg-white p-6 shadow-sm">
-            <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6 sm:mb-8 mt-4 sm:mt-6 overflow-hidden rounded-xl sm:rounded-2xl bg-white p-4 sm:p-6 shadow-sm">
+            <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
               <div className="flex items-center gap-3">
-                <div className={`h-12 w-1 rounded-full ${statusColor}`}></div>
-                <h2 className="text-xl font-semibold text-slate-900">产品名称</h2>
+                <div className={`h-10 sm:h-12 w-1 rounded-full ${statusColor}`}></div>
+                <h2 className="text-lg sm:text-xl font-semibold text-slate-900">产品名称</h2>
               </div>
-              <span className={`rounded-full ${statusColor} px-4 py-1 text-sm font-medium text-white`}>
+              <span className={`rounded-full ${statusColor} px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium text-white`}>
                 {statusText}
               </span>
             </div>
@@ -185,7 +185,7 @@ export default function BloggerVideoPage() {
             <div className="flex items-center justify-center">
               <div className="relative">
                 {/* Circular Progress */}
-                <svg className="h-48 w-48 -rotate-90 transform">
+                <svg className="h-36 w-36 sm:h-48 sm:w-48 -rotate-90 transform">
                   <circle
                     cx="96"
                     cy="96"
@@ -215,44 +215,44 @@ export default function BloggerVideoPage() {
                   </defs>
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-5xl font-bold text-blue-600">{progressPercent}%</span>
+                  <span className="text-3xl sm:text-5xl font-bold text-blue-600">{progressPercent}%</span>
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 flex justify-center">
-              <div className="flex h-16 w-16 flex-col items-center justify-center rounded-full border-2 border-blue-500 bg-white">
-                <span className="text-xl font-bold text-slate-900">{performanceLevel}</span>
-                <span className="mt-0.5 text-xs text-slate-500">表现程度</span>
+            <div className="mt-4 sm:mt-6 flex justify-center">
+              <div className="flex h-14 w-14 sm:h-16 sm:w-16 flex-col items-center justify-center rounded-full border-2 border-blue-500 bg-white">
+                <span className="text-lg sm:text-xl font-bold text-slate-900">{performanceLevel}</span>
+                <span className="mt-0.5 text-[10px] sm:text-xs text-slate-500">表现程度</span>
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-between text-sm text-slate-600">
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 text-xs sm:text-sm text-slate-600">
               <span className={`font-medium ${isSubmitted ? "text-yellow-600" : "text-green-600"}`}>{statusText}</span>
               <span>已实现曝光量 / 目标曝光量</span>
             </div>
           </div>
 
           {/* Video Performance Section */}
-          <h2 className="mb-6 text-2xl font-bold text-slate-900">我的视频表现</h2>
+          <h2 className="mb-4 sm:mb-6 text-xl sm:text-2xl font-bold text-slate-900">我的视频表现</h2>
 
-          <div className="mb-8 grid gap-6 md:grid-cols-2">
+          <div className="mb-6 sm:mb-8 grid gap-4 sm:gap-6 md:grid-cols-2">
             {videos.map((video) => (
-              <div key={video.id} className="overflow-hidden rounded-2xl bg-white shadow-sm">
+              <div key={video.id} className="overflow-hidden rounded-xl sm:rounded-2xl bg-white shadow-sm">
                 <div className="relative">
                   <img
                     src={video.thumbnail || "/placeholder.svg"}
                     alt={video.title}
-                    className="h-48 w-full object-cover"
+                    className="h-36 sm:h-48 w-full object-cover"
                   />
-                  <span className="absolute right-3 top-3 rounded bg-green-500 px-3 py-1 text-xs font-medium text-white">
+                  <span className="absolute right-2 top-2 sm:right-3 sm:top-3 rounded bg-green-500 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium text-white">
                     {video.platform}
                   </span>
-                  <div className="absolute bottom-3 left-3 text-lg font-semibold text-white drop-shadow-lg">
+                  <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 text-sm sm:text-lg font-semibold text-white drop-shadow-lg">
                     {video.title}
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 p-4">
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 p-3 sm:p-4">
                   <div className="text-center">
                     <div className="mb-1 flex items-center justify-center text-slate-400">
                       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -270,12 +270,12 @@ export default function BloggerVideoPage() {
                         />
                       </svg>
                     </div>
-                    <div className="text-lg font-semibold text-slate-900">{video.stats.views}</div>
-                    <div className="text-xs text-slate-500">播放</div>
+                    <div className="text-sm sm:text-lg font-semibold text-slate-900">{video.stats.views}</div>
+                    <div className="text-[10px] sm:text-xs text-slate-500">播放</div>
                   </div>
                   <div className="text-center">
                     <div className="mb-1 flex items-center justify-center text-slate-400">
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -284,12 +284,12 @@ export default function BloggerVideoPage() {
                         />
                       </svg>
                     </div>
-                    <div className="text-lg font-semibold text-slate-900">{video.stats.engagementRate}</div>
-                    <div className="text-xs text-slate-500">点击率</div>
+                    <div className="text-sm sm:text-lg font-semibold text-slate-900">{video.stats.engagementRate}</div>
+                    <div className="text-[10px] sm:text-xs text-slate-500">点击率</div>
                   </div>
                   <div className="text-center">
                     <div className="mb-1 flex items-center justify-center text-slate-400">
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -298,8 +298,8 @@ export default function BloggerVideoPage() {
                         />
                       </svg>
                     </div>
-                    <div className="text-lg font-semibold text-slate-900">{video.stats.conversionRate}</div>
-                    <div className="text-xs text-slate-500">转化率</div>
+                    <div className="text-sm sm:text-lg font-semibold text-slate-900">{video.stats.conversionRate}</div>
+                    <div className="text-[10px] sm:text-xs text-slate-500">转化率</div>
                   </div>
                 </div>
               </div>
@@ -307,27 +307,27 @@ export default function BloggerVideoPage() {
           </div>
 
           {/* Reddit Traffic Records */}
-          <h2 className="mb-6 text-2xl font-bold text-slate-900">Reddit引流记录</h2>
+          <h2 className="mb-4 sm:mb-6 text-xl sm:text-2xl font-bold text-slate-900">Reddit引流记录</h2>
 
-          <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
-            <table className="w-full">
+          <div className="overflow-hidden rounded-xl sm:rounded-2xl bg-white shadow-sm overflow-x-auto">
+            <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">日期</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">帖子标题</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">点击</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">转化</th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-slate-700">收益</th>
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">日期</th>
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">帖子标题</th>
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-700">点击</th>
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-700">转化</th>
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-semibold text-slate-700">收益</th>
                 </tr>
               </thead>
               <tbody>
                 {redditData.map((item, index) => (
                   <tr key={index} className="border-b border-slate-50 transition-colors hover:bg-slate-50">
-                    <td className="px-6 py-4 text-sm text-slate-600">{item.date}</td>
-                    <td className="px-6 py-4 text-sm text-slate-900">{item.title}</td>
-                    <td className="px-6 py-4 text-center text-sm text-slate-600">{item.views}</td>
-                    <td className="px-6 py-4 text-center text-sm text-slate-600">{item.conversions}</td>
-                    <td className="px-6 py-4 text-right text-sm font-medium text-blue-600">{item.revenue}</td>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap">{item.date}</td>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-slate-900">{item.title}</td>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm text-slate-600">{item.views}</td>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm text-slate-600">{item.conversions}</td>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-medium text-blue-600">{item.revenue}</td>
                   </tr>
                 ))}
               </tbody>
@@ -335,8 +335,8 @@ export default function BloggerVideoPage() {
           </div>
         </main>
 
-        <footer className="flex-shrink-0 border-t bg-white/50 py-4 text-center">
-          <p className="text-sm text-slate-600">© 2025 GrowthEngine. All rights reserved.</p>
+        <footer className="flex-shrink-0 border-t bg-white/50 py-3 sm:py-4 text-center">
+          <p className="text-xs sm:text-sm text-slate-600">© 2025 GrowthEngine. All rights reserved.</p>
         </footer>
       </div>
     </div>

@@ -28,7 +28,7 @@
   --chart-3: 197 37% 24%;
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
-  --radius: 0.5rem;
+  --radius: 0.625rem; /* Updated from diff */
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -116,13 +116,12 @@
 
 @layer base {
   * {
-    border-color: hsl(var(--border));
+    /* Removed border-color: hsl(var(--border)); from existing as per diff */
     @apply border-border outline-ring/50;
   }
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-feature-settings: "rlig" 1, "calt" 1;
+    /* Removed background-color: hsl(var(--background)); and color: hsl(var(--foreground)); from existing as per diff */
+    font-feature-settings: "rlig" 1, "calt" 1; /* Kept from existing */
     @apply bg-background text-foreground;
   }
 

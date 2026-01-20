@@ -284,8 +284,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
-      {/* Sidebar */}
-      <aside className="fixed left-0 top-0 flex h-screen flex-col items-center gap-8 border-r border-slate-200/80 bg-white/80 backdrop-blur-sm z-40 w-7 py-9">
+      {/* Sidebar - Hidden on mobile */}
+      <aside className="hidden md:flex fixed left-0 top-0 h-screen flex-col items-center gap-8 border-r border-slate-200/80 bg-white/80 backdrop-blur-sm z-40 w-7 py-9">
         <Link href="/" className="mb-8">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25">
             <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -332,10 +332,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       </aside>
 
       {/* Main Content */}
-      <div className="ml-16 flex flex-1 flex-col">
+      <div className="md:ml-16 flex flex-1 flex-col">
         <AppHeader />
 
-        <main className="flex-1 p-8 flex flex-col items-center justify-center">
+        <main className="flex-1 p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center">
           <div className="mx-auto max-w-7xl w-full">
             {/* Breadcrumb */}
             <Breadcrumb
@@ -347,31 +347,31 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             />
 
             {/* Main Layout: Hero Card + Right Sidebar Cards */}
-            <div className="mt-6 flex gap-6">
+            <div className="mt-4 sm:mt-6 flex flex-col lg:flex-row gap-4 sm:gap-6">
               {/* Hero Section - Main Card */}
-              <div className="flex-1 rounded-3xl bg-white p-8 shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
+              <div className="flex-1 rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
                 {/* Decorative background */}
                 <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full -translate-y-1/2 translate-x-1/2 opacity-50" />
 
                 <div className="relative">
                   {/* Top Section: Logo, Info, Price Medal */}
-                  <div className="flex gap-8">
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 md:gap-8">
                     {/* Product Logo */}
-                    <div className="flex-shrink-0 relative">
-                      <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-500/30 ring-4 ring-white">
-                        <span className="text-3xl font-bold text-white">NM</span>
+                    <div className="flex-shrink-0 relative mx-auto sm:mx-0">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-500/30 ring-2 sm:ring-4 ring-white">
+                        <span className="text-2xl sm:text-3xl font-bold text-white">NM</span>
                       </div>
                     </div>
 
                     {/* Product Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h1 className="text-2xl font-bold text-slate-900">{productData.name}</h1>
+                      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                        <div className="flex-1 w-full">
+                          <div className="flex items-center justify-center sm:justify-start gap-3 mb-2">
+                            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 text-center sm:text-left">{productData.name}</h1>
                             {/* Progress Badge */}
                           </div>
-                          <p className="text-slate-500 text-sm leading-relaxed line-clamp-2">
+                          <p className="text-slate-500 text-xs sm:text-sm leading-relaxed line-clamp-2 text-center sm:text-left">
                             {productData.description}
                           </p>
 
@@ -380,23 +380,23 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                             href={productData.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 mt-3 text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
+                            className="inline-flex items-center gap-1.5 mt-3 text-blue-600 hover:text-blue-700 text-xs sm:text-sm font-medium transition-colors w-full justify-center sm:justify-start"
                           >
-                            <Globe className="h-3.5 w-3.5" />
-                            <span>{productData.link}</span>
-                            <ExternalLink className="h-3 w-3" />
+                            <Globe className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
+                            <span className="truncate">{productData.link}</span>
+                            <ExternalLink className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
                           </a>
 
                           {/* Keywords & Timeline Row */}
-                          <div className="flex items-center justify-between mt-3">
-                            <div className="flex flex-wrap gap-2">
-                              <span className="px-3 py-1 rounded-full text-xs font-medium text-slate-600 bg-slate-100">
+                          <div className="flex items-center justify-center sm:justify-between mt-3">
+                            <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 sm:gap-2">
+                              <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium text-slate-600 bg-slate-100">
                                 {productData.category.type}
                               </span>
                               {productData.category.keywords.map((keyword, index) => (
                                 <span
                                   key={index}
-                                  className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium"
+                                  className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] sm:text-xs font-medium"
                                 >
                                   {keyword}
                                 </span>
@@ -406,11 +406,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                         </div>
 
                         {/* Price Medal with Button */}
-                        <div className="flex-shrink-0 relative">
+                        <div className="flex-shrink-0 relative mx-auto sm:mx-0 mt-4 sm:mt-0">
                           <button
                             onClick={handleAddToPromotions}
                             disabled={isAddingToPromotions || addedToPromotions}
-                            className={`absolute -top-5 left-1/2 rounded-lg font-semibold text-white text-xs shadow-md transition-all w-16 h-auto py-1 z-20 ${
+                            className={`absolute -top-5 left-1/2 rounded-lg font-semibold text-white text-[10px] sm:text-xs shadow-md transition-all w-14 sm:w-16 h-auto py-1 z-20 ${
                               addedToPromotions
                                 ? "bg-green-500 shadow-green-500/25"
                                 : isAddingToPromotions
@@ -432,11 +432,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                               "我要投稿"
                             )}
                           </button>
-                          <div className="w-24 h-32 relative">
+                          <div className="w-20 h-28 sm:w-24 sm:h-32 relative">
                             {/* Unified Medal and Ribbon SVG */}
                             <svg
                               viewBox="0 0 100 140"
-                              className="w-[67px] h-auto drop-shadow-lg absolute top-0 left-1/2"
+                              className="w-[55px] sm:w-[67px] h-auto drop-shadow-lg absolute top-0 left-1/2"
                               style={{
                                 transform: "translateX(calc(-50% + 20px)) translateY(36px)",
                               }}
@@ -507,10 +507,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                             </svg>
                           </div>
 
-                          <div className="absolute top-[148px] -left-[76px] flex flex-col items-start gap-2 w-48">
+                          <div className="hidden sm:flex absolute top-[120px] sm:top-[148px] -left-[50px] sm:-left-[76px] flex-col items-start gap-2 w-40 sm:w-48">
                             {/* Expected publish time */}
-                            <div className="flex items-start gap-1.5 text-xs text-slate-500">
-                              <Calendar className="h-3.5 w-3.5" />
+                            <div className="flex items-start gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-slate-500">
+                              <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
                               <span>期望发布时间</span>
                               <span className="font-semibold text-slate-700">
                                 {productData.timeline.developerDeadline}
@@ -519,8 +519,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
                             {/* Confirmed publish time with calendar picker */}
                             <div className="relative">
-                              <div className="flex items-start gap-1.5 text-xs text-slate-500">
-                                <Clock className="h-3.5 w-3.5" />
+                              <div className="flex items-start gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-slate-500">
+                                <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
                                 <span>确定发布时间</span>
                                 <button
                                   ref={dateButtonRef}
@@ -663,11 +663,47 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     </div>
                   </div>
 
+                  {/* Mobile Timeline Section - shown only on small screens */}
+                  <div className="flex sm:hidden mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <div className="flex flex-col gap-2 w-full">
+                      {/* Expected publish time */}
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                        <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
+                        <span>期望发布时间</span>
+                        <span className="font-semibold text-slate-700 ml-auto">
+                          {productData.timeline.developerDeadline}
+                        </span>
+                      </div>
+
+                      {/* Confirmed publish time with calendar picker */}
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                        <Clock className="h-3.5 w-3.5 flex-shrink-0" />
+                        <span>确定发布时间</span>
+                        <button
+                          ref={dateButtonRef}
+                          onClick={() => setShowCalendar(!showCalendar)}
+                          className="font-semibold cursor-pointer hover:text-blue-600 transition-colors text-slate-800 ml-auto"
+                        >
+                          {selectedDate ? (
+                            <span>{selectedDate}</span>
+                          ) : (
+                            <span
+                              className={`text-red-400 inline-block ${isTextShaking ? "animate-shake-text" : ""}`}
+                              title="建议选择在3日之后的时间，给博主留下足够的视频创作时间"
+                            >
+                              请选择
+                            </span>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Description Section */}
-                  <div className="mt-8" ref={descriptionContainerRef}>
-                    <div className="rounded-2xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
+                  <div className="mt-6 sm:mt-8" ref={descriptionContainerRef}>
+                    <div className="rounded-xl sm:rounded-2xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
                       {/* Document Header */}
-                      <div className="flex items-center gap-3 px-5 py-3 border-b border-slate-200 bg-white">
+                      <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 border-b border-slate-200 bg-white">
                         <div className="flex gap-1.5">
                           <button
                             onClick={() => setIsDescriptionExpanded(false)}
@@ -688,8 +724,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                             </div>
                           </button>
                         </div>
-                        <span className="text-sm font-medium text-slate-600 flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
+                        <span className="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 sm:gap-2">
+                          <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           产品描述文档
                         </span>
                       </div>
@@ -702,7 +738,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                         }}
                       >
                         <div
-                          className={`px-6 py-5 text-slate-600 text-sm leading-relaxed whitespace-pre-line transition-all duration-500 ${
+                          className={`px-4 sm:px-6 py-4 sm:py-5 text-slate-600 text-xs sm:text-sm leading-relaxed whitespace-pre-line transition-all duration-500 ${
                             isDescriptionExpanded ? "max-h-none" : "overflow-hidden"
                           }`}
                           style={!isDescriptionExpanded ? { maxHeight: "27rem", lineHeight: "1.5rem" } : {}}
@@ -726,13 +762,13 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   </div>
 
                   {/* Product Display Section */}
-                  <div className="mt-8">
-                    <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2 mb-3">
-                      <ImageIcon className="h-4 w-4 text-blue-600" />
+                  <div className="mt-6 sm:mt-8">
+                    <h3 className="text-xs sm:text-sm font-semibold text-slate-900 flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                      <ImageIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600" />
                       产品展示
                     </h3>
                     {/* Main Display */}
-                    <div className="aspect-video rounded-xl overflow-hidden relative shadow-lg border border-slate-200">
+                    <div className="aspect-video rounded-lg sm:rounded-xl overflow-hidden relative shadow-lg border border-slate-200">
                       {activeMediaType === "video" ? (
                         <div className="w-full h-full bg-slate-900 flex items-center justify-center group cursor-pointer">
                           <img
@@ -756,26 +792,26 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     </div>
 
                     {/* Thumbnails - Video + Screenshots */}
-                    <div className="relative group border border-slate-200 rounded-lg bg-white p-3">
+                    <div className="relative group border border-slate-200 rounded-lg bg-white p-2 sm:p-3 mt-2 sm:mt-0">
                       {/* Left navigation button for screenshots */}
                       <button
                         onClick={() => scrollScreenshots("left")}
                         style={{ background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(3px)" }}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                        className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-10 w-5 h-5 sm:w-6 sm:h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
                       >
-                        <ChevronLeft className="h-4 w-4 text-slate-600" />
+                        <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4 text-slate-600" />
                       </button>
 
                       {/* Scrollable thumbnails container */}
                       <div
                         ref={screenshotsRef}
-                        className="flex gap-2 overflow-x-auto scrollbar-hide px-10"
+                        className="flex gap-1.5 sm:gap-2 overflow-x-auto scrollbar-hide px-6 sm:px-10"
                         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                       >
                         {/* Video Thumbnail */}
                         <button
                           onClick={() => setActiveMediaType("video")}
-                          className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all relative ${
+                          className={`flex-shrink-0 w-16 h-11 sm:w-24 sm:h-16 rounded-md sm:rounded-lg overflow-hidden border-2 transition-all relative ${
                             activeMediaType === "video"
                               ? "border-blue-500 ring-2 ring-blue-200"
                               : "border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100"
@@ -799,7 +835,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                               setActiveMediaType("image")
                               setActiveScreenshot(index)
                             }}
-                            className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                            className={`flex-shrink-0 w-16 h-11 sm:w-24 sm:h-16 rounded-md sm:rounded-lg overflow-hidden border-2 transition-all ${
                               activeMediaType === "image" && activeScreenshot === index
                                 ? "border-blue-500 ring-2 ring-blue-200"
                                 : "border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100"
@@ -818,18 +854,18 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                       <button
                         onClick={() => scrollScreenshots("right")}
                         style={{ background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(3px)" }}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                        className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-10 w-5 h-5 sm:w-6 sm:h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
                       >
-                        <ChevronRight className="h-4 w-4 text-slate-600" />
+                        <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-slate-600" />
                       </button>
                     </div>
                   </div>
 
                   {/* Documents Section */}
-                  <div className="mt-8">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                        <Download className="h-4 w-4 text-blue-600" />
+                  <div className="mt-6 sm:mt-8">
+                    <div className="flex items-center justify-between mb-2 sm:mb-3">
+                      <h3 className="text-xs sm:text-sm font-semibold text-slate-900 flex items-center gap-1.5 sm:gap-2">
+                        <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600" />
                         相关资料
                       </h3>
                     </div>
@@ -837,26 +873,26 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                       <button
                         onClick={() => scrollDocuments("left")}
                         style={{ background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(3px)" }}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-5 h-5 sm:w-6 sm:h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
                       >
-                        <ChevronLeft className="h-4 w-4 text-slate-600" />
+                        <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4 text-slate-600" />
                       </button>
                       <div
                         ref={documentsRef}
-                        className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 cursor-grab active:cursor-grabbing px-10"
+                        className="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide pb-2 cursor-grab active:cursor-grabbing px-6 sm:px-10"
                         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                       >
                         {productData.attachments.documents.map((doc, index) => (
                           <div key={index} className="flex-shrink-0 flex flex-col items-center">
                             <div
                               onClick={() => handleDownloadDocument(doc.name)}
-                              className="w-36 p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:shadow-md transition-all group text-center cursor-pointer"
+                              className="w-28 sm:w-36 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:shadow-md transition-all group text-center cursor-pointer"
                             >
-                              <div className="text-3xl mb-2">{doc.icon}</div>
-                              <div className="text-xs font-medium text-slate-700 group-hover:text-blue-700 truncate">
+                              <div className="text-2xl sm:text-3xl mb-1.5 sm:mb-2">{doc.icon}</div>
+                              <div className="text-[10px] sm:text-xs font-medium text-slate-700 group-hover:text-blue-700 truncate">
                                 {doc.name}
                               </div>
-                              <div className="text-[10px] text-slate-400 mt-1">{doc.size}</div>
+                              <div className="text-[9px] sm:text-[10px] text-slate-400 mt-0.5 sm:mt-1">{doc.size}</div>
                             </div>
                           </div>
                         ))}
@@ -864,9 +900,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                       <button
                         onClick={() => scrollDocuments("right")}
                         style={{ background: "rgba(255, 255, 255, 0.15)", backdropFilter: "blur(3px)" }}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-5 h-5 sm:w-6 sm:h-6 rounded-full hover:bg-white/20 shadow-sm hover:shadow hover:shadow-slate-200/40 flex items-center justify-center transition-all"
                       >
-                        <ChevronRight className="h-4 w-4 text-slate-600" />
+                        <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-slate-600" />
                       </button>
                     </div>
                   </div>
@@ -874,7 +910,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               </div>
 
               {/* Right Sidebar Cards */}
-              <div className="w-56 flex-shrink-0 space-y-4">
+              <div className="w-full lg:w-56 flex-shrink-0 space-y-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 sm:gap-4 lg:space-y-4">
                 {/* Incentive Card */}
                 <div className="bg-gradient-to-br from-amber-50 via-amber-100/80 to-orange-50 border border-amber-200/60 shadow-lg shadow-amber-100/50 overflow-hidden rounded-lg">
                   {/* Card Header with Trophy */}

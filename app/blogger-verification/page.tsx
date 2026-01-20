@@ -101,9 +101,9 @@ export default function BloggerVerificationPage() {
         ]}
       />
 
-      <main className="mx-auto max-w-5xl px-8 py-8 pb-8 pt-24">
+      <main className="mx-auto max-w-5xl px-4 sm:px-6 md:px-8 py-6 sm:py-8 pb-6 sm:pb-8 pt-20 sm:pt-24">
         {/* Breadcrumb navigation */}
-        <nav className="mb-12 flex items-center gap-2 text-sm text-slate-600">
+        <nav className="mb-8 sm:mb-12 flex items-center gap-2 text-xs sm:text-sm text-slate-600">
           <a href="/register" className="hover:text-slate-900">
             注册
           </a>
@@ -116,21 +116,21 @@ export default function BloggerVerificationPage() {
         </nav>
 
         {/* Title Section */}
-        <div className="mb-12 text-center">
-          <h1 className="mb-3 text-4xl font-bold text-slate-900">博主认证</h1>
-          <p className="text-lg text-slate-600">请上传您的博主认证信息，我们将在1-2个工作日内完成审核。</p>
+        <div className="mb-8 sm:mb-12 text-center">
+          <h1 className="mb-2 sm:mb-3 text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900">博主认证</h1>
+          <p className="text-sm sm:text-base md:text-lg text-slate-600 px-2">请上传您的博主认证信息，我们将在1-2个工作日内完成审核。</p>
         </div>
 
         {/* Upload Section - Two Column Layout */}
-        <div className="mb-12 grid gap-8 md:grid-cols-2">
+        <div className="mb-8 sm:mb-12 grid gap-6 sm:gap-8 md:grid-cols-2">
           {/* Left - Upload Area */}
           <div>
-            <label className="mb-3 block text-sm font-semibold text-slate-900">上传认证截图</label>
+            <label className="mb-2 sm:mb-3 block text-xs sm:text-sm font-semibold text-slate-900">上传认证截图</label>
             <div
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
-              className={`relative flex h-80 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed transition-all ${
+              className={`relative flex h-64 sm:h-80 cursor-pointer flex-col items-center justify-center rounded-xl sm:rounded-2xl border-2 border-dashed transition-all ${
                 isDragging
                   ? "border-blue-500 bg-blue-50"
                   : uploadedImage
@@ -149,16 +149,16 @@ export default function BloggerVerificationPage() {
                   <img
                     src={uploadedImage || "/placeholder.svg"}
                     alt="Uploaded"
-                    className="h-full w-full rounded-2xl object-cover"
+                    className="h-full w-full rounded-xl sm:rounded-2xl object-cover"
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100">
-                    <p className="text-white">点击或拖拽替换图片</p>
+                    <p className="text-white text-xs sm:text-sm">点击或拖拽替换图片</p>
                   </div>
                 </div>
               ) : (
                 <div className="text-center">
                   <svg
-                    className="mx-auto mb-4 h-12 w-12 text-slate-400"
+                    className="mx-auto mb-3 sm:mb-4 h-10 w-10 sm:h-12 sm:w-12 text-slate-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -170,8 +170,8 @@ export default function BloggerVerificationPage() {
                       d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                     />
                   </svg>
-                  <p className="mb-2 text-sm font-semibold text-slate-900">点击上传或拖拽文件到此处</p>
-                  <p className="text-xs text-slate-500">支持 PNG、JPG、JPEG 格式</p>
+                  <p className="mb-1 sm:mb-2 text-xs sm:text-sm font-semibold text-slate-900">点击上传或拖拽文件到此处</p>
+                  <p className="text-[10px] sm:text-xs text-slate-500">支持 PNG、JPG、JPEG 格式</p>
                 </div>
               )}
             </div>
@@ -179,10 +179,10 @@ export default function BloggerVerificationPage() {
 
           {/* Right - Preview with Logo */}
           <div className="relative">
-            <label className="mb-3 block text-sm font-semibold text-slate-900">认证预览</label>
-            <div className="flex h-80 flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 p-8">
+            <label className="mb-2 sm:mb-3 block text-xs sm:text-sm font-semibold text-slate-900">认证预览</label>
+            <div className="flex h-64 sm:h-80 flex-col items-center justify-center rounded-xl sm:rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 p-6 sm:p-8">
               {uploadedImage ? (
-                <div className="relative h-full w-full overflow-hidden rounded-xl">
+                <div className="relative h-full w-full overflow-hidden rounded-lg sm:rounded-xl">
                   <img
                     src={uploadedImage || "/placeholder.svg"}
                     alt="Preview"
@@ -191,8 +191,8 @@ export default function BloggerVerificationPage() {
                 </div>
               ) : (
                 <div className="text-center">
-                  <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 mx-auto">
-                    <svg className="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="mb-4 sm:mb-6 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 mx-auto">
+                    <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -201,13 +201,13 @@ export default function BloggerVerificationPage() {
                       />
                     </svg>
                   </div>
-                  <p className="text-sm text-slate-600">上传图片后显示预览</p>
+                  <p className="text-xs sm:text-sm text-slate-600">上传图片后显示预览</p>
                 </div>
               )}
             </div>
 
             {showFollowerInput ? (
-              <div className="absolute -bottom-12 right-0">
+              <div className="absolute -bottom-10 sm:-bottom-12 right-0">
                 <div className="flex items-center gap-1">
                   <input
                     type="text"
@@ -261,25 +261,25 @@ export default function BloggerVerificationPage() {
         </div>
 
         {/* Submit Button */}
-        <div className="mb-6 flex justify-center">
+        <div className="mb-4 sm:mb-6 flex justify-center">
           <button
             onClick={handleSubmit}
             disabled={!uploadedImage || isSubmitting}
-            className="rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-12 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:shadow-xl hover:shadow-blue-500/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:shadow-lg cursor-pointer"
+            className="rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-8 sm:px-12 py-2.5 sm:py-3.5 text-sm sm:text-base font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:shadow-xl hover:shadow-blue-500/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:shadow-lg cursor-pointer"
           >
             {isSubmitting ? "提交中..." : "提交认证"}
           </button>
         </div>
 
         {/* Info Text */}
-        <p className="mb-16 text-center text-sm text-slate-500">
+        <p className="mb-10 sm:mb-16 text-center text-xs sm:text-sm text-slate-500 px-4">
           提交后，我们将在1-2个工作日内完成审核，请保持联系方式畅通。
         </p>
 
         {/* Latest Projects Section */}
-        <div className="rounded-2xl px-12 py-12">
-          <h2 className="mb-3 text-center text-2xl font-bold text-slate-900">{"最新待推广项目"}</h2>
-          <p className="mb-10 text-center text-slate-600">浏览最新项目，寻找适合您的合作机会。</p>
+        <div className="rounded-xl sm:rounded-2xl px-4 sm:px-8 md:px-12 py-8 sm:py-12">
+          <h2 className="mb-2 sm:mb-3 text-center text-xl sm:text-2xl font-bold text-slate-900">{"最新待推广项目"}</h2>
+          <p className="mb-6 sm:mb-10 text-center text-sm sm:text-base text-slate-600 px-2">浏览最新项目，寻找适合您的合作机会。</p>
 
           <div
             ref={scrollContainerRef}
@@ -367,22 +367,22 @@ export default function BloggerVerificationPage() {
             ].map((product, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.01] cursor-pointer w-[280px]"
+                className="flex-shrink-0 overflow-hidden rounded-lg sm:rounded-xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.01] cursor-pointer w-[240px] sm:w-[280px]"
               >
                 <img
                   src={product.image || "/placeholder.svg"}
                   alt={product.name}
-                  className="h-48 w-full object-cover"
+                  className="h-40 sm:h-48 w-full object-cover"
                 />
-                <div className="p-5 px-5">
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">🔥</span>
+                <div className="p-4 sm:p-5">
+                  <div className="mb-2 sm:mb-3 flex items-center gap-2">
+                    <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] sm:text-xs font-medium text-red-700">🔥</span>
                   </div>
-                  <h3 className="mb-2 text-lg font-bold text-slate-900">{product.name}</h3>
-                  <p className="mb-4 line-clamp-3 text-sm text-slate-600">{product.description}</p>
-                  <div className="mb-4 flex items-center gap-4 text-sm text-slate-700">
-                    <span className="flex items-center gap-1">
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <h3 className="mb-1.5 sm:mb-2 text-base sm:text-lg font-bold text-slate-900">{product.name}</h3>
+                  <p className="mb-3 sm:mb-4 line-clamp-3 text-xs sm:text-sm text-slate-600">{product.description}</p>
+                  <div className="mb-3 sm:mb-4 flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-slate-700">
+                    <span className="flex items-center gap-0.5 sm:gap-1">
+                      <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -390,10 +390,10 @@ export default function BloggerVerificationPage() {
                           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                       </svg>
-                      {product.price}
+                      <span className="text-[10px] sm:text-xs">{product.price}</span>
                     </span>
-                    <span className="flex items-center gap-1">
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span className="flex items-center gap-0.5 sm:gap-1">
+                      <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -401,10 +401,10 @@ export default function BloggerVerificationPage() {
                           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                       </svg>
-                      {product.duration}
+                      <span className="text-[10px] sm:text-xs">{product.duration}</span>
                     </span>
-                    <span className="flex items-center gap-1">
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span className="flex items-center gap-0.5 sm:gap-1">
+                      <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -412,10 +412,10 @@ export default function BloggerVerificationPage() {
                           d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                         />
                       </svg>
-                      {product.fans}
+                      <span className="text-[10px] sm:text-xs">{product.fans}</span>
                     </span>
                   </div>
-                  <button className="w-full rounded-lg border border-slate-200 bg-white py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer">
+                  <button className="w-full rounded-lg border border-slate-200 bg-white py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer">
                     查看详情
                   </button>
                 </div>
@@ -426,8 +426,8 @@ export default function BloggerVerificationPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-white py-8 border-slate-100">
-        <p className="text-center text-sm text-slate-500">© 2025 GrowthEngine. All rights reserved.</p>
+      <footer className="border-t bg-white py-6 sm:py-8 border-slate-100">
+        <p className="text-center text-xs sm:text-sm text-slate-500">© 2025 GrowthEngine. All rights reserved.</p>
       </footer>
     </div>
   )
