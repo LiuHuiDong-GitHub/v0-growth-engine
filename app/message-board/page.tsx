@@ -1,12 +1,26 @@
 "use client"
 
-import { useState } from "react"
-import { Upload, Send } from "lucide-react"
+import React from "react"
+
+import { useState, useRef } from "react"
+import { Upload, Send, Plus, FileText, ImageIcon, Video, Music, File as FileIcon } from "lucide-react"
 import AppHeader from "@/components/app-header"
+
+type Message = {
+  id: number
+  type: "user" | "admin"
+  avatar: string
+  name?: string
+  text?: string
+  time: string
+  files?: { name: string; size: number; type: string }[]
+}
 
 export default function MessageBoardPage() {
   const [message, setMessage] = useState("")
-  const [messages, setMessages] = useState([
+  const [files, setFiles] = useState<File[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
       type: "user",
@@ -33,17 +47,55 @@ export default function MessageBoardPage() {
   ])
 
   const handleSendMessage = () => {
-    if (message.trim()) {
-      const newMessage = {
+    if (message.trim() || files.length > 0) {
+      const newMessage: Message = {
         id: messages.length + 1,
         type: "user",
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=user1",
-        text: message,
+        text: message || undefined,
         time: new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" }),
+        files:
+          files.length > 0
+            ? files.map((file) => ({
+                name: file.name,
+                size: file.size,
+                type: file.type,
+              }))
+            : undefined,
       }
       setMessages([...messages, newMessage])
       setMessage("")
+      setFiles([])
     }
+  }
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  }
+
+  const getFileIcon = (type: string) => {
+    if (type.startsWith("image/")) return <ImageIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+    if (type.startsWith("video/")) return <Video className="h-5 w-5 sm:h-6 sm:w-6" />
+    if (type.startsWith("audio/")) return <Music className="h-5 w-5 sm:h-6 sm:w-6" />
+    if (type.includes("pdf") || type.includes("document")) return <FileText className="h-5 w-5 sm:h-6 sm:w-6" />
+    return <FileIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files
+    if (selectedFiles) {
+      setFiles(Array.from(selectedFiles))
+    }
+  }
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const removeFile = (index: number) => {
+    setFiles(files.filter((_, i) => i !== index))
   }
 
   return (
@@ -73,15 +125,50 @@ export default function MessageBoardPage() {
                   )}
                   <div className={`max-w-[85%] sm:max-w-2xl ${msg.type === "user" ? "order-first" : ""}`}>
                     {msg.type === "admin" && <div className="mb-1 text-[10px] sm:text-xs text-slate-500">{msg.name}</div>}
-                    <div
-                      className={`rounded-2xl px-4 sm:px-6 py-3 sm:py-4 ${
-                        msg.type === "user"
-                          ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-                          : "bg-slate-100 text-slate-900"
-                      }`}
-                    >
-                      <p className="text-sm sm:text-base leading-relaxed">{msg.text}</p>
-                    </div>
+                    
+                    {msg.text && (
+                      <div
+                        className={`rounded-2xl px-4 sm:px-6 py-3 sm:py-4 ${
+                          msg.type === "user"
+                            ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                            : "bg-slate-100 text-slate-900"
+                        } ${msg.files && msg.files.length > 0 ? "mb-2" : ""}`}
+                      >
+                        <p className="text-sm sm:text-base leading-relaxed">{msg.text}</p>
+                      </div>
+                    )}
+
+                    {msg.files && msg.files.length > 0 && (
+                      <div className="space-y-2">
+                        {msg.files.map((file, fileIndex) => (
+                          <div
+                            key={fileIndex}
+                            className={`rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-3 border ${
+                              msg.type === "user"
+                                ? "bg-blue-50 border-blue-200"
+                                : "bg-white border-slate-200"
+                            }`}
+                          >
+                            <div
+                              className={`flex-shrink-0 h-10 w-10 sm:h-12 sm:w-12 rounded-lg flex items-center justify-center ${
+                                msg.type === "user" ? "bg-blue-100 text-blue-600" : "bg-slate-100 text-slate-600"
+                              }`}
+                            >
+                              {getFileIcon(file.type)}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm sm:text-base font-medium text-slate-900 truncate">
+                                {file.name}
+                              </div>
+                              <div className="text-xs sm:text-sm text-slate-500">
+                                {formatFileSize(file.size)}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     <div className={`mt-1 text-[10px] sm:text-xs text-slate-400 ${msg.type === "user" ? "text-right" : ""}`}>
                       {msg.time}
                     </div>
@@ -97,17 +184,35 @@ export default function MessageBoardPage() {
 
             {/* Message Input */}
             <div className="flex items-end gap-2 sm:gap-3 pt-4 sm:pt-6 border-t-0">
-              
-              <div className="flex-1 rounded-full border-2 border-slate-200 bg-white px-4 sm:px-6 py-2 sm:py-3 transition-colors focus-within:border-blue-400">
+              <div className="flex-1 rounded-full border-2 border-slate-200 bg-white px-2 sm:px-4 py-2 sm:py-3 transition-colors focus-within:border-blue-400 flex items-center gap-2">
+                <button
+                  onClick={handleUploadClick}
+                  className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full text-slate-400 transition-colors hover:text-slate-600 hover:bg-slate-100 active:scale-95 flex-shrink-0"
+                  title="上传文件"
+                >
+                  <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
+                </button>
+                
                 <input
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                   placeholder="在此输入消息..."
-                  className="w-full bg-transparent text-sm sm:text-base text-slate-900 placeholder-slate-400 outline-none"
+                  className="flex-1 bg-transparent text-sm sm:text-base text-slate-900 placeholder-slate-400 outline-none"
                 />
               </div>
+              
+              {/* Hidden File Input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                onChange={handleFileSelect}
+                className="hidden"
+                accept="*/*"
+              />
+              
               <button
                 onClick={handleSendMessage}
                 className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white transition-transform hover:scale-105 active:scale-95 flex-shrink-0"
@@ -115,6 +220,27 @@ export default function MessageBoardPage() {
                 <Send className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
             </div>
+
+            {/* File List */}
+            {files.length > 0 && (
+              <div className="mt-3 sm:mt-4 flex flex-wrap gap-2">
+                {files.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 bg-slate-100 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-slate-700"
+                  >
+                    <span className="truncate max-w-[200px] sm:max-w-xs">{file.name}</span>
+                    <button
+                      onClick={() => removeFile(index)}
+                      className="text-slate-400 hover:text-slate-600 transition-colors"
+                      title="删除文件"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </main>
