@@ -27,21 +27,19 @@ export default function Page() {
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
-  const [theme, setTheme] = useState<"light" | "dark">("light")
-  const [currentTestimonial, setCurrentTestimonial] = useState(0)
-  const [isLoggedIn, setIsLoggedIn] = useState(false) // This would come from auth context in production
-  const [showCarouselNav, setShowCarouselNav] = useState(false)
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: "新项目申请", message: "云盘大师项目申请已提交", time: "5分钟前", isRead: false },
+    { id: 2, title: "审核通过", message: "您的博主资质已通过审核", time: "1小时前", isRead: false },
+    { id: 3, title: "系统通知", message: "平台将于今晚22:00进行维护", time: "3小时前", isRead: false },
+  ])
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [activeAuthButton, setActiveAuthButton] = useState("login")
   const [isDragging, setIsDragging] = useState(false)
   const [startX, setStartX] = useState(0)
   const [scrollLeft, setScrollLeft] = useState(0)
-  const [activeAuthButton, setActiveAuthButton] = useState<"login" | "register">("login") // State to track active button
-
-  const notifications = [
-    { id: 1, title: "新项目申请", message: "云盘大师项目申请已提交", time: "5分钟前" },
-    { id: 2, title: "审核通过", message: "您的博主资质已通过审核", time: "1小时前" },
-    { id: 3, title: "系统通知", message: "平台将于今晚22:00进行维护", time: "3小时前" },
-  ]
+  const [showCarouselNav, setShowCarouselNav] = useState(false)
+  const [theme, setTheme] = useState("light")
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const testimonials = [
     {
@@ -178,6 +176,14 @@ export default function Page() {
     }
   }
 
+  const handleClearAllNotifications = () => {
+    setNotifications([])
+  }
+
+  const handleMarkAllAsRead = () => {
+    setNotifications((prev) => prev.map((notif) => ({ ...notif, isRead: true })))
+  }
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollContainerRef.current) return
     setIsDragging(true)
@@ -281,13 +287,18 @@ export default function Page() {
                 {/* Notification Bell */}
                 <div className="relative hidden sm:block">
                   <button
-                    onClick={() => setShowNotifications(!showNotifications)}
+                    onClick={() => {
+                      setShowNotifications(!showNotifications)
+                      setShowUserMenu(false)
+                    }}
                     className="relative text-slate-400 transition-colors hover:text-slate-600 p-2"
                   >
                     <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="absolute right-1 top-1 flex h-3.5 w-3.5 sm:h-4 sm:w-4 items-center justify-center rounded-full bg-red-500 text-[9px] sm:text-[10px] text-white">
-                      3
-                    </span>
+                    {notifications.filter((n) => !n.isRead).length > 0 && (
+                      <span className="absolute right-1 top-1 flex h-3.5 w-3.5 sm:h-4 sm:w-4 items-center justify-center rounded-full bg-red-500 text-[9px] sm:text-[10px] text-white">
+                        {notifications.filter((n) => !n.isRead).length}
+                      </span>
+                    )}
                   </button>
 
                   {/* Notifications Dropdown */}
@@ -295,24 +306,68 @@ export default function Page() {
                     <div className="absolute right-0 top-full mt-2 w-80 rounded-lg border bg-white shadow-lg z-50 border-cyan-600">
                       <div className="absolute -top-2 right-8 h-4 w-4 bg-white border-t border-l border-slate-300 rotate-45"></div>
 
-                      <div className="border-b px-4 py-3 border-slate-400">
-                        <h3 className="font-semibold text-slate-900">通知</h3>
+                      <div className="border-b px-4 py-3 border-slate-400 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold text-slate-900">通知</h3>
+                          <button
+                            onClick={handleClearAllNotifications}
+                            className="text-slate-400 hover:text-blue-600 transition-colors p-1 hover:scale-110"
+                            title="清除所有通知"
+                          >
+                            <svg
+                              className="h-4 w-4"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              stroke="none"
+                            >
+                              {/* 刷子柄 */}
+                              <rect x="10" y="14" width="2" height="8" />
+                              {/* 刷子头 - 上部 */}
+                              <rect x="4" y="6" width="16" height="3" rx="1" />
+                              {/* 刷子毛 - 多条竖线 */}
+                              <line x1="5" y1="9" x2="5" y2="12" stroke="currentColor" strokeWidth="1" />
+                              <line x1="7" y1="9" x2="7" y2="12" stroke="currentColor" strokeWidth="1" />
+                              <line x1="9" y1="9" x2="9" y2="12" stroke="currentColor" strokeWidth="1" />
+                              <line x1="11" y1="9" x2="11" y2="12" stroke="currentColor" strokeWidth="1" />
+                              <line x1="13" y1="9" x2="13" y2="12" stroke="currentColor" strokeWidth="1" />
+                              <line x1="15" y1="9" x2="15" y2="12" stroke="currentColor" strokeWidth="1" />
+                              <line x1="17" y1="9" x2="17" y2="12" stroke="currentColor" strokeWidth="1" />
+                              <line x1="19" y1="9" x2="19" y2="12" stroke="currentColor" strokeWidth="1" />
+                            </svg>
+                          </button>
+                        </div>
+                        <button
+                          onClick={handleMarkAllAsRead}
+                          className="text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors px-2 py-1 hover:bg-blue-50 rounded"
+                          title="标记全部为已读"
+                        >
+                          全部已读
+                        </button>
                       </div>
                       <div className="max-h-96 overflow-y-auto">
                         {notifications.map((notif) => (
                           <div
                             key={notif.id}
-                            className="px-4 py-3 hover:bg-slate-50 transition-colors border-b border-slate-300"
+                            className={`px-4 py-3 hover:bg-slate-50 transition-colors border-b border-slate-300 ${
+                              notif.isRead ? "opacity-60" : ""
+                            }`}
                           >
                             <div className="flex items-start gap-3">
-                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
-                                <Bell className="h-4 w-4 text-blue-600" />
+                              <div
+                                className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                                  notif.isRead ? "bg-slate-100" : "bg-blue-100"
+                                }`}
+                              >
+                                <Bell className={`h-4 w-4 ${notif.isRead ? "text-slate-400" : "text-blue-600"}`} />
                               </div>
                               <div className="flex-1">
                                 <h4 className="text-sm font-medium text-slate-900">{notif.title}</h4>
                                 <p className="text-xs text-slate-600">{notif.message}</p>
                                 <p className="mt-1 text-xs text-slate-400">{notif.time}</p>
                               </div>
+                              {!notif.isRead && (
+                                <div className="h-2 w-2 rounded-full bg-blue-600 mt-1.5"></div>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -327,7 +382,10 @@ export default function Page() {
                 {/* User Avatar with Dropdown */}
                 <div className="relative">
                   <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    onClick={() => {
+                      setShowUserMenu(!showUserMenu)
+                      setShowNotifications(false)
+                    }}
                     className="h-8 w-8 overflow-hidden rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 ring-2 ring-transparent transition-all hover:ring-blue-200"
                   >
                     <img

@@ -43,6 +43,7 @@ export default function SubmitVideoPage() {
 
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.startsWith("image/")) {
+          e.preventDefault()
           const file = items[i].getAsFile()
           if (file) {
             const reader = new FileReader()
@@ -54,15 +55,14 @@ export default function SubmitVideoPage() {
               )
             }
             reader.readAsDataURL(file)
-            e.preventDefault()
             break
           }
         }
       }
     }
 
-    window.addEventListener("paste", handlePaste)
-    return () => window.removeEventListener("paste", handlePaste)
+    document.addEventListener("paste", handlePaste, true)
+    return () => document.removeEventListener("paste", handlePaste, true)
   }, [focusedItemId])
 
   const validateVideoLink = (value: string): string => {

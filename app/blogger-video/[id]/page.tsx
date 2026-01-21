@@ -305,34 +305,6 @@ export default function BloggerVideoPage() {
               </div>
             ))}
           </div>
-
-          {/* Reddit Traffic Records */}
-          <h2 className="mb-4 sm:mb-6 text-xl sm:text-2xl font-bold text-slate-900">Reddit引流记录</h2>
-
-          <div className="overflow-hidden rounded-xl sm:rounded-2xl bg-white shadow-sm overflow-x-auto">
-            <table className="w-full min-w-[600px]">
-              <thead>
-                <tr className="border-b border-slate-100 bg-slate-50">
-                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">日期</th>
-                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">帖子标题</th>
-                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-700">点击</th>
-                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-700">转化</th>
-                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-semibold text-slate-700">收益</th>
-                </tr>
-              </thead>
-              <tbody>
-                {redditData.map((item, index) => (
-                  <tr key={index} className="border-b border-slate-50 transition-colors hover:bg-slate-50">
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap">{item.date}</td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-slate-900">{item.title}</td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm text-slate-600">{item.views}</td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm text-slate-600">{item.conversions}</td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-medium text-blue-600">{item.revenue}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </main>
 
         <footer className="flex-shrink-0 border-t bg-white/50 py-3 sm:py-4 text-center">
