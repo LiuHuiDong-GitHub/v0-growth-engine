@@ -3,7 +3,8 @@
 import React from "react"
 
 import { useState, useRef } from "react"
-import { Upload, Send, Plus, FileText, ImageIcon, Video, Music, File as FileIcon } from "lucide-react"
+import { Upload, Send, Plus, FileText, ImageIcon, Video, Music, File as FileIcon, Settings, MessageSquare } from "lucide-react"
+import Link from "next/link"
 import AppHeader from "@/components/app-header"
 
 type Message = {
@@ -20,6 +21,7 @@ export default function MessageBoardPage() {
   const [message, setMessage] = useState("")
   const [files, setFiles] = useState<File[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -105,7 +107,16 @@ export default function MessageBoardPage() {
       <main className="flex-1 p-4 sm:p-6 md:p-8 pt-20 sm:pt-24">
         <div className="mx-auto max-w-4xl">
           <div className="rounded-xl sm:rounded-2xl bg-white p-4 sm:p-6 md:p-8 shadow-lg border-transparent border-0 mt-4 sm:mt-5">
-            <h1 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold text-slate-900">留言板</h1>
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">留言板</h1>
+              <button
+                onClick={() => setShowSettingsModal(true)}
+                className="flex h-10 w-10 items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                title="设置"
+              >
+                <Settings className="h-5 w-5" />
+              </button>
+            </div>
             <p className="mb-6 sm:mb-8 text-sm sm:text-base text-slate-600 leading-relaxed">
               有任何建议、疑问、申诉、反馈都可以发送给我们，我们的平台运营会及时回复您，并做到公平、公正处理任何问题。
             </p>
@@ -249,6 +260,128 @@ export default function MessageBoardPage() {
       <footer className="bg-white/50 text-center border-t-0 py-4 sm:py-5">
         <p className="text-xs sm:text-sm text-slate-600">© 2025 GrowthEngine. All rights reserved.</p>
       </footer>
+
+      {showSettingsModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setShowSettingsModal(false)}
+        >
+          <div className="mx-4 w-full max-w-4xl rounded-2xl bg-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex h-[600px]">
+              {/* Sidebar */}
+              <aside className="w-64 border-r bg-slate-50 p-6 rounded-l-2xl">
+                <div className="mb-8 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
+                    <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11.067 19.027a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+
+                <nav className="flex flex-col gap-1">
+                  <button
+                    onClick={() => setShowSettingsModal(true)}
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-blue-600 bg-blue-50 font-medium"
+                  >
+                    <Settings className="h-5 w-5" />
+                    <span>设置</span>
+                  </button>
+
+                  <Link
+                    href="/message-board"
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-100"
+                  >
+                    <MessageSquare className="h-5 w-5" />
+                    <span>留言</span>
+                  </Link>
+                </nav>
+              </aside>
+
+              {/* Main Content */}
+              <div className="flex-1 overflow-y-auto p-8">
+                <div className="mb-8 flex items-center justify-between">
+                  <h2 className="text-3xl font-bold text-slate-900">设置</h2>
+                  <button
+                    onClick={() => setShowSettingsModal(false)}
+                    className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Account Management */}
+                  <div className="rounded-xl border p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                        <svg className="h-6 w-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="mb-1 text-lg font-semibold text-slate-900">账号管理</h3>
+                        <p className="text-sm text-slate-600">更新您的个人资料和密码</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Notifications */}
+                  <div className="rounded-xl border p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                        <svg className="h-6 w-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                          />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="mb-1 text-lg font-semibold text-slate-900">通知设置</h3>
+                        <p className="text-sm text-slate-600">管理您的通知偏好和提醒</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Privacy & Security */}
+                  <div className="rounded-xl border p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                        <svg className="h-6 w-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                          />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="mb-1 text-lg font-semibold text-slate-900">隐私与安全</h3>
+                        <p className="text-sm text-slate-600">保护您的账号和个人数据</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

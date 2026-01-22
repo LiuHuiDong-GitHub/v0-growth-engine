@@ -213,7 +213,7 @@ export default function Page() {
         {/* Header */}
         <header className="border-b border-blue-100 bg-white/42 backdrop-blur-md sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 lg:pl-0 lg:pr-2.5">
-            <div className="flex justify-between items-center py-2 sm:py-[1.8] leading-3">
+            <div className="flex justify-between items-center py-2 leading-3 sm:py-0">
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <div className="bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center rounded-full w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] leading-7">
                   <svg
@@ -228,7 +228,7 @@ export default function Page() {
                     <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
                   </svg>
                 </div>
-                <span className="font-[family-name:var(--font-space-grotesk)] font-bold text-base sm:text-lg md:text-xl text-gray-900">
+                <span className="font-[family-name:var(--font-space-grotesk)] font-bold text-base sm:text-lg md:text-xl text-gray-900 font-sans">
                   GrowthEngine
                 </span>
               </div>
@@ -246,39 +246,14 @@ export default function Page() {
               </nav>
 
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="relative flex items-center rounded-full bg-slate-100 p-1 px-0 py-1 w-fit h-auto">
-                  {/* Sliding background */}
-                  <div
-                    className={`absolute top-1 bottom-1 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-300 ${
-                      activeAuthButton === "login" ? "left-1 w-[calc(50%-4px)]" : "right-1 w-[calc(50%-4px)]"
-                    }`}
-                  />
-
+                <div className="flex items-center bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full px-4 gap-0.5 sm:px-0.5 py-0">
                   {/* Login Button */}
                   <Link href="/login" className="relative z-10">
                     <Button
                       variant="ghost"
-                      className={`relative text-xs sm:text-sm font-medium rounded-full px-3 sm:px-6 transition-colors !bg-transparent hover:!bg-transparent ${
-                        activeAuthButton === "login" ? "!text-white" : "!text-gray-700 hover:!text-white"
-                      }`}
-                      onMouseEnter={() => setActiveAuthButton("login")}
-                      onClick={() => setActiveAuthButton("login")}
+                      className="relative text-xs sm:text-sm font-medium rounded-full px-3 sm:px-6 transition-colors !bg-transparent hover:!bg-transparent !text-white hover:!text-white"
                     >
                       登录
-                    </Button>
-                  </Link>
-
-                  {/* Register Button */}
-                  <Link href="/register" className="relative z-10">
-                    <Button
-                      variant="ghost"
-                      className={`relative text-xs sm:text-sm font-medium rounded-full px-3 sm:px-6 transition-colors !bg-transparent hover:!bg-transparent ${
-                        activeAuthButton === "register" ? "!text-white" : "!text-gray-700 hover:!text-white"
-                      }`}
-                      onMouseEnter={() => setActiveAuthButton("register")}
-                      onClick={() => setActiveAuthButton("register")}
-                    >
-                      注册
                     </Button>
                   </Link>
                 </div>
@@ -1069,72 +1044,6 @@ export default function Page() {
                 </div>
 
                 <nav className="flex flex-col gap-1">
-                  <button className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-blue-600 bg-blue-50">
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                      />
-                    </svg>
-                    <span>仪表盘</span>
-                  </button>
-
-                  <button className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-100">
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
-                      />
-                    </svg>
-                    <span>项目</span>
-                  </button>
-
-                  <Link
-                    href="/select-product"
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-100"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                    <span>浏览</span>
-                  </Link>
-
-                  <button className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-100">
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                      />
-                    </svg>
-                    <span>推广者</span>
-                  </button>
-
-                  <Link
-                    href="/my-promotions"
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-100"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                    <span>我的推广</span>
-                  </Link>
-
                   <button className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-100">
                     <Settings className="h-5 w-5" />
                     <span>设置</span>
@@ -1215,66 +1124,10 @@ export default function Page() {
                   </div>
 
                   {/* Data Verification */}
-                  <div className="rounded-xl border p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-                        <svg className="h-6 w-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="mb-1 text-lg font-semibold text-slate-900">数据验证</h3>
-                        <p className="text-sm text-slate-600">管理您的连接和数据隐私</p>
-                      </div>
-                    </div>
-                  </div>
+                  
 
                   {/* Theme Switch */}
-                  <div className="rounded-xl border p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-                        <svg className="h-6 w-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="mb-1 text-lg font-semibold text-slate-900">主题切换</h3>
-                            <p className="text-sm text-slate-600">切换应用浅色或深色模式</p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => setTheme("light")}
-                              className={`rounded-lg px-3 py-1.5 text-sm ${
-                                theme === "light" ? "bg-slate-200 text-slate-900" : "text-slate-600"
-                              }`}
-                            >
-                              浅色
-                            </button>
-                            <button
-                              onClick={() => setTheme("dark")}
-                              className={`rounded-lg px-3 py-1.5 text-sm ${
-                                theme === "dark" ? "bg-slate-200 text-slate-900" : "text-slate-600"
-                              }`}
-                            >
-                              深色
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  
 
                   {/* Logout */}
                   <div className="rounded-xl border border-red-200 p-6">
