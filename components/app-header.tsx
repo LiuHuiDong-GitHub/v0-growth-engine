@@ -8,16 +8,12 @@ import {
   Bell,
   Settings,
   MessageSquare,
-  Shield,
   LogOut,
-  Moon,
-  Sun,
   ChevronRight,
   Mail,
   Lock,
   Globe,
   CreditCard,
-  Palette,
   User,
   Key,
   Smartphone,
@@ -45,18 +41,17 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState("")
 
   // Settings state
-  const [activeSettingsTab, setActiveSettingsTab] = useState<"account" | "preferences" | "privacy" | "billing">(
+  const [activeSettingsTab, setActiveSettingsTab] = useState<"account" | "billing">(
     "account",
   )
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
   const [emailNotifications, setEmailNotifications] = useState(true)
-  const [pushNotifications, setPushNotifications] = useState(false)
+  const [pushNotifications, setPushNotifications] = useState(true)
   const [weeklyDigest, setWeeklyDigest] = useState(true)
   const [theme, setTheme] = useState<"light" | "dark" | "system">("light")
-  const [language, setLanguage] = useState("zh-CN")
-  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
 
   // Profile editing state
   const [isEditingProfile, setIsEditingProfile] = useState(false)
@@ -76,15 +71,6 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
   // Two-factor auth state
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
   const [showTwoFactorSetup, setShowTwoFactorSetup] = useState(false)
-
-  // Privacy settings
-  const [profileVisibility, setProfileVisibility] = useState<"public" | "private" | "contacts">("public")
-  const [activityStatus, setActivityStatus] = useState(true)
-  const [dataCollection, setDataCollection] = useState(true)
-
-  // Delete account state
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const [deleteConfirmText, setDeleteConfirmText] = useState("")
 
   // Session management
   const [sessions] = useState([
@@ -192,8 +178,6 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
 
   const settingsTabs = [
     { id: "account" as const, label: "账户", icon: User },
-    { id: "preferences" as const, label: "偏好设置", icon: Settings },
-    { id: "privacy" as const, label: "隐私安全", icon: Shield },
     { id: "billing" as const, label: "账单订阅", icon: CreditCard },
   ]
 
@@ -354,11 +338,13 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
           onClick={() => setShowSettingsModal(false)}
         >
           <div
-            className="w-full max-w-4xl max-h-[90vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col"
+            className="w-full max-w-[90%] max-h-[90vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col"
+            style={{maxWidth: 'min(90%, 768px)'}}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 px-6 py-6 flex-shrink-0">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNn0iIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4xIi8+PC9nPjwvc3ZnPg==')] opacity-20" />
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNn0iIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4xIi8+PC9nPjwvc3ZnPg==')] opacity-20" />
               <div className="relative flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -611,392 +597,7 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
                     </div>
 
                     {/* Two-Factor Auth */}
-                    <div className="rounded-xl border border-slate-200 bg-white p-5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50">
-                            <Key className="h-6 w-6 text-purple-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-slate-900">两步验证</h4>
-                            <p className="text-sm text-slate-500">
-                              {twoFactorEnabled ? "已启用 - 使用验证器应用" : "增强账户安全性"}
-                            </p>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-                          className={`relative h-6 w-11 rounded-full transition-colors cursor-pointer flex-shrink-0 ${
-                            twoFactorEnabled ? "bg-blue-600" : "bg-slate-300"
-                          }`}
-                        >
-                          <span
-                            className={`absolute top-1 left-1 h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${
-                              twoFactorEnabled ? "translate-x-5" : "translate-x-0"
-                            }`}
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Preferences Tab */}
-                {activeSettingsTab === "preferences" && (
-                  <div className="space-y-6">
-                    {/* Notifications */}
-                    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                      <div className="px-5 py-4 border-b border-slate-100">
-                        <div className="flex items-center gap-3">
-                          <Bell className="h-5 w-5 text-blue-600" />
-                          <h3 className="font-semibold text-slate-900">通知设置</h3>
-                        </div>
-                      </div>
-                      <div className="p-5 space-y-4">
-                        {[
-                          {
-                            label: "推送通知",
-                            desc: "接收应用内推送消息",
-                            state: notificationsEnabled,
-                            setState: setNotificationsEnabled,
-                          },
-                          {
-                            label: "邮件通知",
-                            desc: "接收重要邮件更新",
-                            state: emailNotifications,
-                            setState: setEmailNotifications,
-                          },
-                          {
-                            label: "营销推送",
-                            desc: "接收促销和优惠信息",
-                            state: pushNotifications,
-                            setState: setPushNotifications,
-                          },
-                          {
-                            label: "周报摘要",
-                            desc: "每周接收活动总结",
-                            state: weeklyDigest,
-                            setState: setWeeklyDigest,
-                          },
-                        ].map((item, index) => (
-                          <div key={index} className="flex items-center justify-between py-2">
-                            <div>
-                              <p className="text-sm font-medium text-slate-900">{item.label}</p>
-                              <p className="text-xs text-slate-500">{item.desc}</p>
-                            </div>
-                            <button
-                              onClick={() => item.setState(!item.state)}
-                              className={`relative h-6 w-11 rounded-full transition-colors cursor-pointer flex-shrink-0 ${
-                                item.state ? "bg-blue-600" : "bg-slate-300"
-                              }`}
-                            >
-                              <span
-                                className={`absolute top-1 left-1 h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${
-                                  item.state ? "translate-x-5" : "translate-x-0"
-                                }`}
-                              />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Theme */}
-                    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                      <div className="px-5 py-4 border-b border-slate-100">
-                        <div className="flex items-center gap-3">
-                          <Palette className="h-5 w-5 text-purple-600" />
-                          <h3 className="font-semibold text-slate-900">主题外观</h3>
-                        </div>
-                      </div>
-                      <div className="p-5">
-                        <div className="grid grid-cols-3 gap-3">
-                          {[
-                            { id: "light", label: "浅色", icon: Sun },
-                            { id: "dark", label: "深色", icon: Moon },
-                            { id: "system", label: "跟随系统", icon: Monitor },
-                          ].map((item) => (
-                            <button
-                              key={item.id}
-                              onClick={() => setTheme(item.id as typeof theme)}
-                              className={`rounded-xl border-2 p-4 text-center transition-all cursor-pointer ${
-                                theme === item.id
-                                  ? "border-blue-600 bg-blue-50"
-                                  : "border-slate-200 hover:border-slate-300"
-                              }`}
-                            >
-                              <item.icon
-                                className={`mx-auto h-6 w-6 mb-2 ${theme === item.id ? "text-blue-600" : "text-slate-500"}`}
-                              />
-                              <p
-                                className={`text-sm font-medium ${theme === item.id ? "text-blue-900" : "text-slate-700"}`}
-                              >
-                                {item.label}
-                              </p>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Language */}
-                    <div className="rounded-xl border border-slate-200 bg-white p-5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-50">
-                            <Globe className="h-6 w-6 text-green-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-slate-900">语言设置</h4>
-                            <p className="text-sm text-slate-500">
-                              {languages.find((l) => l.code === language)?.flag}{" "}
-                              {languages.find((l) => l.code === language)?.name}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="relative">
-                          <button
-                            onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-                            className="px-4 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 cursor-pointer flex items-center gap-2"
-                          >
-                            {languages.find((l) => l.code === language)?.flag}
-                            {languages.find((l) => l.code === language)?.name}
-                            <ChevronRight
-                              className={`h-4 w-4 transition-transform ${showLanguageDropdown ? "rotate-90" : ""}`}
-                            />
-                          </button>
-                          {showLanguageDropdown && (
-                            <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-slate-200 bg-white shadow-lg z-10 overflow-hidden">
-                              {languages.map((lang) => (
-                                <button
-                                  key={lang.code}
-                                  onClick={() => {
-                                    setLanguage(lang.code)
-                                    setShowLanguageDropdown(false)
-                                  }}
-                                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm hover:bg-slate-50 cursor-pointer ${
-                                    language === lang.code ? "bg-blue-50 text-blue-600" : "text-slate-700"
-                                  }`}
-                                >
-                                  <span>{lang.flag}</span>
-                                  <span>{lang.name}</span>
-                                  {language === lang.code && <Check className="h-4 w-4 ml-auto" />}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Privacy Tab */}
-                {activeSettingsTab === "privacy" && (
-                  <div className="space-y-6">
-                    {/* Profile Visibility */}
-                    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                      <div className="px-5 py-4 border-b border-slate-100">
-                        <div className="flex items-center gap-3">
-                          <Eye className="h-5 w-5 text-blue-600" />
-                          <h3 className="font-semibold text-slate-900">资料可见性</h3>
-                        </div>
-                      </div>
-                      <div className="p-5 space-y-3">
-                        {[
-                          { id: "public", label: "公开", desc: "所有人可见" },
-                          { id: "contacts", label: "仅联系人", desc: "只有联系人可见" },
-                          { id: "private", label: "私密", desc: "只有自己可见" },
-                        ].map((item) => (
-                          <button
-                            key={item.id}
-                            onClick={() => setProfileVisibility(item.id as typeof profileVisibility)}
-                            className={`w-full flex items-center justify-between p-4 rounded-lg border-2 transition-all cursor-pointer ${
-                              profileVisibility === item.id
-                                ? "border-blue-600 bg-blue-50"
-                                : "border-slate-200 hover:border-slate-300"
-                            }`}
-                          >
-                            <div className="text-left">
-                              <p
-                                className={`font-medium ${profileVisibility === item.id ? "text-blue-900" : "text-slate-900"}`}
-                              >
-                                {item.label}
-                              </p>
-                              <p className="text-sm text-slate-500">{item.desc}</p>
-                            </div>
-                            {profileVisibility === item.id && (
-                              <div className="h-5 w-5 rounded-full bg-blue-600 flex items-center justify-center">
-                                <Check className="h-3 w-3 text-white" />
-                              </div>
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Privacy Toggles */}
-                    <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
-                      {[
-                        {
-                          label: "在线状态",
-                          desc: "显示您的活动状态",
-                          state: activityStatus,
-                          setState: setActivityStatus,
-                        },
-                        {
-                          label: "数据收集",
-                          desc: "允许收集使用数据以改进服务",
-                          state: dataCollection,
-                          setState: setDataCollection,
-                        },
-                      ].map((item, index) => (
-                        <div key={index} className="flex items-center justify-between py-2">
-                          <div>
-                            <p className="text-sm font-medium text-slate-900">{item.label}</p>
-                            <p className="text-xs text-slate-500">{item.desc}</p>
-                          </div>
-                          <button
-                            onClick={() => item.setState(!item.state)}
-                            className={`relative h-6 w-11 rounded-full transition-colors cursor-pointer ${
-                              item.state ? "bg-blue-600" : "bg-slate-300"
-                            }`}
-                          >
-                            <span
-                              className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
-                                item.state ? "translate-x-5" : "translate-x-0.5"
-                              }`}
-                            />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Sessions */}
-                    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                      <div className="px-5 py-4 border-b border-slate-100">
-                        <div className="flex items-center gap-3">
-                          <Smartphone className="h-5 w-5 text-orange-600" />
-                          <h3 className="font-semibold text-slate-900">登录设备</h3>
-                        </div>
-                      </div>
-                      <div className="divide-y divide-slate-100">
-                        {sessions.map((session) => (
-                          <div key={session.id} className="p-4 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div
-                                className={`h-10 w-10 rounded-lg flex items-center justify-center ${session.current ? "bg-green-100" : "bg-slate-100"}`}
-                              >
-                                <Monitor
-                                  className={`h-5 w-5 ${session.current ? "text-green-600" : "text-slate-500"}`}
-                                />
-                              </div>
-                              <div>
-                                <p className="text-sm font-medium text-slate-900 flex items-center gap-2">
-                                  {session.device}
-                                  {session.current && (
-                                    <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-700 text-xs">
-                                      当前
-                                    </span>
-                                  )}
-                                </p>
-                                <p className="text-xs text-slate-500">
-                                  {session.location} · {session.lastActive}
-                                </p>
-                              </div>
-                            </div>
-                            {!session.current && (
-                              <button
-                                onClick={() => handleTerminateSession(session.id)}
-                                className="text-sm text-red-600 hover:text-red-700 cursor-pointer"
-                              >
-                                终止
-                              </button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Data Export & Delete */}
-                    <div className="space-y-3">
-                      <button
-                        onClick={handleExportData}
-                        className="w-full flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:shadow-sm transition-all cursor-pointer"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
-                            <Download className="h-5 w-5 text-blue-600" />
-                          </div>
-                          <div className="text-left">
-                            <h4 className="font-medium text-slate-900">导出数据</h4>
-                            <p className="text-sm text-slate-500">下载您的所有数据副本</p>
-                          </div>
-                        </div>
-                        <ChevronRight className="h-5 w-5 text-slate-400" />
-                      </button>
-
-                      <button
-                        onClick={() => setShowDeleteConfirm(true)}
-                        className="w-full flex items-center justify-between p-4 rounded-xl border-2 border-red-200 bg-red-50/50 hover:border-red-300 transition-all cursor-pointer"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100">
-                            <Trash2 className="h-5 w-5 text-red-600" />
-                          </div>
-                          <div className="text-left">
-                            <h4 className="font-medium text-red-900">删除账户</h4>
-                            <p className="text-sm text-red-600">永久删除您的账户和所有数据</p>
-                          </div>
-                        </div>
-                        <ChevronRight className="h-5 w-5 text-red-400" />
-                      </button>
-                    </div>
-
-                    {/* Delete Confirmation Modal */}
-                    {showDeleteConfirm && (
-                      <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-                        <div className="w-full max-w-md mx-4 rounded-2xl bg-white shadow-2xl overflow-hidden">
-                          <div className="p-6 text-center">
-                            <div className="mx-auto h-16 w-16 rounded-full bg-red-100 flex items-center justify-center mb-4">
-                              <AlertTriangle className="h-8 w-8 text-red-600" />
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-2">确定要删除账户吗？</h3>
-                            <p className="text-slate-600 mb-6">此操作不可撤销。您的所有数据将被永久删除。</p>
-                            <div className="mb-4">
-                              <label className="block text-sm text-slate-700 mb-2 text-left">
-                                请输入 <span className="font-semibold">删除我的账户</span> 以确认
-                              </label>
-                              <input
-                                type="text"
-                                value={deleteConfirmText}
-                                onChange={(e) => setDeleteConfirmText(e.target.value)}
-                                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                                placeholder="删除我的账户"
-                              />
-                            </div>
-                            <div className="flex gap-3">
-                              <button
-                                onClick={() => {
-                                  setShowDeleteConfirm(false)
-                                  setDeleteConfirmText("")
-                                }}
-                                className="flex-1 py-2.5 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 cursor-pointer"
-                              >
-                                取消
-                              </button>
-                              <button
-                                onClick={handleDeleteAccount}
-                                disabled={deleteConfirmText !== "删除我的账户"}
-                                className="flex-1 py-2.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 disabled:bg-slate-300 disabled:cursor-not-allowed cursor-pointer"
-                              >
-                                确认删除
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                    
                   </div>
                 )}
 

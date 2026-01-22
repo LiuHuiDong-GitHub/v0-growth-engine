@@ -84,9 +84,7 @@ export default function SelectRolePage() {
             <Link href="/login" className="text-sm sm:text-base text-blue-600 hover:text-blue-700 transition-colors hover:underline">
               返回
             </Link>
-            <Link href="/" className="text-sm sm:text-base text-slate-500 hover:text-slate-700 transition-colors hover:underline">
-              跳过
-            </Link>
+            
           </div>
         </div>
       </main>

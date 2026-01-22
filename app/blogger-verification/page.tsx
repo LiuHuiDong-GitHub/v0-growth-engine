@@ -2,9 +2,11 @@
 
 import type React from "react"
 import { useState, useRef } from "react"
+import { useRouter } from "next/navigation"
 import AppHeader from "@/components/app-header"
 
 export default function BloggerVerificationPage() {
+  const router = useRouter()
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
@@ -273,7 +275,7 @@ export default function BloggerVerificationPage() {
 
         {/* Info Text */}
         <p className="mb-10 sm:mb-16 text-center text-xs sm:text-sm text-slate-500 px-4">
-          提交后，我们将在1-2个工作日内完成审核，请保持联系方式畅通。
+          提交后，立即完成审核
         </p>
 
         {/* Latest Projects Section */}
@@ -298,7 +300,7 @@ export default function BloggerVerificationPage() {
                 description:
                   "为新兴咖啡品牌创作引人入胜的内容，提升品牌知名度和产品销售额。寻找热爱咖啡、善于用故事吸引观众的图",
                 price: "$ 500-1000元",
-                duration: "月期",
+                duration: "期望发布时间",
                 fans: "10K+",
                 image: "/images/coffee-demo.jpg",
               },
@@ -367,7 +369,7 @@ export default function BloggerVerificationPage() {
             ].map((product, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 overflow-hidden rounded-lg sm:rounded-xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.01] cursor-pointer w-[240px] sm:w-[280px]"
+                className="flex-shrink-0 overflow-hidden rounded-lg sm:rounded-xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.01] w-[240px] sm:w-[280px]"
               >
                 <img
                   src={product.image || "/placeholder.svg"}
@@ -401,21 +403,12 @@ export default function BloggerVerificationPage() {
                           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                       </svg>
-                      <span className="text-[10px] sm:text-xs">{product.duration}</span>
-                    </span>
-                    <span className="flex items-center gap-0.5 sm:gap-1">
-                      <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                        />
-                      </svg>
-                      <span className="text-[10px] sm:text-xs">{product.fans}</span>
+                      <span className="text-[10px] sm:text-xs">期望发布时间</span>
                     </span>
                   </div>
-                  <button className="w-full rounded-lg border border-slate-200 bg-white py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer">
+                  <button 
+                    onClick={() => router.push(`/product/1`)}
+                    className="w-full rounded-lg border border-slate-200 bg-white py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer">
                     查看详情
                   </button>
                 </div>

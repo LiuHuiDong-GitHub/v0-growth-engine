@@ -53,7 +53,6 @@ export const breadcrumbMap: Record<string, BreadcrumbConfig[]> = {
 
   // Other Pages
   "/message-board": [{ label: "GrowthEngine" }, { label: "消息中心" }],
-  "/settings": [{ label: "GrowthEngine" }, { label: "设置" }],
 }
 
 export function getBreadcrumbs(pathname: string): BreadcrumbConfig[] {

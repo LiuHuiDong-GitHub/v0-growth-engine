@@ -8,7 +8,8 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Bell, Settings, MessageSquare, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react"
+import AppHeader from "@/components/app-header"
+import { TrendingUp, ChevronLeft, ChevronRight } from "lucide-react"
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -22,24 +23,15 @@ const spaceGrotesk = Space_Grotesk({
 
 export default function Page() {
   const router = useRouter()
-  const [isDarkMode, setIsDarkMode] = useState(false)
-  const [showUserMenu, setShowUserMenu] = useState(false)
-  const [showSettingsModal, setShowSettingsModal] = useState(false)
-  const [showNotifications, setShowNotifications] = useState(false)
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true)
-  const [notifications, setNotifications] = useState([
-    { id: 1, title: "新项目申请", message: "云盘大师项目申请已提交", time: "5分钟前", isRead: false },
-    { id: 2, title: "审核通过", message: "您的博主资质已通过审核", time: "1小时前", isRead: false },
-    { id: 3, title: "系统通知", message: "平台将于今晚22:00进行维护", time: "3小时前", isRead: false },
-  ])
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [activeAuthButton, setActiveAuthButton] = useState("login")
   const [isDragging, setIsDragging] = useState(false)
   const [startX, setStartX] = useState(0)
   const [scrollLeft, setScrollLeft] = useState(0)
   const [showCarouselNav, setShowCarouselNav] = useState(false)
-  const [theme, setTheme] = useState("light")
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [notifications, setNotifications] = useState([])
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
 
   const testimonials = [
     {
@@ -122,7 +114,7 @@ export default function Page() {
     },
     {
       id: 6,
-      image: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop",
+      image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=300&fit=crop",
       avatar: "/images/profile.png",
       company: "健康医疗",
       title: "预约量增长310%",
@@ -176,14 +168,6 @@ export default function Page() {
     }
   }
 
-  const handleClearAllNotifications = () => {
-    setNotifications([])
-  }
-
-  const handleMarkAllAsRead = () => {
-    setNotifications((prev) => prev.map((notif) => ({ ...notif, isRead: true })))
-  }
-
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollContainerRef.current) return
     setIsDragging(true)
@@ -210,194 +194,7 @@ export default function Page() {
   return (
     <div className={`${plusJakarta.variable} ${spaceGrotesk.variable} font-[family-name:var(--font-plus-jakarta)]`}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        {/* Header */}
-        <header className="border-b border-blue-100 bg-white/42 backdrop-blur-md sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 lg:pl-0 lg:pr-2.5">
-            <div className="flex justify-between items-center py-2 leading-3 sm:py-0">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <div className="bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center rounded-full w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] leading-7">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-4 h-4 sm:w-5 sm:h-5"
-                  >
-                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-                  </svg>
-                </div>
-                <span className="font-[family-name:var(--font-space-grotesk)] font-bold text-base sm:text-lg md:text-xl text-gray-900 font-sans">
-                  GrowthEngine
-                </span>
-              </div>
-
-              <nav className="hidden md:flex items-center gap-6 lg:gap-8">
-                <a href="#features" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                  Features
-                </a>
-                <a href="#showcase" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                  Showcase
-                </a>
-                <a href="#contact" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                  Contact
-                </a>
-              </nav>
-
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="flex items-center bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full px-4 gap-0.5 sm:px-0.5 py-0">
-                  {/* Login Button */}
-                  <Link href="/login" className="relative z-10">
-                    <Button
-                      variant="ghost"
-                      className="relative text-xs sm:text-sm font-medium rounded-full px-3 sm:px-6 transition-colors !bg-transparent hover:!bg-transparent !text-white hover:!text-white"
-                    >
-                      登录
-                    </Button>
-                  </Link>
-                </div>
-                {/* End of sliding capsule background */}
-
-                {/* Notification Bell */}
-                <div className="relative hidden sm:block">
-                  <button
-                    onClick={() => {
-                      setShowNotifications(!showNotifications)
-                      setShowUserMenu(false)
-                    }}
-                    className="relative text-slate-400 transition-colors hover:text-slate-600 p-2"
-                  >
-                    <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
-                    {notifications.filter((n) => !n.isRead).length > 0 && (
-                      <span className="absolute right-1 top-1 flex h-3.5 w-3.5 sm:h-4 sm:w-4 items-center justify-center rounded-full bg-red-500 text-[9px] sm:text-[10px] text-white">
-                        {notifications.filter((n) => !n.isRead).length}
-                      </span>
-                    )}
-                  </button>
-
-                  {/* Notifications Dropdown */}
-                  {showNotifications && (
-                    <div className="absolute right-0 top-full mt-2 w-80 rounded-lg border bg-white shadow-lg z-50 border-cyan-600">
-                      <div className="absolute -top-2 right-8 h-4 w-4 bg-white border-t border-l border-slate-300 rotate-45"></div>
-
-                      <div className="border-b px-4 py-3 border-slate-400 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-slate-900">通知</h3>
-                          <button
-                            onClick={handleClearAllNotifications}
-                            className="text-slate-400 hover:text-blue-600 transition-colors p-1 hover:scale-110"
-                            title="清除所有通知"
-                          >
-                            <svg
-                              className="h-4 w-4"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                              stroke="none"
-                            >
-                              {/* 刷子柄 */}
-                              <rect x="10" y="14" width="2" height="8" />
-                              {/* 刷子头 - 上部 */}
-                              <rect x="4" y="6" width="16" height="3" rx="1" />
-                              {/* 刷子毛 - 多条竖线 */}
-                              <line x1="5" y1="9" x2="5" y2="12" stroke="currentColor" strokeWidth="1" />
-                              <line x1="7" y1="9" x2="7" y2="12" stroke="currentColor" strokeWidth="1" />
-                              <line x1="9" y1="9" x2="9" y2="12" stroke="currentColor" strokeWidth="1" />
-                              <line x1="11" y1="9" x2="11" y2="12" stroke="currentColor" strokeWidth="1" />
-                              <line x1="13" y1="9" x2="13" y2="12" stroke="currentColor" strokeWidth="1" />
-                              <line x1="15" y1="9" x2="15" y2="12" stroke="currentColor" strokeWidth="1" />
-                              <line x1="17" y1="9" x2="17" y2="12" stroke="currentColor" strokeWidth="1" />
-                              <line x1="19" y1="9" x2="19" y2="12" stroke="currentColor" strokeWidth="1" />
-                            </svg>
-                          </button>
-                        </div>
-                        <button
-                          onClick={handleMarkAllAsRead}
-                          className="text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors px-2 py-1 hover:bg-blue-50 rounded"
-                          title="标记全部为已读"
-                        >
-                          全部已读
-                        </button>
-                      </div>
-                      <div className="max-h-96 overflow-y-auto">
-                        {notifications.map((notif) => (
-                          <div
-                            key={notif.id}
-                            className={`px-4 py-3 hover:bg-slate-50 transition-colors border-b border-slate-300 ${
-                              notif.isRead ? "opacity-60" : ""
-                            }`}
-                          >
-                            <div className="flex items-start gap-3">
-                              <div
-                                className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                                  notif.isRead ? "bg-slate-100" : "bg-blue-100"
-                                }`}
-                              >
-                                <Bell className={`h-4 w-4 ${notif.isRead ? "text-slate-400" : "text-blue-600"}`} />
-                              </div>
-                              <div className="flex-1">
-                                <h4 className="text-sm font-medium text-slate-900">{notif.title}</h4>
-                                <p className="text-xs text-slate-600">{notif.message}</p>
-                                <p className="mt-1 text-xs text-slate-400">{notif.time}</p>
-                              </div>
-                              {!notif.isRead && (
-                                <div className="h-2 w-2 rounded-full bg-blue-600 mt-1.5"></div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="px-4 py-2 text-center border-t-0 border-b-0">
-                        <button className="text-sm text-blue-600 hover:text-blue-700">查看所有通知</button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* User Avatar with Dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => {
-                      setShowUserMenu(!showUserMenu)
-                      setShowNotifications(false)
-                    }}
-                    className="h-8 w-8 overflow-hidden rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 ring-2 ring-transparent transition-all hover:ring-blue-200"
-                  >
-                    <img
-                      src="https://api.dicebear.com/7.x/avataaars/svg?seed=user"
-                      alt="User"
-                      className="h-full w-full object-cover"
-                    />
-                  </button>
-
-                  {/* User Menu Dropdown */}
-                  {showUserMenu && (
-                    <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border bg-white shadow-lg z-50">
-                      <button
-                        onClick={() => {
-                          setShowSettingsModal(true)
-                          setShowUserMenu(false)
-                        }}
-                        className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
-                      >
-                        <Settings className="h-4 w-4" />
-                        <span>Settings</span>
-                      </button>
-                      <Link
-                        href="/message-board"
-                        onClick={() => setShowUserMenu(false)}
-                        className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
-                      >
-                        <MessageSquare className="h-4 w-4" />
-                        <span>留言</span>
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
+        <AppHeader breadcrumbItems={[{ label: "首页" }]} />
 
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 md:py-32 lg:pr-8 lg:pl-8 sm:pt-[100px] sm:pb-20">
@@ -996,7 +793,7 @@ export default function Page() {
                 </a>
                 <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.85 1.235 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
                   </svg>
                 </a>
                 <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -1020,140 +817,6 @@ export default function Page() {
           </div>
         </footer>
       </div>
-
-      {showSettingsModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          onClick={() => setShowSettingsModal(false)}
-        >
-          <div className="mx-4 w-full max-w-4xl rounded-2xl bg-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <div className="flex h-[600px]">
-              {/* Sidebar */}
-              <aside className="w-64 border-r bg-slate-50 p-6 rounded-l-2xl">
-                <div className="mb-8 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
-                    <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M11.067 19.027a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-
-                <nav className="flex flex-col gap-1">
-                  <button className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-100">
-                    <Settings className="h-5 w-5" />
-                    <span>设置</span>
-                  </button>
-
-                  <Link
-                    href="/message-board"
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-100"
-                  >
-                    <MessageSquare className="h-5 w-5" />
-                    <span>留言</span>
-                  </Link>
-                </nav>
-              </aside>
-
-              {/* Main Content */}
-              <div className="flex-1 overflow-y-auto p-8">
-                <div className="mb-8 flex items-center justify-between">
-                  <h2 className="text-3xl font-bold text-slate-900">设置</h2>
-                  <button
-                    onClick={() => setShowSettingsModal(false)}
-                    className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-
-                <div className="space-y-6">
-                  {/* Account Management */}
-                  <div className="rounded-xl border p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-                        <svg className="h-6 w-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="mb-1 text-lg font-semibold text-slate-900">账号管理</h3>
-                        <p className="text-sm text-slate-600">更新您的个人资料和密码</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Notifications */}
-                  <div className="rounded-xl border p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-                        <Bell className="h-6 w-6 text-slate-600" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="mb-1 text-lg font-semibold text-slate-900">通知</h3>
-                            <p className="text-sm text-slate-600">控制应用通知设置</p>
-                          </div>
-                          <button
-                            onClick={() => setNotificationsEnabled(!notificationsEnabled)}
-                            className={`relative h-7 w-12 rounded-full transition-colors ${
-                              notificationsEnabled ? "bg-blue-600" : "bg-slate-300"
-                            }`}
-                          >
-                            <span
-                              className={`absolute top-1 h-5 w-5 rounded-full bg-white transition-transform ${
-                                notificationsEnabled ? "translate-x-6" : "translate-x-1"
-                              }`}
-                            />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Data Verification */}
-                  
-
-                  {/* Theme Switch */}
-                  
-
-                  {/* Logout */}
-                  <div className="rounded-xl border border-red-200 p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-50">
-                        <svg className="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                          />
-                        </svg>
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="mb-1 text-lg font-semibold text-slate-900">退出</h3>
-                        <p className="text-sm text-slate-600">从当前设备登出您的账号</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Click outside to close dropdowns */}
       {(showUserMenu || showNotifications) && (

@@ -181,27 +181,13 @@ GrowthEngine 是一个创作者与商家连接的平台，包含两个主要角�
 
 ## 📝 其他模块
 
-### 1. 消息中心
+### 2. 消息中心
 - **路径导航**: `GrowthEngine / 消息中心`
 - **路由**: `/message-board`
 - **功能**: 
   - 显示系统消息
   - 用户之间的沟通
   - 支持文件上传和截图粘贴
-- **可跳转到**:
-  - `/blogger-dashboard` 或 `/my-product` - 取决于用户角色
-
-### 2. 用户设置
-- **路径导航**: `GrowthEngine / 设置`
-- **路由**: `/settings`
-- **功能**: 
-  - 用户信息编辑
-  - 账户设置
-  - 隐私和安全设置
-  - 主题选择
-  - 通知偏好
-  - 数据导出
-  - 账户删除
 - **可跳转到**:
   - `/blogger-dashboard` 或 `/my-product` - 取决于用户角色
 
@@ -227,7 +213,6 @@ GrowthEngine 是一个创作者与商家连接的平台，包含两个主要角�
 | 推广任务 | `/my-promotions` | `/product-details/[id]` \| `/my-product` | 任务管理 |
 | 任务详情 | `/product-details/[id]` | `/my-promotions` \| `/my-product` | 返回列表 |
 | 消息中心 | `/message-board` | 根据用户角色 | 查看消息 |
-| 设置 | `/settings` | 根据用户角色 | 返回首页 |
 
 ---
 
