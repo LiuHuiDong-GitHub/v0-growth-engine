@@ -859,15 +859,6 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
 
         <main className="flex-1 p-4 sm:p-6 md:p-8 flex items-center justify-center">
           <div className="mx-auto max-w-7xl w-full">
-            {/* Breadcrumb */}
-            <Breadcrumb
-              items={[
-                { label: "首页", href: "/" },
-                { label: "待推广项目", href: "/select-product" },
-                { label: productName === "" ? productData.name : productName },
-              ]}
-            />
-
             {/* Main Layout: Hero Card + Right Sidebar Cards */}
             <div className="mt-4 sm:mt-6 flex flex-col lg:flex-row gap-4 sm:gap-6">
               {/* Hero Section - Main Card */}

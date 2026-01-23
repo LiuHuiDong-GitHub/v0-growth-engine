@@ -154,64 +154,11 @@ export default function BloggerDashboard() {
 
   return (
     <div className="flex min-h-screen bg-white">
-      {/* Sidebar - Hidden on mobile */}
-      <aside className="hidden md:fixed md:left-0 md:top-0 md:z-40 md:h-screen md:w-16 md:border-r md:border-slate-200 md:bg-white md:pt-20 md:block">
-        <nav className="flex flex-col items-center gap-6 py-6">
-          <button className="group flex flex-col items-center gap-1 text-blue-600 cursor-pointer">
-            <Lightbulb className="h-6 w-6" />
-            <span className="text-xs font-medium">仪表盘</span>
-          </button>
-          <button className="group flex flex-col items-center gap-1 text-slate-600 hover:text-blue-600 cursor-pointer">
-            <Home className="h-6 w-6" />
-            <span className="text-xs">Dashboard</span>
-          </button>
-          <button className="group flex flex-col items-center gap-1 text-slate-600 hover:text-blue-600 cursor-pointer">
-            <Upload className="h-6 w-6" />
-            <span className="text-xs">项目</span>
-          </button>
-          <button className="group flex flex-col items-center gap-1 text-slate-600 hover:text-blue-600 cursor-pointer">
-            <Search className="h-6 w-6" />
-            <span className="text-xs">浏览</span>
-          </button>
-          <button className="group flex flex-col items-center gap-1 text-slate-600 hover:text-blue-600 cursor-pointer">
-            <TrendingUp className="h-6 w-6" />
-            <span className="text-xs">推广者</span>
-          </button>
-          <button className="group flex flex-col items-center gap-1 text-slate-600 hover:text-blue-600 cursor-pointer">
-            <User className="h-6 w-6" />
-            <span className="text-xs">我的推广</span>
-          </button>
-          <button className="group flex flex-col items-center gap-1 text-slate-600 hover:text-blue-600 cursor-pointer">
-            <Settings className="h-6 w-6" />
-            <span className="text-xs">设置</span>
-          </button>
-          <button className="group flex flex-col items-center gap-1 text-slate-600 hover:text-blue-600 cursor-pointer">
-            <Settings className="h-6 w-6" />
-            <span className="text-xs">Settings</span>
-          </button>
-        </nav>
-      </aside>
-
-      <div className="md:ml-16 flex-1">
-        <AppHeader
-          breadcrumbItems={[
-            { label: "首页", href: "/" },
-            { label: "博主验证", href: "/blogger-verification" },
-            { label: "我的仪表盘" },
-          ]}
-        />
+      <div className="flex-1">
+        <AppHeader />
 
         <main className="px-4 sm:px-6 md:px-12 py-6 sm:py-8">
-          {/* Breadcrumb - shown by default, will be moved to header on scroll */}
-          <Breadcrumb
-            items={[
-              { label: "首页", href: "/" },
-              { label: "博主验证", href: "/blogger-verification" },
-              { label: "我的仪表盘" },
-            ]}
-          />
-
-          <h1 className="mb-6 sm:mb-8 mt-4 sm:mt-6 text-2xl sm:text-3xl font-bold text-slate-900">我的仪表盘</h1>
+          <h1 className="mb-6 sm:mb-8 text-2xl sm:text-3xl font-bold text-slate-900">我的仪表盘</h1>
 
           {/* Exposure Goals Section */}
           <div className="mb-8 sm:mb-12 grid gap-6 sm:gap-8 lg:grid-cols-2">

@@ -38,9 +38,9 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <AppHeader breadcrumbItems={[{ label: "忘记密码" }]} />
+      <AppHeader />
 
-      <div className="flex items-center justify-center p-4 pt-16 sm:pt-20">
+      <div className="flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           {/* Logo/Brand Link */}
           <Link href="/" className="flex items-center justify-center gap-2 mb-6 sm:mb-8">

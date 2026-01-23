@@ -95,28 +95,9 @@ export default function BloggerVerificationPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <AppHeader
-        breadcrumbItems={[
-          { label: "注册", href: "/register" },
-          { label: "角色选择", href: "/select-role" },
-          { label: "博主认证" },
-        ]}
-      />
+      <AppHeader />
 
-      <main className="mx-auto max-w-5xl px-4 sm:px-6 md:px-8 py-6 sm:py-8 pb-6 sm:pb-8 pt-20 sm:pt-24">
-        {/* Breadcrumb navigation */}
-        <nav className="mb-8 sm:mb-12 flex items-center gap-2 text-xs sm:text-sm text-slate-600">
-          <a href="/register" className="hover:text-slate-900">
-            注册
-          </a>
-          <span>/</span>
-          <a href="/select-role" className="hover:text-slate-900">
-            角色选择
-          </a>
-          <span>/</span>
-          <span className="font-semibold text-slate-900">博主认证</span>
-        </nav>
-
+      <main className="mx-auto max-w-5xl px-4 sm:px-6 md:px-8 py-6 sm:py-8 pb-6 sm:pb-8">
         {/* Title Section */}
         <div className="mb-8 sm:mb-12 text-center">
           <h1 className="mb-2 sm:mb-3 text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900">博主认证</h1>

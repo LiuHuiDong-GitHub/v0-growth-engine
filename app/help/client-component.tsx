@@ -205,7 +205,7 @@ export default function HelpCenterPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <AppHeader breadcrumbItems={[{ label: "帮助中心" }]} />
+      <AppHeader />
 
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white py-16 sm:py-20">

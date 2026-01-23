@@ -1,8 +1,8 @@
+import { Breadcrumb } from "@/components/ui/breadcrumb"
 import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
-import Breadcrumb from "@/components/breadcrumb" // Assuming Breadcrumb component is located in "@/components/breadcrumb"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -39,7 +39,6 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body className={`font-sans antialiased`}>
-        <Breadcrumb />
         {children}
         <Analytics />
       </body>

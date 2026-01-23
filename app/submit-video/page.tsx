@@ -175,11 +175,8 @@ export default function SubmitVideoPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
       <AppHeader />
 
-      <main className="pt-16 sm:pt-20 pb-12 sm:pb-16">
+      <main className="pb-12 sm:pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          {/* Breadcrumb */}
-          <Breadcrumb />
-
           {/* Main Card */}
           <div className="mt-4 sm:mt-6 bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             {/* Header Section */}

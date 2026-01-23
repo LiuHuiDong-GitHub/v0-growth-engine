@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import {
   Search,
   Bell,
@@ -31,12 +31,66 @@ import {
   Zap,
 } from "lucide-react"
 
+// 路径名称映射
+const pathNameMap: Record<string, string> = {
+  "": "首页",
+  "select-product": "选择产品",
+  "select-role": "选择角色",
+  "upload-product": "上传产品",
+  "my-product": "我的产品",
+  "my-promotions": "我的推广",
+  "blogger-dashboard": "博主仪表盘",
+  "blogger-verification": "博主认证",
+  "blogger-video": "博主视频",
+  "product-details": "产品详情",
+  "product": "产品",
+  "submit-video": "提交视频",
+  "message-board": "留言板",
+  "help": "帮助中心",
+  "login": "登录",
+  "register": "注册",
+  "forgot-password": "忘记密码",
+  "verify-email": "验证邮箱",
+}
+
+// 生成面包屑路径
+function generateBreadcrumb(pathname: string): Array<{ label: string; href?: string }> {
+  if (pathname === "/") return []
+  
+  const segments = pathname.split("/").filter(Boolean)
+  const breadcrumbs: Array<{ label: string; href?: string }> = [{ label: "首页", href: "/" }]
+  
+  let currentPath = ""
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i]
+    currentPath += `/${segment}`
+    
+    // 跳过动态路由参数 (如 [id])
+    if (segment.startsWith("[") || /^\d+$/.test(segment)) {
+      continue
+    }
+    
+    const label = pathNameMap[segment] || segment
+    const isLast = i === segments.length - 1
+    
+    breadcrumbs.push({
+      label,
+      href: isLast ? undefined : currentPath,
+    })
+  }
+  
+  return breadcrumbs
+}
+
 interface AppHeaderProps {
   breadcrumbItems?: Array<{ label: string; href?: string }>
 }
 
 export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
   const router = useRouter()
+  const pathname = usePathname()
+  const isHomePage = pathname === "/"
+  const autoBreadcrumbs = generateBreadcrumb(pathname)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
@@ -183,11 +237,31 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
 
   return (
     <>
-      <header className="border-b border-blue-100 bg-white/42 backdrop-blur-md fixed top-0 left-0 right-0 z-50">
-        <div className="relative flex items-center justify-end px-3 sm:px-8 py-2 sm:py-[1.8]">
-          <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-base sm:text-xl font-bold text-blue-600">
-            GrowthEngine
-          </Link>
+      <header className="border-b border-blue-100 bg-white/90 backdrop-blur-md">
+        <div className="flex items-center justify-between px-3 sm:px-8 py-2 sm:py-3">
+          {/* 左侧：首页显示Logo，其他页面显示面包屑导航 */}
+          <div className="flex items-center">
+            {isHomePage ? (
+              <Link href="/" className="text-base sm:text-xl font-bold text-blue-600">
+                GrowthEngine
+              </Link>
+            ) : (
+              <nav className="flex items-center text-sm">
+                {autoBreadcrumbs.map((item, index) => (
+                  <span key={index} className="flex items-center">
+                    {index > 0 && <span className="mx-1.5 text-slate-400">/</span>}
+                    {item.href ? (
+                      <Link href={item.href} className="text-slate-600 hover:text-blue-600 transition-colors">
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <span className="text-slate-900 font-medium">{item.label}</span>
+                    )}
+                  </span>
+                ))}
+              </nav>
+            )}
+          </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Notification Bell */}

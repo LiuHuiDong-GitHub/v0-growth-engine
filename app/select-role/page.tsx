@@ -18,9 +18,9 @@ export default function SelectRolePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <AppHeader breadcrumbItems={[{ label: "注册", href: "/register" }, { label: "选择角色" }]} />
+      <AppHeader />
 
-      <main className="container mx-auto px-4 py-8 sm:py-16 pt-20 sm:pt-24">
+      <main className="container mx-auto px-4 py-8 sm:py-16">
         <div className="mx-auto max-w-4xl">
           {/* Title Section */}
           <div className="mb-8 sm:mb-16 text-center">

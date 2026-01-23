@@ -73,12 +73,10 @@ export default function MyPromotions() {
     <div className="min-h-screen md:h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Main Content */}
       <div className="flex flex-col h-screen overflow-hidden">
-        <AppHeader breadcrumbItems={[{ label: "首页", href: "/" }, { label: "我的推广" }]} />
+        <AppHeader />
 
         <main className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 min-h-[200vh]">
-          <Breadcrumb items={[{ label: "首页", href: "/" }, { label: "我的推广" }]} />
-
-          <h1 className="mb-4 sm:mb-6 mt-4 sm:mt-6 text-2xl sm:text-3xl font-bold text-slate-900">我的推广</h1>
+          <h1 className="mb-4 sm:mb-6 text-2xl sm:text-3xl font-bold text-slate-900">我的推广</h1>
 
           <div className="mb-4 sm:mb-6 flex justify-start overflow-x-auto">
             <div className="relative inline-flex rounded-full bg-slate-100 p-1 min-w-fit">

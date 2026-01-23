@@ -113,12 +113,8 @@ export default function BloggerVideoPage() {
         <AppHeader />
 
         <main className="px-4 sm:px-6 md:px-8 py-4 sm:py-6">
-          <Breadcrumb
-            items={[{ label: "首页", href: "/" }, { label: "我的推广", href: "/my-promotions" }, { label: "视频表现" }]}
-          />
-
           {/* Product Progress Card */}
-          <div className="mb-6 sm:mb-8 mt-4 sm:mt-6 overflow-hidden rounded-xl sm:rounded-2xl bg-white p-4 sm:p-6 shadow-sm">
+          <div className="mb-6 sm:mb-8 overflow-hidden rounded-xl sm:rounded-2xl bg-white p-4 sm:p-6 shadow-sm">
             <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
               <div className="flex items-center gap-3">
                 <div className={`h-10 sm:h-12 w-1 rounded-full ${statusColor}`}></div>

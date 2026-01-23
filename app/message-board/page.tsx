@@ -102,9 +102,9 @@ export default function MessageBoardPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <AppHeader breadcrumbItems={[{ label: "待推广项目", href: "/select-product" }, { label: "留言板" }]} />
+      <AppHeader />
 
-      <main className="flex-1 p-4 sm:p-6 md:p-8 pt-20 sm:pt-4">
+      <main className="flex-1 p-4 sm:p-6 md:p-8">
         <div className="mx-auto max-w-4xl" style={{maxWidth: 'min(90%, 56rem)'}}>
           <div className="rounded-xl sm:rounded-2xl bg-white p-4 sm:p-6 md:p-8 shadow-lg border-transparent border-0 mt-4 sm:mt-5">
             <div className="flex items-center justify-between mb-3 sm:mb-4">

@@ -194,10 +194,10 @@ export default function Page() {
   return (
     <div className={`${plusJakarta.variable} ${spaceGrotesk.variable} font-[family-name:var(--font-plus-jakarta)]`}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <AppHeader breadcrumbItems={[{ label: "首页" }]} />
+        <AppHeader />
 
         {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 md:py-32 lg:pr-8 lg:pl-8 sm:pt-[100px] sm:pb-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 md:py-32 lg:pr-8 lg:pl-8">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="font-[family-name:var(--font-space-grotesk)] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight text-balance px-2">
               你的产品准备好被看见了吗?

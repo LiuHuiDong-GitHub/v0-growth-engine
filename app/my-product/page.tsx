@@ -79,15 +79,6 @@ export default function MyProductPage() {
 
         {/* Page Content */}
         <main className="flex-1 p-4 sm:p-6 md:p-8">
-          <Breadcrumb
-            items={[
-              { label: "注册", href: "/register" },
-              { label: "选择角色", href: "/select-role" },
-              { label: "博主验证", href: "/blogger-verification" },
-              { label: "待推广项目" },
-            ]}
-          />
-
           <h1 className="mb-4 sm:mb-6 md:mb-8 text-xl sm:text-2xl md:text-3xl font-bold text-slate-900">我的项目</h1>
 
           <div className="grid gap-3 sm:gap-[0.9rem] md:grid-cols-2 lg:grid-cols-3">

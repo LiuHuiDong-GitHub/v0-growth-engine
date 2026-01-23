@@ -1,8 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import AppHeader from "@/components/app-header"
 import Breadcrumb from "@/components/breadcrumb"
+import AppHeader from "@/components/app-header" // Import AppHeader component
 
 export default function SelectProductPage() {
   const products = [
@@ -44,20 +44,8 @@ export default function SelectProductPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Main Content */}
       <div className="flex flex-col min-h-screen">
-        {/* Header */}
-        <AppHeader />
-
         {/* Page Content */}
         <main className="flex-1 p-4 sm:p-6 md:p-8">
-          <Breadcrumb
-            items={[
-              { label: "注册", href: "/register" },
-              { label: "选择角色", href: "/select-role" },
-              { label: "博主验证", href: "/blogger-verification" },
-              { label: "待推广项目" },
-            ]}
-          />
-
           <h1 className="mb-4 sm:mb-6 md:mb-8 text-xl sm:text-2xl md:text-3xl font-bold text-slate-900">待推广项目</h1>
 
           <div className="grid gap-3 sm:gap-[0.9rem] md:grid-cols-2 lg:grid-cols-3">

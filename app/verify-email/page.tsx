@@ -118,7 +118,7 @@ export default function VerifyEmailPage() {
           </button>
 
           {/* Content */}
-          <div className="pt-14 sm:pt-16 pb-4">
+          <div className="pt-8 sm:pt-10 pb-4">
             {/* Title */}
             <div className="text-center mb-6 sm:mb-8 px-2">
               <p className="text-slate-600 text-sm sm:text-base break-words">
