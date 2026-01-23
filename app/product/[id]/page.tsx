@@ -504,11 +504,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                               {showCalendar && (
                                 <div
                                   ref={calendarRef}
-                                  className="fixed z-50 bg-white rounded-xl shadow-xl border border-slate-200 p-4 w-64"
-                                  style={{
-                                    top: `${dateButtonRef.current?.getBoundingClientRect().bottom || 0 + 8}px`,
-                                    left: `${dateButtonRef.current?.getBoundingClientRect().left || 0}px`,
-                                  }}
+                                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50 bg-white rounded-xl shadow-xl border border-slate-200 p-4 w-64"
                                 >
                                   <div className="flex items-center justify-between mb-4 px-1">
                                     <button
@@ -863,9 +859,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               </div>
 
               {/* Right Sidebar Cards */}
-              <div className="w-full lg:w-56 flex-shrink-0 space-y-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 sm:gap-4 lg:space-y-4">
+              <div className="w-full lg:w-56 flex-shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 items-start content-start">
                 {/* Incentive Card */}
-                <div className="bg-gradient-to-br from-amber-50 via-amber-100/80 to-orange-50 border border-amber-200/60 shadow-lg shadow-amber-100/50 overflow-hidden rounded-lg">
+                <div className="bg-gradient-to-br from-amber-50 via-amber-100/80 to-orange-50 border border-amber-200/60 shadow-lg shadow-amber-100/50 overflow-hidden rounded-lg h-fit">
                   {/* Card Header with Trophy */}
                   <div className="relative px-5 pt-5 pb-3">
                     <div className="text-xs font-medium text-amber-700/80">激励金计划</div>
@@ -904,7 +900,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </div>
 
                 {/* Contact Card */}
-                <div className="overflow-hidden shadow-lg bg-gradient-to-br from-blue-50 via-white to-blue-50 border-2 border-blue-200/60 relative rounded-xl">
+                <div className="overflow-hidden shadow-lg bg-gradient-to-br from-blue-50 via-white to-blue-50 border-2 border-blue-200/60 relative rounded-xl h-fit">
                   {/* Postcard decorative stamps */}
                   <div className="absolute top-3 right-3 w-10 h-10 rotate-12">
                     <div className="w-full h-full border-2 border-red-400 bg-red-50 rounded-sm flex items-center justify-center">

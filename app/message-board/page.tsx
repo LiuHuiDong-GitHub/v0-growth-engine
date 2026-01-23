@@ -104,20 +104,12 @@ export default function MessageBoardPage() {
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <AppHeader breadcrumbItems={[{ label: "待推广项目", href: "/select-product" }, { label: "留言板" }]} />
 
-      <main className="flex-1 p-4 sm:p-6 md:p-8 pt-20 sm:pt-24">
-        <div className="mx-auto max-w-4xl">
+      <main className="flex-1 p-4 sm:p-6 md:p-8 pt-20 sm:pt-4">
+        <div className="mx-auto max-w-4xl" style={{maxWidth: 'min(90%, 56rem)'}}>
           <div className="rounded-xl sm:rounded-2xl bg-white p-4 sm:p-6 md:p-8 shadow-lg border-transparent border-0 mt-4 sm:mt-5">
             <div className="flex items-center justify-between mb-3 sm:mb-4">
               <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">留言板</h1>
-              <button
-                onClick={() => {
-                  // Settings button now handled by AppHeader
-                }}
-                className="flex h-10 w-10 items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-                title="设置"
-              >
-                <Settings className="h-5 w-5" />
-              </button>
+              
             </div>
             <p className="mb-6 sm:mb-8 text-sm sm:text-base text-slate-600 leading-relaxed">
               有任何建议、疑问、申诉、反馈都可以发送给我们，我们的平台运营会及时回复您，并做到公平、公正处理任何问题。
@@ -126,7 +118,7 @@ export default function MessageBoardPage() {
             {/* Messages */}
             <div className="mb-4 sm:mb-6 space-y-4 sm:space-y-6">
               {messages.map((msg) => (
-                <div key={msg.id} className={`flex gap-2 sm:gap-4 ${msg.type === "user" ? "justify-end" : ""}`}>
+                <div key={msg.id} className={`flex sm:gap-3.5 ${msg.type === "user" ? "justify-end" : ""}`}>
                   {msg.type === "admin" && (
                     <div className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0 overflow-hidden rounded-full bg-slate-100">
                       <img
@@ -141,7 +133,7 @@ export default function MessageBoardPage() {
                     
                     {msg.text && (
                       <div
-                        className={`rounded-2xl px-4 sm:px-6 py-3 sm:py-4 ${
+                        className={`rounded-2xl px-4 py-3 sm:px-3 sm:py-3 ${
                           msg.type === "user"
                             ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                             : "bg-slate-100 text-slate-900"
@@ -196,8 +188,8 @@ export default function MessageBoardPage() {
             </div>
 
             {/* Message Input */}
-            <div className="flex items-end gap-2 sm:gap-3 pt-4 sm:pt-6 border-t-0">
-              <div className="flex-1 rounded-full border-2 border-slate-200 bg-white px-2 sm:px-4 py-2 sm:py-3 transition-colors focus-within:border-blue-400 flex items-center gap-2">
+            <div className="flex items-end gap-2 sm:gap-3 pt-4 border-t-0 sm:pt-2.5">
+              <div className="flex-1 rounded-full border-2 border-slate-200 bg-white px-2 py-2 transition-colors focus-within:border-blue-400 flex items-center gap-2 sm:px-1.5 sm:py-1.5">
                 <button
                   onClick={handleUploadClick}
                   className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full text-slate-400 transition-colors hover:text-slate-600 hover:bg-slate-100 active:scale-95 flex-shrink-0"
@@ -259,7 +251,7 @@ export default function MessageBoardPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white/50 text-center border-t-0 py-4 sm:py-5">
+      <footer className="bg-white/50 text-center border-t-0 py-4 sm:py-3.5">
         <p className="text-xs sm:text-sm text-slate-600">© 2025 GrowthEngine. All rights reserved.</p>
       </footer>
     </div>

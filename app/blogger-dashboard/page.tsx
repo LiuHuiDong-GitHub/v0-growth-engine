@@ -448,8 +448,8 @@ export default function BloggerDashboard() {
           <div className="h-16"></div>
 
           {/* Footer */}
-          <footer className="mt-16 border-t border-slate-200 py-8 text-center">
-            <p className="text-sm text-slate-600">© 2025 GrowthEngine. All rights reserved.</p>
+          <footer className="bg-white/50 text-center border-t-0 py-4 sm:py-3.5">
+            <p className="text-xs sm:text-sm text-slate-600">© 2025 GrowthEngine. All rights reserved.</p>
           </footer>
         </main>
       </div>

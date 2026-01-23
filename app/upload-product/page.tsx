@@ -852,56 +852,9 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
   }
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
-      {/* Sidebar - Hidden on mobile */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-screen flex-col items-center gap-8 border-r border-slate-200/80 bg-white/80 backdrop-blur-sm z-40 w-7 py-9">
-        <Link href="/" className="mb-8">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25">
-            <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
-              />
-            </svg>
-          </div>
-        </Link>
-
-        <nav className="flex flex-col gap-6">
-          <Link
-            href="/select-product"
-            className="flex flex-col items-center gap-1 text-blue-600 transition-colors hover:text-blue-700"
-          >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
-            </svg>
-            <span className="text-xs">首页</span>
-          </Link>
-          <Link
-            href="/my-promotions"
-            className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-slate-600"
-          >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-            <span className="text-xs">我的推广</span>
-          </Link>
-        </nav>
-      </aside>
-
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
       {/* Main Content */}
-      <div className="md:ml-16 flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col">
         <AppHeader />
 
         <main className="flex-1 p-4 sm:p-6 md:p-8 flex items-center justify-center">
@@ -1243,11 +1196,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                               {showCalendar && (
                                 <div
                                   ref={calendarRef}
-                                  className="fixed z-50 bg-white rounded-xl shadow-xl border border-slate-200 p-4 w-64"
-                                  style={{
-                                    top: `${dateButtonRef.current?.getBoundingClientRect().bottom || 0 + 8}px`,
-                                    left: `${dateButtonRef.current?.getBoundingClientRect().left || 0}px`,
-                                  }}
+                                  className="absolute top-full left-1/2 -translate-x-[70%] mt-2 z-50 bg-white rounded-xl shadow-xl border border-slate-200 p-4 w-64"
                                 >
                                   <div className="flex items-center justify-between mb-4 px-1">
                                     <button
@@ -1837,7 +1786,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                     )}
 
                     <div
-                      className="relative z-50 border border-slate-200 bg-white p-6 shadow-sm transition-all rounded-xl"
+                      className="relative z-50 border border-slate-200 bg-white p-6 shadow-sm transition-all rounded-xl pb-0.5"
                       onMouseEnter={handleMouseEnter}
                       onMouseLeave={handleMouseLeave}
                     >
@@ -1859,7 +1808,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                       </div>
 
                       {/* Circular score display */}
-                      <div className="flex items-center justify-center">
+                      <div className="flex flex-col items-center justify-center">
                         <div className="relative h-32 w-32">
                           <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 120 120">
                             {/* Background circle */}
@@ -1892,7 +1841,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                           </div>
                         </div>
 
-                        <div className="mt-3 border-t border-slate-200 pt-3">
+                        <div className="border-t pt-3 border-b border-slate-100 mb-2 mt-2 pb-3">
                           <div className="flex flex-col items-center gap-1">
                             <div className="relative">
                               <input
@@ -1913,7 +1862,15 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                             </div>
                             <label
                               htmlFor="agree-investment"
-                              className="cursor-pointer font-medium text-slate-500 leading-3 text-xs"
+                              className="cursor-pointer font-medium bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 bg-clip-text text-transparent leading-3 text-sm animate-pulse shadow-lg"
+                              style={{
+                                backgroundImage: 'linear-gradient(90deg, #fbbf24 0%, #fcd34d 25%, #fbbf24 50%, #f59e0b 75%, #fbbf24 100%)',
+                                backgroundClip: 'text',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundSize: '200% 100%',
+                                animation: 'shimmer 3s infinite'
+                              }}
                             >
                               我接受早期投资
                             </label>

@@ -70,69 +70,12 @@ export default function MyPromotions() {
   ]
 
   return (
-    <div className="flex min-h-screen md:h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Sidebar - Hidden on mobile */}
-      <aside className="hidden md:flex fixed left-0 top-0 z-40 h-screen w-16 flex-col items-center gap-8 border-r border-slate-200 bg-white py-6">
-        <Link href="/" className="flex h-10 w-10 items-center justify-center">
-          <Lightbulb className="h-6 w-6 text-blue-600" />
-        </Link>
-
-        <nav className="flex flex-1 flex-col items-center gap-6">
-          <Link
-            href="/select-product"
-            className="group flex flex-col items-center gap-1 text-slate-600 transition-colors hover:text-blue-600"
-          >
-            <Home className="h-5 w-5" />
-            <span className="text-xs">仪表盘</span>
-          </Link>
-
-          <Link
-            href="/upload-product"
-            className="group flex flex-col items-center gap-1 text-slate-600 transition-colors hover:text-blue-600"
-          >
-            <Upload className="h-5 w-5" />
-            <span className="text-xs">项目</span>
-          </Link>
-
-          <Link
-            href="/select-product"
-            className="group flex flex-col items-center gap-1 text-slate-600 transition-colors hover:text-blue-600"
-          >
-            <Lightbulb className="h-5 w-5" />
-            <span className="text-xs">浏览</span>
-          </Link>
-
-          <Link
-            href="/my-promotions"
-            className="group flex flex-col items-center gap-1 text-slate-600 transition-colors hover:text-blue-600"
-          >
-            <TrendingUp className="h-5 w-5" />
-            <span className="text-xs">推广者</span>
-          </Link>
-
-          <Link href="/my-promotions" className="group flex flex-col items-center gap-1 text-blue-600">
-            <User className="h-5 w-5" />
-            <span className="text-xs">我的推广</span>
-          </Link>
-        </nav>
-
-        <div className="flex flex-col items-center gap-4">
-          <button className="flex flex-col items-center gap-1 text-slate-600 transition-colors hover:text-blue-600">
-            <SettingsIcon className="h-5 w-5" />
-            <span className="text-xs">设置</span>
-          </button>
-          <button className="flex flex-col items-center gap-1 text-slate-600 transition-colors hover:text-blue-600">
-            <SettingsIcon className="h-5 w-5" />
-            <span className="text-xs">Settings</span>
-          </button>
-        </div>
-      </aside>
-
+    <div className="min-h-screen md:h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Main Content */}
-      <div className="md:ml-16 flex-1 flex flex-col overflow-hidden">
+      <div className="flex flex-col h-screen overflow-hidden">
         <AppHeader breadcrumbItems={[{ label: "首页", href: "/" }, { label: "我的推广" }]} />
 
-        <main className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
+        <main className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 min-h-[200vh]">
           <Breadcrumb items={[{ label: "首页", href: "/" }, { label: "我的推广" }]} />
 
           <h1 className="mb-4 sm:mb-6 mt-4 sm:mt-6 text-2xl sm:text-3xl font-bold text-slate-900">我的推广</h1>
@@ -251,7 +194,7 @@ export default function MyPromotions() {
           )}
         </main>
 
-        <footer className="flex-shrink-0 border-t bg-white/50 py-3 sm:py-4 text-center">
+        <footer className="bg-white/50 text-center border-t-0 py-4 sm:py-3.5">
           <p className="text-xs sm:text-sm text-slate-600">© 2025 GrowthEngine. All rights reserved.</p>
         </footer>
       </div>

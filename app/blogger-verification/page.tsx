@@ -419,8 +419,8 @@ export default function BloggerVerificationPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-white py-6 sm:py-8 border-slate-100">
-        <p className="text-center text-xs sm:text-sm text-slate-500">© 2025 GrowthEngine. All rights reserved.</p>
+      <footer className="bg-white/50 text-center border-t-0 py-4 sm:py-3.5">
+        <p className="text-xs sm:text-sm text-slate-600">© 2025 GrowthEngine. All rights reserved.</p>
       </footer>
     </div>
   )

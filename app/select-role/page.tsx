@@ -82,7 +82,7 @@ export default function SelectRolePage() {
           {/* Navigation Links */}
           <div className="mt-8 sm:mt-12 flex items-center justify-between px-2">
             <Link href="/login" className="text-sm sm:text-base text-blue-600 hover:text-blue-700 transition-colors hover:underline">
-              返回
+              &lt;&lt; 返回
             </Link>
             
           </div>

@@ -206,7 +206,7 @@ export default function Page() {
               GrowthEngine — 独立创作者的首选引擎，帮助产品高效曝光出圈。
             </p>
             <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-lg px-8 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all">
-              开始赚钱
+              上传产品
             </Button>
 
             <p className="mt-8 text-sm text-gray-500 leading-relaxed max-w-3xl mx-auto">
@@ -221,17 +221,17 @@ export default function Page() {
           <div className="bg-white rounded-3xl shadow-xl border border-blue-100 p-6 sm:p-8 lg:p-10">
             <div className="flex justify-between items-center mb-6">
               <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl sm:text-3xl font-bold text-gray-900">
-                仪表盘
+                展示案例
               </h2>
               <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">
                 热门
               </span>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Left Card - 到问答网提问 */}
-              <Card className="p-6 border-2 border-gray-100 hover:border-blue-200 transition-all hover:shadow-lg">
-                <h3 className="font-semibold text-lg text-gray-900 mb-4">推广墙</h3>
+            <div className="max-w-5xl mx-auto">
+              {/* 推广墙 */}
+              <Card className="p-8 border-2 border-gray-100 hover:border-blue-200 transition-all hover:shadow-lg">
+                <h3 className="font-semibold text-2xl text-gray-900 mb-6">推广墙</h3>
                 <div className="space-y-6">
                   <div className="flex items-center bg-white gap-6 rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer p-2 hover:border-2 hover:border-blue-200">
                     {/* Left: Video Thumbnail */}
@@ -377,55 +377,6 @@ export default function Page() {
                   {/* ADDED CARD BELOW ENDS HERE */}
                 </div>
               </Card>
-
-              {/* Right Card - Reddit 机会区 */}
-              <Card className="p-6 border-2 border-gray-100 hover:border-indigo-200 transition-all hover:shadow-lg">
-                <h3 className="font-semibold text-lg text-gray-900 mb-4">Reddit 机会区</h3>
-                <div className="space-y-4">
-                  <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        className="w-4 h-4 text-green-600"
-                      >
-                        <path d="M20 6L9 17l-5-5"></path>
-                      </svg>
-                      <span className="text-sm font-medium text-gray-900">Totals Leads</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-2xl font-bold text-gray-900">124</span>
-                      <button className="text-sm text-blue-600 hover:text-blue-700 font-medium hover:underline">
-                        查看详细信息 →
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        className="w-4 h-4 text-orange-600"
-                      >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                      </svg>
-                      <span className="text-sm font-medium text-gray-900">Leads Viewed</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-2xl font-bold text-gray-900">89</span>
-                      <button className="text-sm text-blue-600 hover:text-blue-700 font-medium hover:underline">
-                        查看详细信息 →
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </Card>
             </div>
           </div>
         </section>
@@ -556,66 +507,62 @@ export default function Page() {
               onClick={handleUploadClick}
               className="bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600 text-white text-lg px-9 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all"
             >
-              立即上传我的产品
+              推广产品
             </Button>
           </div>
         </section>
 
         {/* Services Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <section id="services" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
           <div className="text-center mb-12">
             <h2 className="font-[family-name:var(--font-space-grotesk)] text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               博主浏览与接单页
             </h2>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-8 sm:p-12">
+          <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-8 sm:p-12 rounded-2xl">
             <div className="grid md:grid-cols-3 gap-6">
-              <Card className="bg-slate-700/50 border-slate-600 p-6 hover:bg-slate-700 transition-all">
+              <Card className="bg-white/80 border-blue-100 p-6 hover:bg-white hover:shadow-lg transition-all">
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="p-3 bg-blue-500/20 rounded-lg">
+                  <div className="p-3 bg-blue-100 rounded-lg">
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="white"
+                      stroke="#3b82f6"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       className="w-6 h-6"
                     >
-                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="9" cy="7" r="4"></circle>
-                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-white font-semibold text-lg mb-2">AI 写评测文</h3>
-                    <p className="text-slate-300 text-sm">基于你的产品特性自动生成专业评测</p>
+                    <h3 className="text-gray-900 font-semibold text-lg mb-2">AI 写评测文</h3>
+                    <p className="text-gray-600 text-sm">基于你的产品特性自动生成专业评测</p>
                   </div>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-5 h-5 opacity-50">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="w-5 h-5">
                     <path d="M9 18l6-6-6-6"></path>
                   </svg>
                 </div>
-                <p className="text-slate-400 text-sm leading-relaxed mb-4">
-                  AI
-                  基于你的产品工具，快速生成独立视图的短文，借助自动化工具，快速完成文章发布，提升你的产品曝光次数，降低成本。
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                  AI 基于你的产品工具，快速生成独立视图的短文，借助自动化工具，快速完成文章发布，提升你的产品曝光次数，降低成本。
                 </p>
                 <Button
                   variant="outline"
-                  className="w-full border-white/20 text-white hover:bg-white/10 bg-transparent"
+                  className="w-full border-blue-200 text-blue-600 hover:bg-blue-50 bg-transparent"
                 >
                   查看详情
                 </Button>
               </Card>
 
-              <Card className="bg-slate-700/50 border-slate-600 p-6 hover:bg-slate-700 transition-all">
+              <Card className="bg-white/80 border-purple-100 p-6 hover:bg-white hover:shadow-lg transition-all">
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="p-3 bg-purple-500/20 rounded-lg">
+                  <div className="p-3 bg-purple-100 rounded-lg">
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="white"
+                      stroke="#8b5cf6"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -625,31 +572,31 @@ export default function Page() {
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-white font-semibold text-lg mb-2">自媒体平台工具</h3>
-                    <p className="text-slate-300 text-sm">一站式管理所有自媒体渠道</p>
+                    <h3 className="text-gray-900 font-semibold text-lg mb-2">自媒体平台工具</h3>
+                    <p className="text-gray-600 text-sm">一站式管理所有自媒体渠道</p>
                   </div>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-5 h-5 opacity-50">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="w-5 h-5">
                     <path d="M9 18l6-6-6-6"></path>
                   </svg>
                 </div>
-                <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
                   为了促使案例相关的程序，确保业务在有效关联的基础下正中安好的第工程性地，目示是有效关联的核心关键。
                 </p>
                 <Button
                   variant="outline"
-                  className="w-full border-white/20 text-white hover:bg-white/10 bg-transparent"
+                  className="w-full border-purple-200 text-purple-600 hover:bg-purple-50 bg-transparent"
                 >
                   查看详情
                 </Button>
               </Card>
 
-              <Card className="bg-slate-700/50 border-slate-600 p-6 hover:bg-slate-700 transition-all">
+              <Card className="bg-white/80 border-pink-100 p-6 hover:bg-white hover:shadow-lg transition-all">
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="p-3 bg-pink-500/20 rounded-lg">
+                  <div className="p-3 bg-pink-100 rounded-lg">
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="white"
+                      stroke="#ec4899"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -661,19 +608,19 @@ export default function Page() {
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-white font-semibold text-lg mb-2">云部署协作平台</h3>
-                    <p className="text-slate-300 text-sm">帮助开发者快速部署到云端</p>
+                    <h3 className="text-gray-900 font-semibold text-lg mb-2">云部署协作平台</h3>
+                    <p className="text-gray-600 text-sm">帮助开发者快速部署到云端</p>
                   </div>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-5 h-5 opacity-50">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="w-5 h-5">
                     <path d="M9 18l6-6-6-6"></path>
                   </svg>
                 </div>
-                <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
                   提供高效开发工具和教程，帮助你快速完成产品部署。从开发到产品发布，为你的产品助力，地位你的产品力。
                 </p>
                 <Button
                   variant="outline"
-                  className="w-full border-white/20 text-white hover:bg-white/10 bg-transparent"
+                  className="w-full border-pink-200 text-pink-600 hover:bg-pink-50 bg-transparent"
                 >
                   查看详情
                 </Button>
@@ -681,9 +628,6 @@ export default function Page() {
             </div>
           </div>
         </section>
-
-        {/* Reddit Leads Section */}
-        
 
         {/* Footer */}
         <footer id="contact" className="border-t border-blue-100 bg-white">
