@@ -732,7 +732,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     </div>
 
                     {/* Thumbnails - Video + Screenshots */}
-                    <div className="relative group border border-slate-200 rounded-lg bg-white p-2 sm:p-3 mt-2 sm:mt-0">
+                    <div className="relative group border border-slate-200 rounded-lg bg-white p-2 sm:p-3 mt-2 sm:mt-1">
                       {/* Left navigation button for screenshots */}
                       <button
                         onClick={() => scrollScreenshots("left")}
