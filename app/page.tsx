@@ -197,41 +197,38 @@ export default function Page() {
         <AppHeader />
 
         {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 md:py-32 lg:pr-8 lg:pl-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 lg:pr-8 lg:pl-8 md:py-20 md:pb-[60px]">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="font-[family-name:var(--font-space-grotesk)] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight text-balance px-2">
               你的产品准备好被看见了吗?
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto px-4">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 leading-relaxed max-w-2xl mx-auto px-4 sm:mb-[46px]">
               GrowthEngine — 独立创作者的首选引擎，帮助产品高效曝光出圈。
             </p>
             <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-lg px-8 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all">
               上传产品
             </Button>
 
-            <p className="mt-8 text-sm text-gray-500 leading-relaxed max-w-3xl mx-auto">
-              独立开发者的代理产品，已协助数百名创作者用AI和自动化工具，突破了流量瓶颈和产品冷启动困境。
-              无需大量人力投入和昂贵的广告费用，即可精准触达目标用户群体。
-            </p>
+            
           </div>
         </section>
 
         {/* Dashboard Preview Section */}
-        <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-          <div className="bg-white rounded-3xl shadow-xl border border-blue-100 p-6 sm:p-8 lg:p-10">
+        <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-[60px]">
+          <div className="bg-white rounded-3xl shadow-xl border border-blue-100 p-6 sm:p-8 lg:p-10 leading-7 sm:px-7 sm:py-7 mx-auto w-3/5">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl sm:text-3xl font-bold text-gray-900">
-                展示案例
+              <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-gray-900 font-sans sm:text-2xl">
+                网站介绍&amp;展示案例
               </h2>
               <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">
                 热门
               </span>
             </div>
 
-            <div className="max-w-5xl mx-auto">
+            <div className="max-w-3xl mx-auto">
               {/* 推广墙 */}
               <Card className="p-8 border-2 border-gray-100 hover:border-blue-200 transition-all hover:shadow-lg">
-                <h3 className="font-semibold text-2xl text-gray-900 mb-6">推广墙</h3>
+                
                 <div className="space-y-6">
                   <div className="flex items-center bg-white gap-6 rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer p-2 hover:border-2 hover:border-blue-200">
                     {/* Left: Video Thumbnail */}
@@ -280,7 +277,7 @@ export default function Page() {
                     </div>
                   </div>
 
-                  <div className="flex items-center bg-white gap-6 rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer p-2 hover:border-2 hover:border-blue-200 border-0">
+                  <div className="flex items-center bg-white gap-6 rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer p-2 hover:border-2 hover:border-blue-200 border-0 px-1 py-1">
                     {/* Left: Video Thumbnail */}
                     <div className="relative h-32 w-48 flex-shrink-0 overflow-hidden rounded-lg bg-slate-200">
                       <img
@@ -376,6 +373,131 @@ export default function Page() {
                   </div>
                   {/* ADDED CARD BELOW ENDS HERE */}
                 </div>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Services Section */}
+        <section id="services" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+          <div className="text-center mt-0 mb-[30px]">
+            <Button
+              onClick={handleUploadClick}
+              className="bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600 text-white text-lg px-9 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all"
+            >
+              推广产品
+            </Button>
+          </div>
+          <div className="text-center mb-12">
+            <h2 className="font-[family-name:var(--font-space-grotesk)] text-3xl sm:text-4xl font-bold text-gray-900 mt-2 mb-0 pt-3.5">
+              博主浏览与接单页
+            </h2>
+          </div>
+
+          <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-8 sm:p-12 rounded-2xl sm:pt-2.5">
+            <div className="grid md:grid-cols-3 gap-6">
+              <Card className="bg-white/80 border-blue-100 p-6 hover:bg-white hover:shadow-lg transition-all">
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="p-3 bg-blue-100 rounded-lg">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#3b82f6"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-6 h-6"
+                    >
+                      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-gray-900 font-semibold text-lg mb-2">AI 写评测文</h3>
+                    <p className="text-gray-600 text-sm">基于你的产品特性自动生成专业评测</p>
+                  </div>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="w-5 h-5">
+                    <path d="M9 18l6-6-6-6"></path>
+                  </svg>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                  AI 基于你的产品工具，快速生成独立视图的短文，借助自动化工具，快速完成文章发布，提升你的产品曝光次数，降低成本。
+                </p>
+                <Button
+                  variant="outline"
+                  className="w-full border-blue-200 text-blue-600 hover:bg-blue-50 bg-transparent"
+                >
+                  查看详情
+                </Button>
+              </Card>
+
+              <Card className="bg-white/80 border-purple-100 p-6 hover:bg-white hover:shadow-lg transition-all">
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="p-3 bg-purple-100 rounded-lg">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#8b5cf6"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-6 h-6"
+                    >
+                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-gray-900 font-semibold text-lg mb-2">自媒体平台工具</h3>
+                    <p className="text-gray-600 text-sm">一站式管理所有自媒体渠道</p>
+                  </div>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="w-5 h-5">
+                    <path d="M9 18l6-6-6-6"></path>
+                  </svg>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                  为了促使案例相关的程序，确保业务在有效关联的基础下正中安好的第工程性地，目示是有效关联的核心关键。
+                </p>
+                <Button
+                  variant="outline"
+                  className="w-full border-purple-200 text-purple-600 hover:bg-purple-50 bg-transparent"
+                >
+                  查看详情
+                </Button>
+              </Card>
+
+              <Card className="bg-white/80 border-pink-100 p-6 hover:bg-white hover:shadow-lg transition-all">
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="p-3 bg-pink-100 rounded-lg">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#ec4899"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-6 h-6"
+                    >
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                      <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-gray-900 font-semibold text-lg mb-2">云部署协作平台</h3>
+                    <p className="text-gray-600 text-sm">帮助开发者快速部署到云端</p>
+                  </div>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="w-5 h-5">
+                    <path d="M9 18l6-6-6-6"></path>
+                  </svg>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                  提供高效开发工具和教程，帮助你快速完成产品部署。从开发到产品发布，为你的产品助力，地位你的产品力。
+                </p>
+                <Button
+                  variant="outline"
+                  className="w-full border-pink-200 text-pink-600 hover:bg-pink-50 bg-transparent"
+                >
+                  查看详情
+                </Button>
               </Card>
             </div>
           </div>
@@ -501,140 +623,14 @@ export default function Page() {
               </>
             )}
           </div>
-
-          <div className="text-center mt-12">
-            <Button
-              onClick={handleUploadClick}
-              className="bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600 text-white text-lg px-9 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all"
-            >
-              推广产品
-            </Button>
-          </div>
-        </section>
-
-        {/* Services Section */}
-        <section id="services" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-          <div className="text-center mb-12">
-            <h2 className="font-[family-name:var(--font-space-grotesk)] text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              博主浏览与接单页
-            </h2>
-          </div>
-
-          <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-8 sm:p-12 rounded-2xl">
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="bg-white/80 border-blue-100 p-6 hover:bg-white hover:shadow-lg transition-all">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="p-3 bg-blue-100 rounded-lg">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#3b82f6"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-6 h-6"
-                    >
-                      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-gray-900 font-semibold text-lg mb-2">AI 写评测文</h3>
-                    <p className="text-gray-600 text-sm">基于你的产品特性自动生成专业评测</p>
-                  </div>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="w-5 h-5">
-                    <path d="M9 18l6-6-6-6"></path>
-                  </svg>
-                </div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                  AI 基于你的产品工具，快速生成独立视图的短文，借助自动化工具，快速完成文章发布，提升你的产品曝光次数，降低成本。
-                </p>
-                <Button
-                  variant="outline"
-                  className="w-full border-blue-200 text-blue-600 hover:bg-blue-50 bg-transparent"
-                >
-                  查看详情
-                </Button>
-              </Card>
-
-              <Card className="bg-white/80 border-purple-100 p-6 hover:bg-white hover:shadow-lg transition-all">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="p-3 bg-purple-100 rounded-lg">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#8b5cf6"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-6 h-6"
-                    >
-                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-gray-900 font-semibold text-lg mb-2">自媒体平台工具</h3>
-                    <p className="text-gray-600 text-sm">一站式管理所有自媒体渠道</p>
-                  </div>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="w-5 h-5">
-                    <path d="M9 18l6-6-6-6"></path>
-                  </svg>
-                </div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                  为了促使案例相关的程序，确保业务在有效关联的基础下正中安好的第工程性地，目示是有效关联的核心关键。
-                </p>
-                <Button
-                  variant="outline"
-                  className="w-full border-purple-200 text-purple-600 hover:bg-purple-50 bg-transparent"
-                >
-                  查看详情
-                </Button>
-              </Card>
-
-              <Card className="bg-white/80 border-pink-100 p-6 hover:bg-white hover:shadow-lg transition-all">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="p-3 bg-pink-100 rounded-lg">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#ec4899"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-6 h-6"
-                    >
-                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                      <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                      <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-gray-900 font-semibold text-lg mb-2">云部署协作平台</h3>
-                    <p className="text-gray-600 text-sm">帮助开发者快速部署到云端</p>
-                  </div>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="w-5 h-5">
-                    <path d="M9 18l6-6-6-6"></path>
-                  </svg>
-                </div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                  提供高效开发工具和教程，帮助你快速完成产品部署。从开发到产品发布，为你的产品助力，地位你的产品力。
-                </p>
-                <Button
-                  variant="outline"
-                  className="w-full border-pink-200 text-pink-600 hover:bg-pink-50 bg-transparent"
-                >
-                  查看详情
-                </Button>
-              </Card>
-            </div>
-          </div>
         </section>
 
         {/* Footer */}
         <footer id="contact" className="border-t border-blue-100 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-7 lg:px-7 pb-[15px]">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-7 lg:px-7 sm:pl-7 sm:pr-7 pt-5 pb-3">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-4">
               <div>
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-4 leading-6">
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                     <svg
                       viewBox="0 0 24 24"
@@ -652,26 +648,23 @@ export default function Page() {
                     GrowthEngine
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  GrowthEngine helps indie creators amplify their products online, reaching the right audience with
-                  AI-powered tools.
+                <p className="text-sm text-gray-600 leading-relaxed leading-6">
+                  An AI-powered growth engine that continuously connects indie products with the right audience.
                 </p>
               </div>
 
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-4">Product</h4>
+              <div className="leading-5">
+                <h4 className="font-semibold text-gray-900 mb-4 leading-6">Product</h4>
                 <ul className="space-y-2">
                   <li>
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                      Features
-                    </a>
+                    
                   </li>
-                  <li>
+                  <li className="leading-6">
                     <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
                       How It Works
                     </a>
                   </li>
-                  <li>
+                  <li className="leading-6">
                     <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
                       Pricing
                     </a>
@@ -680,54 +673,39 @@ export default function Page() {
               </div>
 
               <div>
-                <h4 className="font-semibold text-gray-900 mb-4">Company</h4>
+                <h4 className="font-semibold text-gray-900 mb-4 leading-6">Legal</h4>
                 <ul className="space-y-2">
-                  <li>
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                      About Us
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                      Careers
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                      Blog
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-4">Support</h4>
-                <ul className="space-y-2">
-                  <li>
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                      FAQ
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                      Contact
-                    </a>
-                  </li>
-                  <li>
+                  <li className="leading-6">
                     <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
                       Privacy Policy
                     </a>
                   </li>
-                  <li>
+                  <li className="leading-6">
                     <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
                       Terms of Service
                     </a>
                   </li>
                 </ul>
               </div>
+
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-4 leading-6">Support</h4>
+                <ul className="space-y-2">
+                  <li className="leading-6">
+                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                      Support
+                    </a>
+                  </li>
+                  <li className="leading-6">
+                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                      FAQ
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
 
-            <div className="border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 pt-[15px]">
+            <div className="border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 pt-2.5">
               <p className="text-sm text-gray-500">© 2025 GrowthEngine. All rights reserved.</p>
               <div className="flex items-center gap-4">
                 <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -749,11 +727,6 @@ export default function Page() {
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                     <path d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path>
                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"></path>
-                  </svg>
-                </a>
-                <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"></path>
                   </svg>
                 </a>
               </div>
