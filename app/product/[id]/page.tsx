@@ -716,7 +716,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                             alt="Demo Video"
                             className="w-full h-full object-cover opacity-80 group-hover:opacity-70 transition-opacity"
                           />
-                          <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="absolute inset-0 flex items-center justify-center shadow-none">
                             <div className="w-16 h-16 rounded-full bg-white/95 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
                               <Play className="h-6 w-6 text-blue-600 ml-1" fill="currentColor" />
                             </div>
