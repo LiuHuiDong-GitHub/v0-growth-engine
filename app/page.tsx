@@ -199,9 +199,9 @@ export default function Page() {
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 lg:pr-8 lg:pl-8 md:py-20 md:pb-[60px] pt-20 sm:pt-24">
           <div className="text-center max-w-4xl mx-auto">
-            <h2 className="font-[family-name:var(--font-space-grotesk)] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight text-balance px-2">
-              GrowthEngine — 独立创作者的首选引擎，让你的产品给需要的人群看到。— 独立创作者的首选引擎，让你的产品给需要的人群看到。
-            </h2>
+            <h1 className="font-[family-name:var(--font-space-grotesk)] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight text-balance px-2">
+              你的产品准备好被看见了吗?
+            </h1>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 leading-relaxed max-w-2xl mx-auto px-4 sm:mb-[46px]">
               GrowthEngine — 独立创作者的首选引擎，r。
             </p>
