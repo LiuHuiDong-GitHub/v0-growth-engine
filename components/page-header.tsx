@@ -124,7 +124,7 @@ export function PageHeader({
   }
 
   return (
-    <header className="border-b border-blue-100 bg-white/42 backdrop-blur-md">
+    <header className="fixed top-0 left-0 right-0 z-40 border-b border-blue-100 bg-white/42 backdrop-blur-md">
       <div className="flex items-center justify-between px-3 sm:px-8 py-2 sm:py-0 sm:pl-4">
         {/* Breadcrumb navigation */}
         <div className="flex items-center gap-3 sm:gap-4">
