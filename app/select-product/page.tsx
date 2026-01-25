@@ -44,9 +44,6 @@ export default function SelectProductPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Main Content */}
       <div className="flex flex-col min-h-screen">
-        {/* Header */}
-        <AppHeader />
-
         {/* Page Content */}
         <main className="flex-1 p-4 sm:p-6 md:p-8">
           <h1 className="mb-4 sm:mb-6 md:mb-8 text-xl sm:text-2xl md:text-3xl font-bold text-slate-900">待推广项目</h1>

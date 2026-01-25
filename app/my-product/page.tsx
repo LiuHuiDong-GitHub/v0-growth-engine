@@ -79,7 +79,7 @@ export default function MyProductPage() {
 
         {/* Page Content */}
         <main className="flex-1 p-4 sm:p-6 md:p-8">
-          <h1 className="mb-4 sm:mb-6 md:mb-8 text-xl sm:text-2xl md:text-3xl font-bold text-slate-900">我的产品</h1>
+          <h1 className="mb-4 sm:mb-6 md:mb-8 text-xl sm:text-2xl md:text-3xl font-bold text-slate-900">我的项目</h1>
 
           <div className="grid gap-3 sm:gap-[0.9rem] md:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => (
