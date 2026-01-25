@@ -726,7 +726,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                         <img
                           src={productData.attachments.screenshots[activeScreenshot] || "/placeholder.svg"}
                           alt="Product Screenshot"
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover shadow-none"
                         />
                       )}
                     </div>
