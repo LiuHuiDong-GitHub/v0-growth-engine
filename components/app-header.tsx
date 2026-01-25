@@ -271,7 +271,7 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
   return (
     <>
       <header className="border-b border-blue-100 bg-white/42 backdrop-blur-md">
-        <div className="flex items-center justify-between px-3 sm:px-8 py-2 sm:py-0">
+        <div className="flex items-center justify-between px-3 sm:px-8 py-2 sm:py-0 sm:pl-4">
           {/* Logo on the left */}
           <Link href="/" className="flex-shrink-0">
             <img 
