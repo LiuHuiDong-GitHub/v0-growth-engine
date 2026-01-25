@@ -203,7 +203,7 @@ export default function Page() {
               你的产品准备好被看见了吗?
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 leading-relaxed max-w-2xl mx-auto px-4 sm:mb-[46px]">
-              GrowthEngine — 独立创作者的首选引擎，帮助产品高效曝光出圈。
+              GrowthEngine — 独立创作者的首选引擎，r。
             </p>
             <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-lg px-8 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all">
               上传产品
