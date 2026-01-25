@@ -702,7 +702,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   </div>
 
                   {/* Product Display Section */}
-                  <div className="mt-6 sm:mt-8">
+                  <div className="mt-6 sm:mt-8 shadow-none">
                     <h3 className="text-xs sm:text-sm font-semibold text-slate-900 flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
                       <ImageIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600" />
                       产品展示
