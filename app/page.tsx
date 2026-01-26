@@ -676,9 +676,9 @@ export default function Page() {
                 <h4 className="font-semibold text-gray-900 mb-4 leading-6">Legal</h4>
                 <ul className="space-y-2">
                   <li className="leading-6">
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                    <Link href="/privacy-policy" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
                       Privacy Policy
-                    </a>
+                    </Link>
                   </li>
                   <li className="leading-6">
                     <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
