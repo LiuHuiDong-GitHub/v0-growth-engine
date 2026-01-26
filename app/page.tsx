@@ -681,9 +681,9 @@ export default function Page() {
                     </Link>
                   </li>
                   <li className="leading-6">
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                    <Link href="/terms-of-service" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
                       Terms of Service
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
