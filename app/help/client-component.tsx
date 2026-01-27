@@ -229,7 +229,7 @@ export default function HelpCenterPage() {
                 placeholder="搜索问题、功能、教程..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 text-slate-900 placeholder-slate-400 shadow-xl focus:ring-2 focus:ring-white/50 focus:outline-none rounded-4xl opacity-100 border-2 border-slate-400"
+                className="w-full pl-12 pr-4 py-4 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-white/50 focus:outline-none rounded-4xl opacity-100 border-2 border-slate-400 shadow-lg"
               />
             </div>
           </div>
