@@ -208,8 +208,8 @@ export default function HelpCenterPage() {
       <AppHeader />
 
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white py-16 sm:py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+      <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white py-16 sm:py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center bg-transparent">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm mb-6">
             <HelpCircle className="h-8 w-8" />
           </div>
