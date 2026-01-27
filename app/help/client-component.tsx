@@ -208,7 +208,7 @@ export default function HelpCenterPage() {
       <AppHeader />
 
       {/* Hero Section */}
-      <div className="bg-white text-slate-900 py-16 sm:py-20">
+      <div className="text-slate-900 py-16 sm:py-20 bg-slate-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 mb-6">
             <HelpCircle className="h-8 w-8 text-blue-600" />
