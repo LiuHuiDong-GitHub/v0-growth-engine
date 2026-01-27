@@ -369,12 +369,12 @@ export default function UploadProductsPage() {
   }
 
   const handleMouseLeave = () => {
-    // Start the hide process: wait 1s, then hide immediately
+    // Start the hide process: wait 0.2s, then hide immediately
     setIsHidingPopup(true)
     hideTimeoutRef.current = setTimeout(() => {
       setShowScorePopup(false)
       setIsHidingPopup(false)
-    }, 1000)
+    }, 200)
   }
 
   // Use a separate state for logo file to track if it's uploaded
