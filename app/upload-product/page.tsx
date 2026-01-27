@@ -381,12 +381,12 @@ export default function UploadProductsPage() {
       setCardPosition(rect.left + rect.width / 2 < centerX ? 'left' : 'right')
     }
     
-    // Start the hide process: wait 0.2s, then hide immediately
+    // Start the hide process: wait 0.3s, then hide immediately
     setIsHidingPopup(true)
     hideTimeoutRef.current = setTimeout(() => {
       setShowScorePopup(false)
       setIsHidingPopup(false)
-    }, 200)
+    }, 300)
   }
 
   const handlePopupMouseEnter = () => {
@@ -404,7 +404,7 @@ export default function UploadProductsPage() {
     hideTimeoutRef.current = setTimeout(() => {
       setShowScorePopup(false)
       setIsHidingPopup(false)
-    }, 200)
+    }, 300)
   }
 
   // Use a separate state for logo file to track if it's uploaded
