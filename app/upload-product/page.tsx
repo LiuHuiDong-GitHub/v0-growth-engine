@@ -369,12 +369,12 @@ export default function UploadProductsPage() {
   }
 
   const handleMouseLeave = () => {
-    // Start the hide process: wait 1.5s, then start fade out
+    // Start the hide process: wait 1s, then hide immediately
     setIsHidingPopup(true)
     hideTimeoutRef.current = setTimeout(() => {
       setShowScorePopup(false)
       setIsHidingPopup(false)
-    }, 1500)
+    }, 1000)
   }
 
   // Use a separate state for logo file to track if it's uploaded
@@ -1891,8 +1891,8 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                       {/* Score Popup - moved closer to the card */}
                       {showScorePopup && (
                         <div
-                          className={`fixed inset-x-4 top-1/2 -translate-y-1/2 sm:absolute sm:inset-auto sm:-left-[390px] sm:top-0 sm:translate-y-0 z-50 w-auto sm:w-[374px] rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl transition-opacity duration-200 max-h-[80vh] overflow-y-auto ${
-                            isHidingPopup ? 'opacity-0' : 'opacity-100'
+                          className={`fixed inset-x-4 top-1/2 -translate-y-1/2 sm:absolute sm:inset-auto sm:-left-[390px] sm:top-0 sm:translate-y-0 z-50 w-auto sm:w-[374px] rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl max-h-[80vh] overflow-y-auto ${
+                            isHidingPopup ? 'hidden' : ''
                           }`}
                         >
                           {/* Triangle pointer with white background matching popup - hidden on mobile */}
