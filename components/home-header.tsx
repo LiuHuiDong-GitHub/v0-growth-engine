@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useSettings } from "@/context/settings-context"
 import {
   Bell,
   Settings,
@@ -43,8 +44,8 @@ export function HomeHeader({
   ]
 }: HomeHeaderProps) {
   const router = useRouter()
+  const { showSettingsModal, setShowSettingsModal } = useSettings()
   const [showUserMenu, setShowUserMenu] = useState(false)
-  const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
 
   // Settings state
@@ -380,7 +381,7 @@ export function HomeHeader({
             <div className="flex-1 overflow-y-auto p-6">
               {/* Account Tab */}
               {activeSettingsTab === "account" && (
-                <div className="space-y-6">
+                <div className="space-y-1.5">
                   {/* Profile Section */}
                   <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
                     <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
@@ -569,79 +570,6 @@ export function HomeHeader({
                         </button>
                       </div>
                     )}
-                  </div>
-
-                  {/* Security Section */}
-                  <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                    <div className="px-5 py-4 border-b border-slate-100">
-                      <h3 className="font-semibold text-slate-900">安全设置</h3>
-                    </div>
-                    <div className="p-5 space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Key className="h-5 w-5 text-slate-500" />
-                          <div>
-                            <p className="font-medium text-slate-900">双因素认证</p>
-                            <p className="text-sm text-slate-500">为您的账户增加额外安全层</p>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
-                            twoFactorEnabled ? "bg-blue-600" : "bg-slate-300"
-                          }`}
-                        >
-                          <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              twoFactorEnabled ? "translate-x-6" : "translate-x-1"
-                            }`}
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Active Sessions */}
-                  <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                    <div className="px-5 py-4 border-b border-slate-100">
-                      <h3 className="font-semibold text-slate-900">活动会话</h3>
-                      <p className="text-sm text-slate-500 mt-1">这些设备当前已登录您的账户</p>
-                    </div>
-                    <div className="divide-y divide-slate-100">
-                      {sessions.map((session) => (
-                        <div key={session.id} className="p-5 flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100">
-                              {session.device.includes("iPhone") ? (
-                                <Smartphone className="h-5 w-5 text-slate-600" />
-                              ) : (
-                                <Monitor className="h-5 w-5 text-slate-600" />
-                              )}
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <p className="font-medium text-slate-900">{session.device}</p>
-                                {session.current && (
-                                  <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs font-medium">
-                                    当前
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-sm text-slate-500">{session.location}</p>
-                              <p className="text-xs text-slate-400">上次活动: {session.lastActive}</p>
-                            </div>
-                          </div>
-                          {!session.current && (
-                            <button
-                              onClick={() => handleTerminateSession(session.id)}
-                              className="text-sm text-red-600 hover:text-red-700 font-medium cursor-pointer"
-                            >
-                              终止
-                            </button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 </div>
               )}
