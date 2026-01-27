@@ -1621,18 +1621,18 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                   </div>
                   
                   {/* Agreement Checkbox - Clone below the product score card */}
-                  <div className="mt-[15px] flex justify-center">
-                    <div className="flex flex-col items-center gap-1">
+                  <div className="mt-3 sm:mt-4 flex justify-center px-4 sm:px-0">
+                    <div className="flex flex-col items-center gap-1.5 sm:gap-2">
                       <div className="relative">
                         <input
                           type="checkbox"
                           checked={agreed}
                           onChange={(e) => setAgreed(e.target.checked)}
                           id="agree-score-clone"
-                          className="peer h-6 w-6 cursor-pointer appearance-none rounded-full border-slate-300 transition-all checked:border-0 checked:bg-gradient-to-br checked:from-purple-500 checked:to-pink-600 hover:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500/30 leading-7 border-2"
+                          className="peer h-5 sm:h-6 w-5 sm:w-6 cursor-pointer appearance-none rounded-full border-slate-300 transition-all checked:border-0 checked:bg-gradient-to-br checked:from-purple-500 checked:to-pink-600 hover:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500/30 leading-7 border-2"
                         />
                         <svg
-                          className="pointer-events-none absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-[63%] text-white opacity-0 transition-opacity peer-checked:opacity-100"
+                          className="pointer-events-none absolute left-1/2 top-1/2 h-3 sm:h-4 w-3 sm:w-4 -translate-x-1/2 -translate-y-[63%] text-white opacity-0 transition-opacity peer-checked:opacity-100"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -1642,7 +1642,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                       </div>
                       <label
                         htmlFor="agree-score-clone"
-                        className="cursor-pointer text-sm font-medium text-slate-500 leading-3"
+                        className="cursor-pointer text-xs sm:text-sm font-medium text-slate-500 leading-tight text-center"
                       >
                         我接受早期投资
                       </label>
@@ -1828,13 +1828,13 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                     )}
 
                     <div
-                      className="relative z-50 border border-slate-200 bg-white p-6 shadow-sm transition-all rounded-xl pb-0.5"
+                      className="relative z-50 border border-slate-200 bg-white p-4 sm:p-6 shadow-sm transition-all rounded-xl pb-0.5"
                       onMouseEnter={handleMouseEnter}
                       onMouseLeave={handleMouseLeave}
                     >
-                      <div className="mb-4 flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
-                          <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+                        <div className="flex h-9 sm:h-10 w-9 sm:w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
+                          <svg className="h-5 sm:h-6 w-5 sm:w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
@@ -1844,14 +1844,14 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                           </svg>
                         </div>
                         <div>
-                          <h3 className="text-lg font-bold text-slate-900">产品评分</h3>
-                          <p className="text-xs text-slate-600">基于 Lovable 打分表</p>
+                          <h3 className="text-base sm:text-lg font-bold text-slate-900">产品评分</h3>
+                          <p className="text-[10px] sm:text-xs text-slate-600">基于 Lovable 打分表</p>
                         </div>
                       </div>
 
                       {/* Circular score display */}
                       <div className="flex flex-col items-center justify-center">
-                        <div className="relative h-32 w-32">
+                        <div className="relative h-24 sm:h-32 w-24 sm:w-32">
                           <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 120 120">
                             {/* Background circle */}
                             <circle cx="60" cy="60" r="54" stroke="#e2e8f0" strokeWidth="8" fill="none" />
@@ -1878,8 +1878,8 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                           </svg>
                           {/* Score text in center */}
                           <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <span className="text-lg font-bold text-blue-600">{productScore}</span>
-                            <span className="text-[7px] text-slate-500">/ 100</span>
+                            <span className="text-sm sm:text-lg font-bold text-blue-600">{productScore}</span>
+                            <span className="text-[6px] sm:text-[7px] text-slate-500">/ 100</span>
                           </div>
                         </div>
 
@@ -1891,17 +1891,17 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                       {/* Score Popup - moved closer to the card */}
                       {showScorePopup && (
                         <div
-                          className={`fixed inset-x-4 top-1/2 -translate-y-1/2 sm:absolute sm:inset-auto sm:-left-[390px] sm:top-0 sm:translate-y-0 z-50 w-auto sm:w-[374px] rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl max-h-[80vh] overflow-y-auto ${
+                          className={`fixed bottom-4 left-4 right-4 sm:absolute sm:bottom-auto sm:right-auto sm:left-full sm:top-0 sm:ml-4 z-50 w-auto sm:w-[374px] rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl max-h-[calc(100vh-2rem)] overflow-y-auto ${
                             isHidingPopup ? 'hidden' : ''
                           }`}
                         >
                           {/* Triangle pointer with white background matching popup - hidden on mobile */}
-                          <div className="hidden sm:block absolute -right-[11px] top-8 h-0 w-0 border-l-[12px] border-r-0 border-t-[12px] border-b-[12px] border-l-white border-t-transparent border-b-transparent z-10" />
-                          <div className="hidden sm:block absolute -right-[12px] top-8 h-0 w-0 border-l-[12px] border-r-0 border-t-[12px] border-b-[12px] border-l-slate-200 border-t-transparent border-b-transparent" />
+                          <div className="hidden sm:block absolute -left-[11px] top-8 h-0 w-0 border-r-[12px] border-l-0 border-t-[12px] border-b-[12px] border-r-white border-t-transparent border-b-transparent z-10" />
+                          <div className="hidden sm:block absolute -left-[12px] top-8 h-0 w-0 border-r-[12px] border-l-0 border-t-[12px] border-b-[12px] border-r-slate-200 border-t-transparent border-b-transparent" />
 
-                          <div className="mb-4 flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
-                              <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+                            <div className="flex h-9 sm:h-10 w-9 sm:w-10 items-center justify-center rounded-lg bg-blue-600">
+                              <svg className="h-5 sm:h-6 w-5 sm:w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
@@ -1910,10 +1910,10 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                                 />
                               </svg>
                             </div>
-                            <h4 className="text-base font-bold text-slate-900">打分评估模型</h4>
+                            <h4 className="text-sm sm:text-base font-bold text-slate-900">打分评估模型</h4>
                           </div>
 
-                          <p className="mb-4 text-[11px] leading-relaxed text-slate-600">
+                          <p className="mb-3 sm:mb-4 text-[10px] sm:text-[11px] leading-relaxed text-slate-600">
                             本评分基于 Lovable 内部真实打分表模型（已迭代 7
                             次），总分100分制，评估您的软件产品在5个维度：痛苦度（Pain Point）、支付意愿（Willingness to
                             Pay）、竞品弱度（Competitive Weakness）、实现难度（Ease of
@@ -1921,25 +1921,25 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                             Factor）。每个维度满分20分，总分计算公式：∑维度分。阈值：92+立即开发；&lt;85建议放弃。
                           </p>
 
-                          <div className="mb-4 space-y-2 rounded-lg bg-slate-50 p-3">
+                          <div className="mb-3 sm:mb-4 space-y-1.5 sm:space-y-2 rounded-lg bg-slate-50 p-2 sm:p-3">
                             {scoreBreakdown.map((item, index) => (
-                              <div key={index} className="flex items-center justify-between text-[11px]">
-                                <div className="flex items-center gap-2">
-                                  <span>{item.icon}</span>
-                                  <span className="font-medium text-slate-700">{item.name}</span>
-                                  <span className="text-slate-500">{item.description}</span>
+                              <div key={index} className="flex items-center justify-between text-[9px] sm:text-[11px] gap-2">
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <span className="flex-shrink-0">{item.icon}</span>
+                                  <span className="font-medium text-slate-700 truncate">{item.name}</span>
+                                  <span className="text-slate-500 text-[8px] sm:text-[10px] truncate">{item.description}</span>
                                 </div>
-                                <span className="font-bold text-slate-900">{item.score}分</span>
+                                <span className="font-bold text-slate-900 flex-shrink-0">{item.score}分</span>
                               </div>
                             ))}
                           </div>
 
                           {/* Based on your score improvements */}
-                          <div className="rounded-lg bg-blue-50 p-3">
-                            <h5 className="mb-2 text-xs font-bold text-slate-900">
+                          <div className="rounded-lg bg-blue-50 p-2 sm:p-3">
+                            <h5 className="mb-1.5 sm:mb-2 text-[9px] sm:text-xs font-bold text-slate-900">
                               基于您的评分（{productScore}.0）的改进建议
                             </h5>
-                            <ul className="space-y-1 text-[11px] text-slate-700">
+                            <ul className="space-y-0.5 sm:space-y-1 text-[9px] sm:text-[11px] text-slate-700">
                               <li>• 痛苦度低：调研更多用户反馈，确保过去48h内至少20人表达明确痛点。</li>
                               <li>• 支付意愿弱：优化定价模型，目标用户应明确表示愿意月付$10+。</li>
                               <li>• 竞品弱度不足：分析1-2个弱竞品，突出您的独特卖点。</li>
