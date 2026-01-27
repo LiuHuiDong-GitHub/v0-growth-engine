@@ -322,6 +322,8 @@ export default function UploadProductsPage() {
 
   const [productScore, setProductScore] = useState<number | null>(null)
   const [showScorePopup, setShowScorePopup] = useState(false)
+  const [isHidingPopup, setIsHidingPopup] = useState(false)
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const scoreBreakdown = [
     {
@@ -357,11 +359,22 @@ export default function UploadProductsPage() {
   ]
 
   const handleMouseEnter = () => {
+    // Cancel any pending hide timeout when mouse enters
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current)
+      hideTimeoutRef.current = null
+    }
+    setIsHidingPopup(false)
     setShowScorePopup(true)
   }
 
   const handleMouseLeave = () => {
-    setShowScorePopup(false)
+    // Start the hide process: wait 1.5s, then start fade out
+    setIsHidingPopup(true)
+    hideTimeoutRef.current = setTimeout(() => {
+      setShowScorePopup(false)
+      setIsHidingPopup(false)
+    }, 1500)
   }
 
   // Use a separate state for logo file to track if it's uploaded
@@ -385,6 +398,15 @@ export default function UploadProductsPage() {
 
   const shouldShowScore = productScore !== null
   // </CHANGE>
+
+  // Cleanup timeout on unmount or when popup closes
+  useEffect(() => {
+    return () => {
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -1840,8 +1862,9 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                       {/* Score Popup - moved closer to the card */}
                       {showScorePopup && (
                         <div
-                          className="fixed inset-x-4 top-1/2 -translate-y-1/2 sm:absolute sm:inset-auto sm:-left-[390px] sm:top-0 sm:translate-y-0 z-50 w-auto sm:w-[374px] rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl transition-opacity duration-300 max-h-[80vh] overflow-y-auto"
-                          style={{ opacity: showScorePopup ? 1 : 0 }}
+                          className={`fixed inset-x-4 top-1/2 -translate-y-1/2 sm:absolute sm:inset-auto sm:-left-[390px] sm:top-0 sm:translate-y-0 z-50 w-auto sm:w-[374px] rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl transition-opacity duration-300 max-h-[80vh] overflow-y-auto ${
+                            isHidingPopup ? 'opacity-0' : 'opacity-100'
+                          }`}
                         >
                           {/* Triangle pointer with white background matching popup - hidden on mobile */}
                           <div className="hidden sm:block absolute -right-[11px] top-8 h-0 w-0 border-l-[12px] border-r-0 border-t-[12px] border-b-[12px] border-l-white border-t-transparent border-b-transparent z-10" />
