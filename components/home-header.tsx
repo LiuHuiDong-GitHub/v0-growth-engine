@@ -576,10 +576,49 @@ export function HomeHeader({
 
               {/* Billing Tab */}
               {activeSettingsTab === "billing" && (
-                <div className="space-y-6">
-                  <div className="rounded-xl border border-slate-200 bg-white p-6">
-                    <h3 className="font-semibold text-slate-900 mb-4">账单订阅</h3>
-                    <p className="text-slate-600">账单功能即将推出</p>
+                <div className="space-y-1.5">
+                  {/* Upload Product */}
+                  <div className="rounded-xl border border-slate-200 bg-white overflow-hidden hover:border-blue-300 transition-all">
+                    <button
+                      onClick={() => {
+                        router.push("/upload-product")
+                        setShowSettingsModal(false)
+                      }}
+                      className="w-full text-left p-5 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100">
+                          <FileText className="h-6 w-6 text-blue-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-slate-900">上传产品</h4>
+                          <p className="text-sm text-slate-500">分享您的产品到平台</p>
+                        </div>
+                      </div>
+                      <div className="text-blue-600">→</div>
+                    </button>
+                  </div>
+
+                  {/* My Promotions */}
+                  <div className="rounded-xl border border-slate-200 bg-white overflow-hidden hover:border-blue-300 transition-all">
+                    <button
+                      onClick={() => {
+                        router.push("/my-promotions")
+                        setShowSettingsModal(false)
+                      }}
+                      className="w-full text-left p-5 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100">
+                          <Globe className="h-6 w-6 text-purple-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-slate-900">推广产品</h4>
+                          <p className="text-sm text-slate-500">管理您的产品推广</p>
+                        </div>
+                      </div>
+                      <div className="text-purple-600">→</div>
+                    </button>
                   </div>
                 </div>
               )}
