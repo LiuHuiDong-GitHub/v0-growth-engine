@@ -1862,7 +1862,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                       {/* Score Popup - moved closer to the card */}
                       {showScorePopup && (
                         <div
-                          className={`fixed inset-x-4 top-1/2 -translate-y-1/2 sm:absolute sm:inset-auto sm:-left-[390px] sm:top-0 sm:translate-y-0 z-50 w-auto sm:w-[374px] rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl transition-opacity duration-300 max-h-[80vh] overflow-y-auto ${
+                          className={`fixed inset-x-4 top-1/2 -translate-y-1/2 sm:absolute sm:inset-auto sm:-left-[390px] sm:top-0 sm:translate-y-0 z-50 w-auto sm:w-[374px] rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl transition-opacity duration-200 max-h-[80vh] overflow-y-auto ${
                             isHidingPopup ? 'opacity-0' : 'opacity-100'
                           }`}
                         >
