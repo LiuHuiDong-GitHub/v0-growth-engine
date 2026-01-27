@@ -1620,6 +1620,9 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                     </div>
                   </div>
                   
+                  {/* Divider */}
+                  <div className="my-3 sm:my-4 border-t border-slate-200" />
+                  
                   {/* Agreement Checkbox - Clone below the product score card */}
                   <div className="mt-3 sm:mt-4 flex justify-center px-4 sm:px-0">
                     <div className="flex flex-col items-center gap-1.5 sm:gap-2">
