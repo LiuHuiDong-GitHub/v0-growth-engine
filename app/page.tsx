@@ -198,18 +198,23 @@ export default function Page() {
 
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 lg:pr-8 lg:pl-8 md:py-20 md:pb-[60px] pt-20 sm:pt-24">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="font-[family-name:var(--font-space-grotesk)] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight text-balance px-2">
-              你的产品准备好被看见了吗?
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 leading-relaxed max-w-2xl mx-auto px-4 sm:mb-[46px]">
-              GrowthEngine — 独立创作者的首选引擎，让你的产品被需要的人群看到。
-            </p>
-            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-lg px-8 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all">
-              上传产品
-            </Button>
-
+          <div className="flex flex-col lg:flex-row items-center lg:items-stretch justify-center">
+            {/* Left: Text Content */}
+            <div className="text-center lg:text-left max-w-2xl lg:max-w-xl lg:pr-0">
+              <h1 className="font-[family-name:var(--font-space-grotesk)] text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 sm:mb-5 leading-tight text-balance">
+                你的产品准备好被看见了吗?
+              </h1>
+              <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed">
+                GrowthEngine — 独立创作者的首选引擎，让你的产品被需要的人群看到。
+              </p>
+            </div>
             
+            {/* Right: Upload Button - Connected to text div */}
+            <div className="mt-8 lg:mt-0 lg:flex lg:items-center">
+              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-l-none rounded-r-full lg:rounded-l-none lg:rounded-r-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all whitespace-nowrap">
+                上传产品
+              </Button>
+            </div>
           </div>
         </section>
 
