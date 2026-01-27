@@ -210,9 +210,7 @@ export default function HelpCenterPage() {
       {/* Hero Section */}
       <div className="text-slate-900 py-16 sm:py-20 bg-slate-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 mb-6">
-            <HelpCircle className="h-8 w-8 text-blue-600" />
-          </div>
+          
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-slate-900">
             GrowthEngine 帮助中心
           </h1>
