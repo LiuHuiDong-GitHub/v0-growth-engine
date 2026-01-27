@@ -201,7 +201,7 @@ export default function BloggerDashboard() {
                         </span>
                         <span className="text-xs text-slate-600 font-medium">
                           {stat.value}
-                          <span className="text-slate-400 ml-1">({stat.percentage}%)</span>
+                          
                         </span>
                       </div>
                     </div>
