@@ -177,7 +177,7 @@ export default function BloggerDashboard() {
                   return (
                     <div
                       key={index}
-                      className={`flex items-center cursor-pointer transition-all duration-300 rounded-lg px-0.5 py-0.5 gap-2 ${
+                      className={`flex items-center cursor-pointer transition-all duration-300 rounded-lg px-3 py-2 gap-2 w-fit ${
                         isActive ? "bg-slate-50 shadow-sm" : "hover:bg-slate-50/50"
                       }`}
                       onMouseEnter={() => setHoveredStat(index)}
