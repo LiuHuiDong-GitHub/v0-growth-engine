@@ -323,7 +323,10 @@ export default function UploadProductsPage() {
   const [productScore, setProductScore] = useState<number | null>(null)
   const [showScorePopup, setShowScorePopup] = useState(false)
   const [isHidingPopup, setIsHidingPopup] = useState(false)
+  const [cardPosition, setCardPosition] = useState<'left' | 'right'>('left')
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const scoreCardRef = useRef<HTMLDivElement>(null)
+  const popupRef = useRef<HTMLDivElement>(null)
 
   const scoreBreakdown = [
     {
@@ -369,7 +372,34 @@ export default function UploadProductsPage() {
   }
 
   const handleMouseLeave = () => {
+    // Detect card position based on viewport
+    if (scoreCardRef.current) {
+      const rect = scoreCardRef.current.getBoundingClientRect()
+      const centerX = window.innerWidth / 2
+      // If card center is to the left of viewport center, position popup on the right
+      // If card center is to the right of viewport center, position popup on the left
+      setCardPosition(rect.left + rect.width / 2 < centerX ? 'left' : 'right')
+    }
+    
     // Start the hide process: wait 0.2s, then hide immediately
+    setIsHidingPopup(true)
+    hideTimeoutRef.current = setTimeout(() => {
+      setShowScorePopup(false)
+      setIsHidingPopup(false)
+    }, 200)
+  }
+
+  const handlePopupMouseEnter = () => {
+    // When mouse enters popup, cancel the hide timeout
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current)
+      hideTimeoutRef.current = null
+    }
+    setIsHidingPopup(false)
+  }
+
+  const handlePopupMouseLeave = () => {
+    // Start the hide process when mouse leaves popup
     setIsHidingPopup(true)
     hideTimeoutRef.current = setTimeout(() => {
       setShowScorePopup(false)
@@ -1831,6 +1861,7 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                     )}
 
                     <div
+                      ref={scoreCardRef}
                       className="relative z-50 border border-slate-200 bg-white p-4 sm:p-6 shadow-sm transition-all rounded-xl pb-0.5"
                       onMouseEnter={handleMouseEnter}
                       onMouseLeave={handleMouseLeave}
@@ -1894,13 +1925,28 @@ NoteMaster Pro 是一款AI智能分类的效率工具，专为职场人士设计
                       {/* Score Popup - moved closer to the card */}
                       {showScorePopup && (
                         <div
-                          className={`fixed bottom-4 left-4 right-4 sm:absolute sm:bottom-auto sm:right-auto sm:left-full sm:top-0 sm:ml-4 z-50 w-auto sm:w-[374px] rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl max-h-[calc(100vh-2rem)] overflow-y-auto ${
+                          ref={popupRef}
+                          onMouseEnter={handlePopupMouseEnter}
+                          onMouseLeave={handlePopupMouseLeave}
+                          className={`fixed bottom-4 left-4 right-4 sm:absolute sm:bottom-auto sm:top-0 sm:translate-y-0 z-50 w-auto sm:w-[374px] rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl max-h-[calc(100vh-2rem)] overflow-y-auto ${
+                            cardPosition === 'left' 
+                              ? 'sm:left-full sm:ml-4 sm:right-auto' 
+                              : 'sm:right-full sm:mr-4 sm:left-auto'
+                          } ${
                             isHidingPopup ? 'hidden' : ''
                           }`}
                         >
                           {/* Triangle pointer with white background matching popup - hidden on mobile */}
-                          <div className="hidden sm:block absolute -left-[11px] top-8 h-0 w-0 border-r-[12px] border-l-0 border-t-[12px] border-b-[12px] border-r-white border-t-transparent border-b-transparent z-10" />
-                          <div className="hidden sm:block absolute -left-[12px] top-8 h-0 w-0 border-r-[12px] border-l-0 border-t-[12px] border-b-[12px] border-r-slate-200 border-t-transparent border-b-transparent" />
+                          <div className={`hidden sm:block absolute top-8 h-0 w-0 border-t-[12px] border-b-[12px] border-transparent z-10 ${
+                            cardPosition === 'left'
+                              ? '-left-[11px] border-r-[12px] border-r-white'
+                              : '-right-[11px] border-l-[12px] border-l-white'
+                          }`} />
+                          <div className={`hidden sm:block absolute top-8 h-0 w-0 border-t-[12px] border-b-[12px] border-transparent ${
+                            cardPosition === 'left'
+                              ? '-left-[12px] border-r-[12px] border-r-slate-200'
+                              : '-right-[12px] border-l-[12px] border-l-slate-200'
+                          }`} />
 
                           <div className="mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
                             <div className="flex h-9 sm:h-10 w-9 sm:w-10 items-center justify-center rounded-lg bg-blue-600">
