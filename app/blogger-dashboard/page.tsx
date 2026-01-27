@@ -171,7 +171,7 @@ export default function BloggerDashboard() {
               </p>
 
               {/* Stats Grid - Mobile friendly, aligned with connection lines */}
-              <div className="space-y-3 sm:space-y-4 ml-0 sm:ml-[25%] w-full sm:w-auto">
+              <div className="w-full sm:w-auto sm:space-y-0 my-px">
                 {stats.map((stat, index) => {
                   const isActive = hoveredStat === index
                   return (
@@ -225,44 +225,36 @@ export default function BloggerDashboard() {
                 preserveAspectRatio="xMidYMid meet"
               >
                 {stats.map((stat, index) => {
-                  // Label positions (left side) - precisely aligned with actual label vertical positions
+                  // Label positions (left side) - aligned with actual label vertical positions
+                  // Each label is spaced 40px apart, starting from top
                   const labelStartX = 120
-                  // Adjust labelY to match the actual vertical center of each label in the DOM
-                  // Account for: initial gap + sum of (label height + gap between labels)
-                  const labelHeight = 48 // flex items with py-2 + gap
-                  const labelGap = 16 // space-y-4 = 16px
-                  const labelY = 35 + index * (labelHeight + labelGap)
+                  const labelY = 60 + index * 56 // Match the spacing of stats items (space-y-4 = 16px + ~40px item height)
 
                   // Ring center position in SVG coordinates
                   const chartCenterX = 400
                   const chartCenterY = 200
                   const radius = 180 - index * 30
 
-                  // Connect to the left side of each ring, vertically aligned with label
+                  // Connect to the left side of each ring
                   const ringPointX = chartCenterX - radius
-                  // Align ring point Y with label Y for direct horizontal relationship
-                  const ringPointY = labelY
+                  const ringPointY = chartCenterY
 
                   // Calculate bezier control points for smooth curves that don't cross
                   // Use different curve intensities based on index to prevent overlap
-                  const curveIntensity = 0.35 + (index * 0.1)
+                  const curveIntensity = 0.4 + (index * 0.08)
                   const midX = (labelStartX + ringPointX) / 2
                   
-                  // Control points: first goes horizontal from label, second curves smoothly to ring
+                  // Control points: first goes horizontal from label, second curves to ring
                   const controlX1 = labelStartX + (ringPointX - labelStartX) * curveIntensity
                   const controlY1 = labelY
-                  const controlX2 = ringPointX - (ringPointX - labelStartX) * 0.2
-                  const controlY2 = ringPointY
+                  const controlX2 = midX + 20
+                  const controlY2 = ringPointY + (labelY - ringPointY) * 0.3
 
                   const isActive = hoveredStat === index
-                  
-                  // Calculate middle point of bezier curve for data label placement
-                  const midBezierX = midX
-                  const midBezierY = labelY + (ringPointY - labelY) * 0.4
 
                   return (
                     <g key={index} className="transition-all duration-300">
-                      {/* Connection line with bezier curve - smooth and direct alignment */}
+                      {/* Connection line with bezier curve */}
                       <path
                         d={`M ${labelStartX} ${labelY} 
                             C ${controlX1} ${controlY1}, 
@@ -270,134 +262,52 @@ export default function BloggerDashboard() {
                               ${ringPointX} ${ringPointY}`}
                         fill="none"
                         stroke={stat.ringColor}
-                        strokeWidth={isActive ? "3" : "2"}
-                        opacity={hoveredStat !== null && !isActive ? 0.12 : isActive ? 1 : 0.45}
+                        strokeWidth={isActive ? "2.5" : "1.5"}
+                        opacity={hoveredStat !== null && !isActive ? 0.15 : isActive ? 0.9 : 0.5}
                         className="transition-all duration-300"
-                        strokeLinecap="round"
                       />
-                      
-                      {/* Start dot at label - color matched indicator */}
+                      {/* Start dot at label */}
                       <circle
                         cx={labelStartX}
                         cy={labelY}
-                        r={isActive ? "6" : "4"}
+                        r={isActive ? "5" : "3"}
                         fill={stat.ringColor}
-                        opacity={hoveredStat !== null && !isActive ? 0.15 : isActive ? 1 : 0.75}
+                        opacity={hoveredStat !== null && !isActive ? 0.15 : isActive ? 1 : 0.7}
                         className="transition-all duration-300"
-                        stroke="white"
-                        strokeWidth="1.5"
                       />
-                      
                       {/* End dot at ring connection point */}
                       <circle
                         cx={ringPointX}
                         cy={ringPointY}
-                        r={isActive ? "7" : "5"}
+                        r={isActive ? "6" : "4"}
                         fill={stat.ringColor}
-                        opacity={hoveredStat !== null && !isActive ? 0.15 : isActive ? 1 : 0.85}
+                        opacity={hoveredStat !== null && !isActive ? 0.15 : isActive ? 1 : 0.8}
                         className="transition-all duration-300"
-                        stroke="white"
-                        strokeWidth="1.5"
                       />
-
-                      {/* Data point marker on curve - shows percentage at fold line midpoint */}
-                      <g className={isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"}>
-                        {/* Small indicator circle at curve midpoint */}
-                        <circle
-                          cx={midBezierX}
-                          cy={midBezierY}
-                          r={isActive ? "3.5" : "2.5"}
-                          fill={stat.ringColor}
-                          opacity={isActive ? 0.6 : 0.3}
-                          className="transition-all duration-300"
-                        />
-                        
-                        {/* Value label at midpoint - shows percentage marker */}
-                        {isActive && (
-                          <g>
-                            {/* Background for text */}
-                            <rect
-                              x={midBezierX - 28}
-                              y={midBezierY - 14}
-                              width="56"
-                              height="18"
-                              rx="3"
-                              fill="white"
-                              stroke={stat.ringColor}
-                              strokeWidth="1"
-                              opacity="0.92"
-                            />
-                            {/* Percentage text */}
-                            <text
-                              x={midBezierX}
-                              y={midBezierY - 4}
-                              textAnchor="middle"
-                              fontSize="10"
-                              fontWeight="700"
-                              fill={stat.ringColor}
-                            >
-                              {stat.percentage}%
-                            </text>
-                          </g>
-                        )}
-                      </g>
-
-                      {/* End point tooltip on hover - positioned near ring connection */}
+                      {/* Value tooltip on hover - positioned near ring connection */}
                       {isActive && (
-                        <g className="transition-all duration-300">
-                          {/* Tooltip background */}
+                        <g>
                           <rect
-                            x={ringPointX - 50}
-                            y={ringPointY - 38}
-                            width="100"
-                            height="28"
+                            x={ringPointX - 45}
+                            y={ringPointY - 35}
+                            width="90"
+                            height="24"
                             rx="4"
                             fill="white"
                             stroke={stat.ringColor}
-                            strokeWidth="1.5"
-                            opacity="0.96"
-                            filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
+                            strokeWidth="1"
+                            opacity="0.95"
                           />
-                          {/* Label name text */}
                           <text
                             x={ringPointX}
-                            y={ringPointY - 22}
+                            y={ringPointY - 19}
                             textAnchor="middle"
-                            fontSize="10"
+                            fontSize="11"
                             fontWeight="600"
                             fill={stat.ringColor}
                           >
-                            {stat.label}
+                            {stat.label}: {stat.value}
                           </text>
-                          {/* Value text */}
-                          <text
-                            x={ringPointX}
-                            y={ringPointY - 10}
-                            textAnchor="middle"
-                            fontSize="11"
-                            fontWeight="700"
-                            fill={stat.ringColor}
-                          >
-                            {stat.value}
-                          </text>
-                        </g>
-                      )}
-                      
-                      {/* Connection line animator - subtle pulse effect on active */}
-                      {isActive && (
-                        <g opacity="0.3" className="animate-pulse">
-                          <path
-                            d={`M ${labelStartX} ${labelY} 
-                                C ${controlX1} ${controlY1}, 
-                                  ${controlX2} ${controlY2}, 
-                                  ${ringPointX} ${ringPointY}`}
-                            fill="none"
-                            stroke={stat.ringColor}
-                            strokeWidth="4"
-                            opacity="0.2"
-                            className="transition-all duration-300"
-                            strokeLinecap="round"
-                          />
                         </g>
                       )}
                     </g>
