@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { useRouter, usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
+import { HomeHeader } from "./home-header"
+import { PageHeader } from "./page-header"
 import {
   Search,
   Bell,
@@ -120,7 +120,19 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
-  const router = useRouter()
+  const pathname = usePathname()
+  const isHomePage = pathname === "/"
+  
+  // 根据页面类型返回不同的header组件
+  if (isHomePage) {
+    return <HomeHeader />
+  }
+  
+  return <PageHeader breadcrumbItems={breadcrumbItems} />
+}
+
+// 保留原有的完整实现作为导出，供需要时使用
+export function AppHeaderLegacy({ breadcrumbItems }: AppHeaderProps) {
   const pathname = usePathname()
   const isHomePage = pathname === "/"
   const autoBreadcrumbs = generateBreadcrumb(pathname)

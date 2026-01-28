@@ -358,10 +358,10 @@ export default function BloggerVerificationPage() {
                   className="h-40 sm:h-48 w-full object-cover"
                 />
                 <div className="p-4 sm:p-5">
-                  <div className="mb-2 sm:mb-3 flex items-center gap-2">
+                  <h3 className="mb-1.5 sm:mb-2 text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                     <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] sm:text-xs font-medium text-red-700">🔥</span>
-                  </div>
-                  <h3 className="mb-1.5 sm:mb-2 text-base sm:text-lg font-bold text-slate-900">{product.name}</h3>
+                    {product.name}
+                  </h3>
                   <p className="mb-3 sm:mb-4 line-clamp-3 text-xs sm:text-sm text-slate-600">{product.description}</p>
                   <div className="mb-3 sm:mb-4 flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-slate-700">
                     <span className="flex items-center gap-0.5 sm:gap-1">

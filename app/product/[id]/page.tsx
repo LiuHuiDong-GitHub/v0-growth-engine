@@ -702,7 +702,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   </div>
 
                   {/* Product Display Section */}
-                  <div className="mt-6 sm:mt-8">
+                  <div className="mt-6 sm:mt-8 shadow-none">
                     <h3 className="text-xs sm:text-sm font-semibold text-slate-900 flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
                       <ImageIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600" />
                       产品展示
@@ -716,7 +716,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                             alt="Demo Video"
                             className="w-full h-full object-cover opacity-80 group-hover:opacity-70 transition-opacity"
                           />
-                          <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="absolute inset-0 flex items-center justify-center shadow-none">
                             <div className="w-16 h-16 rounded-full bg-white/95 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
                               <Play className="h-6 w-6 text-blue-600 ml-1" fill="currentColor" />
                             </div>
@@ -726,13 +726,13 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                         <img
                           src={productData.attachments.screenshots[activeScreenshot] || "/placeholder.svg"}
                           alt="Product Screenshot"
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover shadow-none"
                         />
                       )}
                     </div>
 
                     {/* Thumbnails - Video + Screenshots */}
-                    <div className="relative group border border-slate-200 rounded-lg bg-white p-2 sm:p-3 mt-2 sm:mt-0">
+                    <div className="relative group border border-slate-200 rounded-lg bg-white p-2 sm:p-3 mt-2 sm:mt-1 shadow-none">
                       {/* Left navigation button for screenshots */}
                       <button
                         onClick={() => scrollScreenshots("left")}

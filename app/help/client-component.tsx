@@ -208,15 +208,13 @@ export default function HelpCenterPage() {
       <AppHeader />
 
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white py-16 sm:py-20">
+      <div className="text-slate-900 py-16 sm:py-20 bg-slate-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm mb-6">
-            <HelpCircle className="h-8 w-8" />
-          </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+          
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-slate-900">
             GrowthEngine 帮助中心
           </h1>
-          <p className="text-lg sm:text-xl text-blue-100 mb-8">
+          <p className="text-lg sm:text-xl text-slate-600 mb-8">
             找到您需要的答案，快速解决问题
           </p>
 
@@ -229,7 +227,7 @@ export default function HelpCenterPage() {
                 placeholder="搜索问题、功能、教程..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 rounded-xl border-0 text-slate-900 placeholder-slate-400 shadow-xl focus:ring-2 focus:ring-white/50 focus:outline-none"
+                className="w-full pl-12 pr-4 py-4 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-white/50 focus:outline-none rounded-4xl opacity-100 border-2 border-slate-400 shadow-lg"
               />
             </div>
           </div>

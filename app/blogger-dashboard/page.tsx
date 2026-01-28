@@ -170,62 +170,90 @@ export default function BloggerDashboard() {
                   : "您的产品正曝光在世界各地多数。（显示所有视频总和）"}
               </p>
 
-              {/* Stats Grid - Mobile friendly */}
-              <div className="space-y-3 sm:space-y-4 ml-0 sm:ml-[30%] w-full sm:w-[26.25%]">
-                {stats.map((stat, index) => (
-                  <div
-                    key={index}
-                    className="inline-flex items-center gap-1.5 cursor-pointer transition-all duration-300 py-1.5"
-                    onMouseEnter={() => setHoveredStat(index)}
-                    onMouseLeave={() => setHoveredStat(null)}
-                  >
-                    <stat.icon
-                      className={`h-5 w-5 transition-all duration-300 ${hoveredStat === index ? "scale-110" : ""}`}
-                      style={{ color: stat.ringColor }}
-                    />
-                    <span
-                      className={`text-sm font-semibold transition-all duration-300 ${
-                        hoveredStat === index ? "scale-105" : ""
+              {/* Stats Grid - Mobile friendly, aligned with connection lines */}
+              <div className="w-full sm:w-auto sm:space-y-0 my-px">
+                {stats.map((stat, index) => {
+                  const isActive = hoveredStat === index
+                  return (
+                    <div
+                      key={index}
+                      className={`flex items-center cursor-pointer transition-all duration-300 rounded-lg px-3 py-2 gap-2 w-fit ${
+                        isActive ? "bg-slate-50 shadow-sm" : "hover:bg-slate-50/50"
                       }`}
-                      style={{ color: stat.ringColor }}
+                      onMouseEnter={() => setHoveredStat(index)}
+                      onMouseLeave={() => setHoveredStat(null)}
                     >
-                      {stat.label} : {stat.value}
-                    </span>
-                  </div>
-                ))}
+                      {/* Color indicator dot - matches connection line start */}
+                      <div
+                        className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${isActive ? "scale-125" : ""}`}
+                        style={{ backgroundColor: stat.ringColor }}
+                      />
+                      <stat.icon
+                        className={`h-5 w-5 transition-all duration-300 ${isActive ? "scale-110" : ""}`}
+                        style={{ color: stat.ringColor }}
+                      />
+                      <div className="flex flex-col">
+                        <span
+                          className={`text-sm font-semibold transition-all duration-300 ${isActive ? "scale-105" : ""}`}
+                          style={{ color: stat.ringColor }}
+                        >
+                          {stat.label}
+                        </span>
+                        <span className="text-xs text-slate-600 font-medium">
+                          {stat.value}
+                          
+                        </span>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
 
             {/* Data Visualization - Hidden on mobile, shown on larger screens */}
             <div className="relative hidden sm:flex items-center justify-center">
+              {/* SVG Connection Lines - Positioned to connect labels to rings */}
               <svg
-                className="absolute inset-0 pointer-events-none"
-                style={{ left: "-120px", width: "calc(100% + 120px)", height: "100%" }}
+                className="absolute pointer-events-none"
+                style={{ 
+                  left: "-180px", 
+                  top: "0",
+                  width: "calc(100% + 180px)", 
+                  height: "100%" 
+                }}
+                viewBox="0 0 600 400"
+                preserveAspectRatio="xMidYMid meet"
               >
                 {stats.map((stat, index) => {
-                  // Calculate label positions (left side) - moved closer to text
-                  const labelStartX = 250
-                  const labelY = 140 + index * 40
+                  // Label positions (left side) - aligned with actual label vertical positions
+                  // Each label is spaced 40px apart, starting from top
+                  const labelStartX = 120
+                  const labelY = 60 + index * 56 // Match the spacing of stats items (space-y-4 = 16px + ~40px item height)
 
-                  // Calculate ring positions (right side - center of chart)
-                  const chartCenterX = 320
+                  // Ring center position in SVG coordinates
+                  const chartCenterX = 400
                   const chartCenterY = 200
                   const radius = 180 - index * 30
 
-                  // Calculate the point on the ring where the line should connect
-                  // Connect to the left side of each ring (at 180 degrees / PI radians)
+                  // Connect to the left side of each ring
                   const ringPointX = chartCenterX - radius
                   const ringPointY = chartCenterY
 
-                  // Create smooth bezier curve that doesn't cross
-                  // Control points to create nice curves
-                  const controlX1 = labelStartX + 40
+                  // Calculate bezier control points for smooth curves that don't cross
+                  // Use different curve intensities based on index to prevent overlap
+                  const curveIntensity = 0.4 + (index * 0.08)
+                  const midX = (labelStartX + ringPointX) / 2
+                  
+                  // Control points: first goes horizontal from label, second curves to ring
+                  const controlX1 = labelStartX + (ringPointX - labelStartX) * curveIntensity
                   const controlY1 = labelY
-                  const controlX2 = ringPointX - 40
-                  const controlY2 = ringPointY
+                  const controlX2 = midX + 20
+                  const controlY2 = ringPointY + (labelY - ringPointY) * 0.3
+
+                  const isActive = hoveredStat === index
 
                   return (
-                    <g key={index}>
+                    <g key={index} className="transition-all duration-300">
                       {/* Connection line with bezier curve */}
                       <path
                         d={`M ${labelStartX} ${labelY} 
@@ -234,19 +262,54 @@ export default function BloggerDashboard() {
                               ${ringPointX} ${ringPointY}`}
                         fill="none"
                         stroke={stat.ringColor}
-                        strokeWidth="1.5"
-                        opacity={hoveredStat !== null && hoveredStat !== index ? 0.15 : 0.6}
+                        strokeWidth={isActive ? "2.5" : "1.5"}
+                        opacity={hoveredStat !== null && !isActive ? 0.15 : isActive ? 0.9 : 0.5}
                         className="transition-all duration-300"
                       />
-                      {/* Small dot at the end of the line on the ring */}
+                      {/* Start dot at label */}
+                      <circle
+                        cx={labelStartX}
+                        cy={labelY}
+                        r={isActive ? "5" : "3"}
+                        fill={stat.ringColor}
+                        opacity={hoveredStat !== null && !isActive ? 0.15 : isActive ? 1 : 0.7}
+                        className="transition-all duration-300"
+                      />
+                      {/* End dot at ring connection point */}
                       <circle
                         cx={ringPointX}
                         cy={ringPointY}
-                        r="4"
+                        r={isActive ? "6" : "4"}
                         fill={stat.ringColor}
-                        opacity={hoveredStat !== null && hoveredStat !== index ? 0.15 : 0.8}
+                        opacity={hoveredStat !== null && !isActive ? 0.15 : isActive ? 1 : 0.8}
                         className="transition-all duration-300"
                       />
+                      {/* Value tooltip on hover - positioned near ring connection */}
+                      {isActive && (
+                        <g>
+                          <rect
+                            x={ringPointX - 45}
+                            y={ringPointY - 35}
+                            width="90"
+                            height="24"
+                            rx="4"
+                            fill="white"
+                            stroke={stat.ringColor}
+                            strokeWidth="1"
+                            opacity="0.95"
+                          />
+                          <text
+                            x={ringPointX}
+                            y={ringPointY - 19}
+                            textAnchor="middle"
+                            fontSize="11"
+                            fontWeight="600"
+                            fill={stat.ringColor}
+                          >
+                            {stat.label}: {stat.value}
+                          </text>
+                        </g>
+                      )}
                     </g>
                   )
                 })}
@@ -267,6 +330,7 @@ export default function BloggerDashboard() {
                         onMouseLeave={() => setHoveredStat(null)}
                         className="cursor-pointer"
                       >
+                        {/* Background ring */}
                         <circle
                           cx="200"
                           cy="200"
@@ -277,6 +341,7 @@ export default function BloggerDashboard() {
                           opacity={hoveredStat !== null && !isHovered ? 0.3 : 1}
                           className="transition-all duration-300"
                         />
+                        {/* Progress ring - percentage driven by data */}
                         <circle
                           cx="200"
                           cy="200"
@@ -295,12 +360,20 @@ export default function BloggerDashboard() {
                   })}
                 </svg>
 
+                {/* Center display - shows hovered stat info or total */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                   <div className="text-center">
                     <div className="font-medium text-xs text-slate-500">
-                      {hoveredVideo !== null ? "视频播放" : "总曝光"}
+                      {hoveredStat !== null ? stats[hoveredStat].label : hoveredVideo !== null ? "视频播放" : "总曝光"}
                     </div>
-                    <div className="mt-2 font-bold text-slate-900 text-xl">{stats[0].value}</div>
+                    <div className="mt-2 font-bold text-slate-900 text-xl">
+                      {hoveredStat !== null ? stats[hoveredStat].value : stats[0].value}
+                    </div>
+                    {hoveredStat !== null && (
+                      <div className="mt-1 text-xs" style={{ color: stats[hoveredStat].ringColor }}>
+                        {stats[hoveredStat].percentage}%
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
