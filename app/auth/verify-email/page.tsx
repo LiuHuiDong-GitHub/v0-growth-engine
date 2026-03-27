@@ -4,8 +4,8 @@ import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { X, ArrowLeft } from "lucide-react"
-import Image from "next/image"
 import { Suspense } from "react"
+import { apiPost } from "@/lib/api-client"
 
 export default function VerifyEmailPage() {
   const router = useRouter()
@@ -14,6 +14,8 @@ export default function VerifyEmailPage() {
   
   const [code, setCode] = useState(["", "", "", "", "", ""])
   const [resendTimer, setResendTimer] = useState(42)
+  const [error, setError] = useState("")
+  const [verifying, setVerifying] = useState(false)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   useEffect(() => {
@@ -71,15 +73,28 @@ export default function VerifyEmailPage() {
     inputRefs.current[nextIndex]?.focus()
   }
 
-  const handleVerify = (verificationCode: string) => {
-    console.log("Verifying code:", verificationCode)
-    // Navigate to select role after verification
-    router.push("/auth/role")
+  const handleVerify = async (verificationCode: string) => {
+    setVerifying(true)
+    setError("")
+    try {
+      const data = await apiPost<{
+        user: { role: "creator" | "merchant" | "admin" }
+      }>("/api/v1/auth/verify-email", { email, code: verificationCode })
+      if (data.user.role === "creator") router.push("/creator/products")
+      else if (data.user.role === "merchant") router.push("/products")
+      else router.push("/admin")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "验证码校验失败")
+      setCode(["", "", "", "", "", ""])
+      inputRefs.current[0]?.focus()
+    } finally {
+      setVerifying(false)
+    }
   }
 
-  const handleResend = () => {
+  const handleResend = async () => {
     if (resendTimer === 0) {
-      console.log("Resending code to:", email)
+      await apiPost("/api/v1/auth/send-login-code", { email })
       setResendTimer(42)
       setCode(["", "", "", "", "", ""])
       inputRefs.current[0]?.focus()
@@ -158,6 +173,11 @@ export default function VerifyEmailPage() {
                 </button>
               )}
             </div>
+            {(error || verifying) && (
+              <p className={`text-center text-xs mb-3 ${error ? "text-red-500" : "text-slate-500"}`}>
+                {error || "正在验证..."}
+              </p>
+            )}
 
             {/* Change Email Link */}
             <div className="text-center">

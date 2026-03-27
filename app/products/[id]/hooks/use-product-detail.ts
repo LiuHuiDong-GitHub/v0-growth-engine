@@ -8,12 +8,13 @@ import {
   scrollRef,
 } from "@/lib/product-calendar-utils"
 import { useClickOutside } from "./use-click-outside"
+import { apiPost } from "@/lib/api-client"
 
 /**
  * 产品详情页状态与交互逻辑
  * 设计意图：容器与展示分离，页面只负责组合 hook 与组件
  */
-export function useProductDetail() {
+export function useProductDetail(productId: string) {
   const router = useRouter()
 
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
@@ -36,7 +37,7 @@ export function useProductDetail() {
   useClickOutside(descriptionContainerRef, isDescriptionExpanded, () => setIsDescriptionExpanded(false))
   useClickOutside(calendarRef, showCalendar, () => setShowCalendar(false))
 
-  const handleAddToPromotions = () => {
+  const handleAddToPromotions = async () => {
     if (!selectedDate) {
       setIsBorderBlinking(true)
       setIsTextShaking(true)
@@ -44,12 +45,18 @@ export function useProductDetail() {
       setTimeout(() => setIsTextShaking(false), 1200)
       return
     }
-    setIsAddingToPromotions(true)
-    setTimeout(() => {
+    try {
+      setIsAddingToPromotions(true)
+      await apiPost("/api/v1/promotions/apply", {
+        productId,
+        selectedDate,
+      })
       setIsAddingToPromotions(false)
       setAddedToPromotions(true)
       setTimeout(() => router.push("/promotions"), 1500)
-    }, 800)
+    } catch {
+      setIsAddingToPromotions(false)
+    }
   }
 
   const scrollDocuments = (direction: "left" | "right") => scrollRef(documentsRef, direction)

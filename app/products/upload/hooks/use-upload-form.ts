@@ -18,6 +18,7 @@ import {
   isCurrentMonth as isCurrentMonthUtil,
 } from "../lib/upload-calendar-utils"
 import { getTextFontSize as getTextFontSizeUtil, scrollHorizontal } from "../lib/upload-utils"
+import { apiPost } from "@/lib/api-client"
 
 const initialValidationErrors = {
   contactName: "",
@@ -207,7 +208,7 @@ export function useUploadForm() {
 
   const handleLogoClick = () => fileInputRef.current?.click()
 
-  const handleAddToPromotions = () => {
+  const handleAddToPromotions = async () => {
     if (!selectedDate) {
       setIsBorderBlinking(true)
       setIsTextShaking(true)
@@ -216,11 +217,33 @@ export function useUploadForm() {
       return
     }
     setIsAddingToPromotions(true)
-    setTimeout(() => {
+    try {
+      await apiPost("/api/v1/products", {
+        name: productName || "未命名产品",
+        description: productDescription,
+        fullDescription: documentDescription,
+        link: productLink,
+        logo: productLogoUrl || "/placeholder-logo.png",
+        tags: selectedTags,
+        contactName,
+        contactEmail,
+        contactPhone,
+        baseReward: Number(baseReward || 0),
+        bonusTargets: bonusTargetViews.map((target, index) => ({
+          views: Number(target.value || 0) * (target.unit === "w" ? 10000 : 1000),
+          bonus: Number(bonusTargetBonuses[index] || 0),
+        })),
+        expectedPublishDate: selectedDate,
+        agreed,
+        documents: uploadedFiles,
+        media: uploadedMedia,
+      })
       setIsAddingToPromotions(false)
       setAddedToPromotions(true)
       setTimeout(() => router.push("/products"), 1500)
-    }, 800)
+    } catch {
+      setIsAddingToPromotions(false)
+    }
   }
 
   const scrollDocuments = (direction: "left" | "right") => scrollHorizontal(documentsRef, direction)
@@ -351,12 +374,18 @@ export function useUploadForm() {
     }
   }
 
-  const handleAIGenerateDescription = () => {
+  const handleAIGenerateDescription = async () => {
     setIsGeneratingDescription(true)
-    setTimeout(() => {
+    try {
+      const result = await apiPost<{ text: string }>("/api/v1/ai/generate-description", {
+        prompt: `产品名：${productName}\n产品描述：${productDescription}\n请生成发布文案`,
+      })
+      setDocumentDescription(result.text || aiGeneratedDescriptionText)
+    } catch {
       setDocumentDescription(aiGeneratedDescriptionText)
+    } finally {
       setIsGeneratingDescription(false)
-    }, 2000)
+    }
   }
 
   const handleContactNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

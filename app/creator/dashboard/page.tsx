@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { useEffect } from "react"
 import AppHeader from "@/components/app-header"
 import Breadcrumb from "@/components/breadcrumb"
 import {
@@ -19,13 +20,30 @@ import {
   Play,
   ExternalLink,
 } from "lucide-react"
+import { apiGet } from "@/lib/api-client"
 
 export default function BloggerDashboard() {
+  type VideoProject = {
+    id: number | string
+    title: string
+    duration: string
+    thumbnail: string
+    videoLink: string
+    progress: number
+    metrics: {
+      plays: string
+      likes: string
+      shares: string
+      comments: string
+      favorites: string
+      percentages: number[]
+    }
+  }
   const [selectedQuality, setSelectedQuality] = useState("中")
   const [hoveredStat, setHoveredStat] = useState<number | null>(null)
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null)
 
-  const videoProjects = [
+  const [videoProjects, setVideoProjects] = useState<VideoProject[]>([
     {
       id: 1,
       title: "产品发布宣传视频",
@@ -59,7 +77,30 @@ export default function BloggerDashboard() {
         percentages: [85, 70, 60, 50, 82],
       },
     },
-  ]
+  ])
+
+  useEffect(() => {
+    apiGet<
+      Array<{
+        id: number | string
+        title: string
+        duration: string
+        thumbnail: string
+        videoLink: string
+        progress: number
+        metrics: {
+          plays: string
+          likes: string
+          shares: string
+          comments: string
+          favorites: string
+          percentages: number[]
+        }
+      }>
+    >("/api/v1/creator/video-projects")
+      .then(setVideoProjects)
+      .catch(() => undefined)
+  }, [])
 
   const totalMetrics = useMemo(() => {
     const totals = {

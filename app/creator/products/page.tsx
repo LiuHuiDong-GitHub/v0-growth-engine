@@ -3,42 +3,22 @@
 import Link from "next/link"
 import Breadcrumb from "@/components/breadcrumb"
 import AppHeader from "@/components/app-header" // Import AppHeader component
+import { useEffect, useState } from "react"
+import { apiGet } from "@/lib/api-client"
 
 export default function SelectProductPage() {
-  const products = [
-    {
-      id: 1,
-      name: "云盘大师",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=cloud",
-      tags: ["AI 智能整理", "跨平台同步", "安全加密"],
-      description:
-        "云盘大师是一款智能云存储服务，利用先进的 AI 技术自动分类和整理您的文件，确保数据安全并提供跨设备无缝同步体验。适合个人用户和小型团队进行高效协作。...",
-    },
-    {
-      id: 2,
-      name: "智能温控器",
-      avatar: "https://api.dicebear.com/7.x/icons/svg?seed=temperature",
-      tags: ["节能模式", "远程控制", "语音助手"],
-      description:
-        "智能温控器让您的家居环境更舒适、更节能。通过手机 APP 远程控制温度，支持多种智能语音助手，并提供节能分析报告，助您节省电费。...",
-    },
-    {
-      id: 3,
-      name: "投资助手",
-      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=investment",
-      tags: ["实时市场数据", "风险评估", "个性化推荐"],
-      description:
-        "投资助手是一款专为新手和资深投资者设计的工具，提供实时股票、基金、加密货币市场数据，内置智能风险评估模型，根据您的投资偏好给出个性化建议，助您做出明智决策。...",
-    },
-    {
-      id: 4,
-      name: "AI 写作工具",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=writer",
-      tags: ["高效创作", "语法检查", "多语言支持"],
-      description:
-        "AI 写作工具是您提高写作效率的得力助手。它不仅能帮助您快速生成高质量内容，还能进行实时语法检查、风格优化，并支持多种语言创作，适用于文案、报告、博客等多种场景。...",
-    },
-  ]
+  const [products, setProducts] = useState<
+    Array<{ id: number | string; name: string; avatar: string; tags: string[]; description: string }>
+  >([])
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    apiGet<Array<{ id: number | string; name: string; avatar: string; tags: string[]; description: string }>>(
+      "/api/v1/products/for-creator",
+    )
+      .then(setProducts)
+      .catch((err) => setError(err instanceof Error ? err.message : "加载失败"))
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -50,6 +30,7 @@ export default function SelectProductPage() {
         {/* Page Content */}
         <main className="flex-1 p-4 sm:p-6 md:p-8">
           <h1 className="mb-4 sm:mb-6 md:mb-8 text-xl sm:text-2xl md:text-3xl font-bold text-slate-900">待推广项目</h1>
+          {error && <p className="text-sm text-red-500 mb-3">{error}</p>}
 
           <div className="grid gap-3 sm:gap-[0.9rem] md:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => (

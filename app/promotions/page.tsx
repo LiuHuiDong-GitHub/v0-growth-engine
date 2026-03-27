@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useEffect } from "react"
 import Link from "next/link"
 import AppHeader from "@/components/app-header"
 import Breadcrumb from "@/components/breadcrumb"
@@ -17,57 +18,47 @@ import {
   Bookmark,
   Share2,
 } from "lucide-react"
+import { apiGet } from "@/lib/api-client"
 
 export default function MyPromotions() {
   const [activeTab, setActiveTab] = useState<"pending" | "published">("pending")
+  const [pendingProjects, setPendingProjects] = useState<
+    Array<{ id: string; title: string; platform: string; status: string; description: string }>
+  >([])
+  const [publishedProjects, setPublishedProjects] = useState<
+    Array<{
+      id: string
+      title: string
+      platform: string
+      status: string
+      description: string
+      stats: { views: number; likes: number; comments: number; saves: number; shares: number }
+    }>
+  >([])
+  const [error, setError] = useState("")
 
-  const pendingProjects = [
-    {
-      id: "1",
-      title: "智能家居系统评测",
-      platform: "Youtube",
-      status: "进行中",
-      description: "推广活动详情简述，此活动旨在提高产品在目标平台的用户参与度。",
-    },
-    {
-      id: "2",
-      title: "健康健身应用宣传",
-      platform: "TikTok",
-      status: "进行中",
-      description: "推广活动详情简述，此活动旨在提高产品在目标平台的用户参与度。",
-    },
-  ]
-
-  const publishedProjects = [
-    {
-      id: "1",
-      title: "智能家居系统评测",
-      platform: "YouTube",
-      status: "已发布",
-      description: "推广活动详情简述，此活动旨在提高产品在目标平台的用户参与度。",
-      stats: {
-        views: 125000,
-        likes: 8700,
-        comments: 540,
-        saves: 1200,
-        shares: 780,
-      },
-    },
-    {
-      id: "2",
-      title: "智能家居系统评测",
-      platform: "YouTube",
-      status: "已发布",
-      description: "推广活动详情简述，此活动旨在提高产品在目标平台的用户参与度。",
-      stats: {
-        views: 125000,
-        likes: 8700,
-        comments: 540,
-        saves: 1200,
-        shares: 780,
-      },
-    },
-  ]
+  useEffect(() => {
+    apiGet<
+      Array<{
+        id: string
+        title: string
+        platform: string
+        status: string
+        description: string
+        stats?: { views: number; likes: number; comments: number; saves: number; shares: number }
+      }>
+    >("/api/v1/promotions")
+      .then((data) => {
+        setPendingProjects(data.filter((d) => !d.stats))
+        setPublishedProjects(
+          data.filter((d) => d.stats).map((d) => ({
+            ...d,
+            stats: d.stats!,
+          })),
+        )
+      })
+      .catch((err) => setError(err instanceof Error ? err.message : "加载失败"))
+  }, [])
 
   return (
     <div className="min-h-screen md:h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -77,6 +68,7 @@ export default function MyPromotions() {
 
         <main className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 min-h-[200vh]">
           <h1 className="mb-4 sm:mb-6 text-2xl sm:text-3xl font-bold text-slate-900">我的推广</h1>
+          {error && <p className="text-sm text-red-500 mb-2">{error}</p>}
 
           <div className="mb-4 sm:mb-6 flex justify-start overflow-x-auto">
             <div className="relative inline-flex rounded-full bg-slate-100 p-1 min-w-fit">

@@ -2,10 +2,11 @@
 
 import React from "react"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Upload, Send, Plus, FileText, ImageIcon, Video, Music, File as FileIcon, Settings, MessageSquare } from "lucide-react"
 import Link from "next/link"
 import AppHeader from "@/components/app-header"
+import { apiGet, apiPost } from "@/lib/api-client"
 
 type Message = {
   id: number
@@ -48,24 +49,24 @@ export default function MessageBoardPage() {
   ])
   const [showSettingsModal, setShowSettingsModal] = useState(false);
 
-  const handleSendMessage = () => {
+  useEffect(() => {
+    apiGet<Message[]>("/api/v1/messages")
+      .then(setMessages)
+      .catch(() => undefined)
+  }, [])
+
+  const handleSendMessage = async () => {
     if (message.trim() || files.length > 0) {
-      const newMessage: Message = {
-        id: messages.length + 1,
-        type: "user",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=user1",
+      const payloadFiles = files.map((file) => ({
+        name: file.name,
+        size: file.size,
+        type: file.type,
+      }))
+      const data = await apiPost<{ message: Message }>("/api/v1/messages", {
         text: message || undefined,
-        time: new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" }),
-        files:
-          files.length > 0
-            ? files.map((file) => ({
-                name: file.name,
-                size: file.size,
-                type: file.type,
-              }))
-            : undefined,
-      }
-      setMessages([...messages, newMessage])
+        files: payloadFiles,
+      })
+      setMessages((prev) => [...prev, data.message])
       setMessage("")
       setFiles([])
     }

@@ -2,18 +2,11 @@
 
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Plus, Trash2, Video, Upload, Play, Link } from "lucide-react"
 import Breadcrumb from "@/components/breadcrumb"
 import AppHeader from "@/components/app-header"
-
-// Mock product data
-const productData = {
-  id: "1",
-  name: "NoteMaster Pro",
-  logoUrl: "/generic-app-logo.png",
-  tags: ["效率工具", "笔记工具", "AI工具"],
-}
+import { apiGet, apiPost } from "@/lib/api-client"
 
 interface VideoItem {
   id: string
@@ -25,6 +18,14 @@ interface VideoItem {
 
 export default function SubmitVideoPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const projectId = searchParams.get("projectId") || "1"
+  const [productData, setProductData] = useState({
+    id: "1",
+    name: "NoteMaster Pro",
+    logoUrl: "/generic-app-logo.png",
+    tags: ["效率工具", "笔记工具", "AI工具"],
+  })
   const [videoItems, setVideoItems] = useState<VideoItem[]>([
     { id: "1", imageUrl: null, videoLink: "", linkError: "", linkSubmitted: false },
     { id: "2", imageUrl: null, videoLink: "", linkError: "", linkSubmitted: false },
@@ -33,6 +34,14 @@ export default function SubmitVideoPage() {
   const [focusedItemId, setFocusedItemId] = useState<string | null>(null)
 
   const fileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({})
+
+  useEffect(() => {
+    apiGet<{ id: string; name: string; logoUrl: string; tags: string[] }>(
+      `/api/v1/promotions/${projectId}/brief`,
+    )
+      .then((data) => setProductData(data))
+      .catch(() => undefined)
+  }, [projectId])
 
   useEffect(() => {
     const handlePaste = (e: ClipboardEvent) => {
@@ -325,7 +334,20 @@ export default function SubmitVideoPage() {
             {/* Submit Button */}
             <div className="px-4 sm:px-8 pb-6 sm:pb-8 flex justify-center">
               <button
-                onClick={() => router.push("/creator/dashboard")}
+                onClick={async () => {
+                  const payload = videoItems
+                    .filter((item) => item.videoLink && !item.linkError)
+                    .map((item) => ({
+                      coverImageUrl: item.imageUrl || undefined,
+                      videoLink: item.videoLink,
+                    }))
+                  if (!payload.length) return
+                  await apiPost(`/api/v1/promotions/${projectId}/videos`, {
+                    projectId,
+                    videoItems: payload,
+                  })
+                  router.push("/creator/dashboard")
+                }}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm sm:text-base font-semibold rounded-full shadow-md hover:shadow-lg transition-all py-2.5 h-auto w-full sm:w-[60%] md:w-[30%]"
               >
                 提交视频

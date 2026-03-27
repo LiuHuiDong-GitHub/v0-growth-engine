@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import {
@@ -10,6 +10,7 @@ import {
   LogOut,
   HelpCircle,
 } from "lucide-react"
+import { apiGet, apiPost } from "@/lib/api-client"
 
 // 路径名称映射（规范 URI 后的 segment）
 const pathNameMap: Record<string, string> = {
@@ -121,9 +122,22 @@ export function PageHeader({
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
+  const [user, setUser] = useState<{ name: string; email: string; avatar: string; role?: string } | null>(null)
+  const [liveNotifications, setLiveNotifications] = useState(notifications)
+
+  useEffect(() => {
+    apiGet<{ name: string; email: string; avatar: string; role: string }>("/api/v1/me")
+      .then(setUser)
+      .catch(() => undefined)
+    apiGet<Array<{ id: number; title: string; message: string; time: string; unread: boolean }>>("/api/v1/notifications")
+      .then(setLiveNotifications)
+      .catch(() => undefined)
+  }, [])
 
   const handleLogout = () => {
-    router.push("/auth/login")
+    apiPost("/api/v1/auth/logout", {})
+      .catch(() => undefined)
+      .finally(() => router.push("/auth/login"))
   }
 
   return (
@@ -156,7 +170,7 @@ export function PageHeader({
             >
               <Bell className="h-5 w-5" />
               <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
-                {notifications.filter((n) => n.unread).length}
+                {liveNotifications.filter((n) => n.unread).length}
               </span>
             </button>
 
@@ -170,7 +184,7 @@ export function PageHeader({
                   </div>
                 </div>
                 <div className="max-h-80 overflow-y-auto">
-                  {notifications.map((notif) => (
+                  {liveNotifications.map((notif) => (
                     <div
                       key={notif.id}
                       className={`p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer ${notif.unread ? "bg-blue-50/30" : ""}`}
@@ -206,21 +220,27 @@ export function PageHeader({
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="h-8 w-8 overflow-hidden rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 ring-2 ring-transparent transition-all hover:ring-blue-200 cursor-pointer"
             >
-              <img
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=user"
-                alt="User"
-                className="h-full w-full object-cover"
-              />
+              <img src={user?.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=user"} alt="User" className="h-full w-full object-cover" />
             </button>
 
             {/* User Menu Dropdown */}
             {showUserMenu && (
               <div className="absolute right-0 top-full mt-2 w-56 rounded-xl border border-slate-200 bg-white shadow-xl z-50 overflow-hidden">
                 <div className="px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
-                  <p className="font-medium text-slate-900">{profileName}</p>
-                  <p className="text-sm text-slate-500 truncate">{profileEmail}</p>
+                  <p className="font-medium text-slate-900">{user?.name || profileName}</p>
+                  <p className="text-sm text-slate-500 truncate">{user?.email || profileEmail}</p>
                 </div>
                 <div className="py-1">
+                  {user?.role === "admin" && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setShowUserMenu(false)}
+                      className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer"
+                    >
+                      <Settings className="h-4 w-4 text-slate-500" />
+                      <span>管理员控制台</span>
+                    </Link>
+                  )}
                   <button
                     onClick={() => {
                       setShowSettingsModal(true)

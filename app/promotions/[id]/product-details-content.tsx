@@ -5,6 +5,8 @@ import AppHeader from "@/components/app-header"
 import Breadcrumb from "@/components/breadcrumb"
 import { Home, Upload, Lightbulb, TrendingUp, User, SettingsIcon } from "lucide-react"
 import { useParams, useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
+import { apiGet } from "@/lib/api-client"
 
 export default function ProductDetailsContent() {
   const params = useParams()
@@ -19,92 +21,26 @@ export default function ProductDetailsContent() {
   const statusColor = isSubmitted ? "bg-yellow-500" : "bg-green-500"
   const progressPercent = Math.round(progress * 100)
 
-  const performanceLevel = "中"
+  const [performanceLevel, setPerformanceLevel] = useState("中")
+  const [videos, setVideos] = useState<
+    Array<{ id: string; title: string; platform: string; thumbnail: string; stats: { views: string; engagementRate: string; conversionRate: string } }>
+  >([])
+  const [productName, setProductName] = useState("产品名称")
 
-  const videos = [
-    {
-      id: "1",
-      title: "产品发布 - 增长引擎",
-      platform: "Youtube",
-      thumbnail: "/laptop-analytics-dashboard.jpg",
-      stats: {
-        views: "1.2M",
-        engagementRate: "5.3%",
-        conversionRate: "2.1%",
-      },
-    },
-    {
-      id: "2",
-      title: "成功案例分享",
-      platform: "TikTok",
-      thumbnail: "/woman-showing-phone.jpg",
-      stats: {
-        views: "800K",
-        engagementRate: "7.1%",
-        conversionRate: "1.8%",
-      },
-    },
-    {
-      id: "3",
-      title: "如何使用GrowthEngine",
-      platform: "Bilibili",
-      thumbnail: "/hands-using-tablet.jpg",
-      stats: {
-        views: "500K",
-        engagementRate: "4.8%",
-        conversionRate: "1.5%",
-      },
-    },
-    {
-      id: "4",
-      title: "推广策略优化",
-      platform: "Kuaishou",
-      thumbnail: "/person-typing-laptop.jpg",
-      stats: {
-        views: "300K",
-        engagementRate: "6.5%",
-        conversionRate: "2.5%",
-      },
-    },
-  ]
-
-  const redditData = [
-    {
-      date: "2024-07-28",
-      title: "GrowthEngine帮助我转化率提高200%",
-      views: 1240,
-      conversions: 85,
-      revenue: "¥850.00",
-    },
-    {
-      date: "2024-07-27",
-      title: "新的营销工具：GrowthEngine评测",
-      views: 980,
-      conversions: 62,
-      revenue: "¥620.00",
-    },
-    {
-      date: "2024-07-26",
-      title: "如何在Reddit上找到潜在客户？",
-      views: 1530,
-      conversions: 110,
-      revenue: "¥1100.00",
-    },
-    {
-      date: "2024-07-25",
-      title: "GrowthEngine：独立创作者的福音",
-      views: 760,
-      conversions: 50,
-      revenue: "¥500.00",
-    },
-    {
-      date: "2024-07-24",
-      title: "小型企业如何借助Reddit增长",
-      views: 1020,
-      conversions: 75,
-      revenue: "¥750.00",
-    },
-  ]
+  useEffect(() => {
+    const query = status ? `?status=${status}` : ""
+    apiGet<{
+      productName: string
+      performanceLevel: string
+      videos: Array<{ id: string; title: string; platform: string; thumbnail: string; stats: { views: string; engagementRate: string; conversionRate: string } }>
+    }>(`/api/v1/products/${id}/promotion${query}`)
+      .then((data) => {
+        setProductName(data.productName)
+        setPerformanceLevel(data.performanceLevel || "中")
+        setVideos(data.videos || [])
+      })
+      .catch(() => undefined)
+  }, [id, status])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -118,7 +54,7 @@ export default function ProductDetailsContent() {
             <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
               <div className="flex items-center gap-3">
                 <div className={`h-10 sm:h-12 w-1 rounded-full ${statusColor}`}></div>
-                <h2 className="text-lg sm:text-xl font-semibold text-slate-900">产品名称</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold text-slate-900">{productName}</h2>
               </div>
               <span className={`rounded-full ${statusColor} px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium text-white`}>
                 {statusText}

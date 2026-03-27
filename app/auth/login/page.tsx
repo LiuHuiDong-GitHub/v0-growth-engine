@@ -5,16 +5,26 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ArrowRight, X, Phone, Apple, MessageCircle } from "lucide-react"
+import { apiPost } from "@/lib/api-client"
 
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState("")
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState("")
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (email) {
-      // Navigate to email verification page
-      console.log("Email login:", email)
+      setSubmitting(true)
+      setError("")
+      try {
+        await apiPost("/api/v1/auth/send-login-code", { email })
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "发送验证码失败")
+        setSubmitting(false)
+        return
+      }
       router.push(`/auth/verify-email?email=${encodeURIComponent(email)}`)
     }
   }
@@ -51,12 +61,14 @@ export default function LoginPage() {
               />
               <button
                 type="submit"
+                disabled={submitting}
                 className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-slate-600 transition-colors"
               >
                 <ArrowRight className="w-5 h-5" />
               </button>
             </div>
           </form>
+          {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
         </div>
 
         {/* Google Login Button */}
