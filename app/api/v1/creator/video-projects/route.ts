@@ -6,6 +6,20 @@ function formatNumber(num: number) {
   return num.toLocaleString("en-US")
 }
 
+function toAnyArray(value: unknown) {
+  if (!value) return [0, 0, 0, 0, 0]
+  if (Array.isArray(value)) return value
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value)
+      return Array.isArray(parsed) ? parsed : [0, 0, 0, 0, 0]
+    } catch {
+      return [0, 0, 0, 0, 0]
+    }
+  }
+  return [0, 0, 0, 0, 0]
+}
+
 export async function GET() {
   try {
     const auth = await requireRoles(["creator", "admin"])
@@ -62,9 +76,7 @@ export async function GET() {
           shares: formatNumber(row.shares || 0),
           comments: formatNumber(row.comments || 0),
           favorites: formatNumber(row.favorites || 0),
-          percentages: row.percentages_json
-            ? JSON.parse(row.percentages_json)
-            : [0, 0, 0, 0, 0],
+          percentages: toAnyArray(row.percentages_json),
         },
       })),
     )

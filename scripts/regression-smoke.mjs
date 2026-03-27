@@ -75,6 +75,9 @@ async function main() {
     )
   }
 
+  const creatorVideos = await get("/api/v1/creator/video-projects", creatorCookie)
+  assert(creatorVideos.res.status === 200 && creatorVideos.json.success, "creator video-projects should be ok")
+
   const admin = await get("/api/v1/admin/overview", adminCookie)
   assert(admin.res.status === 200 && admin.json.success, "admin overview should be ok")
 

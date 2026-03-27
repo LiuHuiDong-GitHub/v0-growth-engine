@@ -13,6 +13,10 @@
 # local uploads
 /public/uploads/
 
+# local test reports
+/docs/reports/*.md
+!/docs/reports/.gitkeep
+
 # production
 /build
 

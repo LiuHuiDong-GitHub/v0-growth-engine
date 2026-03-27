@@ -5,7 +5,7 @@ import { ok, serverError } from "@/lib/server/http"
 
 export async function GET(req: NextRequest) {
   try {
-    const auth = await requireRoles(["merchant", "admin"])
+    const auth = await requireRoles(["creator", "merchant", "admin"])
     if (auth.response) return auth.response
 
     const tab = req.nextUrl.searchParams.get("tab")
@@ -13,9 +13,12 @@ export async function GET(req: NextRequest) {
     const offset = Math.max(Number(req.nextUrl.searchParams.get("offset") || 0), 0)
     const filters: string[] = []
     const params: Record<string, unknown> = {}
-    if (auth.user?.role !== "admin") {
+    if (auth.user?.role === "merchant") {
       filters.push("pr.user_id = :userId")
-      params.userId = auth.user!.userId
+      params.userId = auth.user.userId
+    } else if (auth.user?.role === "creator") {
+      filters.push("p.creator_id = :userId")
+      params.userId = auth.user.userId
     }
     if (tab === "pending") filters.push("p.status IN ('pending','submitted')")
     if (tab === "published") filters.push("p.status = 'published'")

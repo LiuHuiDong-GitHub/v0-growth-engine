@@ -6,21 +6,29 @@ import { ProductDetailContent } from "./product-detail-content"
 import { ProductDetailStyles } from "./product-detail-styles"
 import { useEffect, useState } from "react"
 import { apiGet } from "@/lib/api-client"
+import { useParams } from "next/navigation"
 
 /**
  * 产品详情页容器：仅负责布局、数据注入与样式挂载
  * 设计意图：页面 ≤200 行，职责为组合 hook + 主内容组件
  */
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
-  const detail = useProductDetail(params.id)
+export default function ProductDetailPage() {
+  const params = useParams<{ id: string }>()
+  const id = typeof params?.id === "string" ? params.id : ""
+  const detail = useProductDetail(id)
   const [product, setProduct] = useState<Record<string, unknown> | null>(null)
   const [error, setError] = useState("")
 
   useEffect(() => {
-    apiGet(`/api/v1/products/${params.id}`)
+    if (!id) {
+      setError("无效产品ID")
+      setProduct(null)
+      return
+    }
+    apiGet(`/api/v1/products/${id}`)
       .then((data) => setProduct(data as Record<string, unknown>))
       .catch((err) => setError(err instanceof Error ? err.message : "加载失败"))
-  }, [params.id])
+  }, [id])
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">

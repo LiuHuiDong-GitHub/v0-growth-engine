@@ -10,7 +10,9 @@
     "perf:smoke": "node scripts/perf-smoke.mjs",
     "perf:write": "node scripts/write-perf-smoke.mjs",
     "preflight": "node scripts/preflight.mjs",
-    "test:smoke": "node scripts/regression-smoke.mjs"
+    "test:smoke": "node scripts/regression-smoke.mjs",
+    "test:security": "node scripts/security-smoke.mjs",
+    "test:e2e:merchant": "node scripts/e2e-merchant-publish.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       },
     )
     if (existing.length) {
-      return fail("你已申请该产品推广，请勿重复提交", "CONFLICT", 409)
+      return ok({ promotionId: String(existing[0].id) })
     }
 
     const [result] = await execute(

@@ -107,7 +107,7 @@ export function ProductHeroCard({
   }
 
   return (
-    <div className="flex-1 rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
+    <div className="flex-1 rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-visible">
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full -translate-y-1/2 translate-x-1/2 opacity-50" />
       <div className="relative">
         {/* 顶部：Logo、信息、价格勋章与时间线 */}
@@ -289,25 +289,40 @@ export function ProductHeroCard({
               <span>期望发布时间</span>
               <span className="font-semibold text-slate-700 ml-auto">{product.timeline.developerDeadline}</span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-slate-500">
-              <Clock className="h-3.5 w-3.5 flex-shrink-0" />
-              <span>确定发布时间</span>
-              <button
-                ref={dateButtonRef}
-                onClick={() => setShowCalendar(!showCalendar)}
-                className="font-semibold cursor-pointer hover:text-blue-600 transition-colors text-slate-800 ml-auto"
-              >
-                {selectedDate ? (
-                  <span>{selectedDate}</span>
-                ) : (
-                  <span
-                    className={`text-red-400 inline-block ${isTextShaking ? "animate-shake-text" : ""}`}
-                    title="建议选择在3日之后的时间，给博主留下足够的视频创作时间"
-                  >
-                    请选择
-                  </span>
-                )}
-              </button>
+            <div className="relative">
+              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <Clock className="h-3.5 w-3.5 flex-shrink-0" />
+                <span>确定发布时间</span>
+                <button
+                  ref={dateButtonRef}
+                  onClick={() => setShowCalendar(!showCalendar)}
+                  className="font-semibold cursor-pointer hover:text-blue-600 transition-colors text-slate-800 ml-auto"
+                >
+                  {selectedDate ? (
+                    <span>{selectedDate}</span>
+                  ) : (
+                    <span
+                      className={`text-red-400 inline-block ${isTextShaking ? "animate-shake-text" : ""}`}
+                      title="建议选择在3日之后的时间，给博主留下足够的视频创作时间"
+                    >
+                      请选择
+                    </span>
+                  )}
+                </button>
+              </div>
+              <ProductCalendarPicker
+                calendarRef={calendarRef}
+                isOpen={showCalendar}
+                calendarMonth={calendarMonth}
+                setCalendarMonth={setCalendarMonth}
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                setShowCalendar={setShowCalendar}
+                calendar={calendar}
+                isPastDate={isPastDateUtil}
+                onSelectDate={handleSelectDate}
+                onSelectToday={onSelectToday}
+              />
             </div>
           </div>
         </div>
