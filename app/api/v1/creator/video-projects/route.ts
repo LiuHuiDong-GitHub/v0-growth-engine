@@ -27,16 +27,25 @@ export async function GET() {
         percentages_json: string | null
       }[]
     >(
-      `
-      SELECT pv.id, pv.title, pv.duration, pv.thumbnail_url, pv.video_link, pv.progress,
-             pv.plays, pv.likes, pv.shares, pv.comments, pv.favorites, pv.percentages_json
-      FROM promotion_videos pv
-      JOIN promotions p ON p.id = pv.promotion_id
-      WHERE p.creator_id = :creatorId
-      ORDER BY pv.id DESC
-      LIMIT 20
-    `,
-      { creatorId: auth.user!.userId },
+      auth.user?.role === "admin"
+        ? `
+          SELECT pv.id, pv.title, pv.duration, pv.thumbnail_url, pv.video_link, pv.progress,
+                 pv.plays, pv.likes, pv.shares, pv.comments, pv.favorites, pv.percentages_json
+          FROM promotion_videos pv
+          JOIN promotions p ON p.id = pv.promotion_id
+          ORDER BY pv.id DESC
+          LIMIT 20
+        `
+        : `
+          SELECT pv.id, pv.title, pv.duration, pv.thumbnail_url, pv.video_link, pv.progress,
+                 pv.plays, pv.likes, pv.shares, pv.comments, pv.favorites, pv.percentages_json
+          FROM promotion_videos pv
+          JOIN promotions p ON p.id = pv.promotion_id
+          WHERE p.creator_id = :creatorId
+          ORDER BY pv.id DESC
+          LIMIT 20
+        `,
+      auth.user?.role === "admin" ? undefined : { creatorId: auth.user!.userId },
     )
 
     return ok(

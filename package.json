@@ -8,6 +8,7 @@
     "lint": "eslint .",
     "start": "next start",
     "perf:smoke": "node scripts/perf-smoke.mjs",
+    "perf:write": "node scripts/write-perf-smoke.mjs",
     "test:smoke": "node scripts/regression-smoke.mjs"
   },
   "dependencies": {

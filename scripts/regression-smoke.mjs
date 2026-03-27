@@ -56,13 +56,24 @@ async function main() {
   assert(detail.res.status === 200 && detail.json.success, "product detail should be ok")
 
   const apply = await post("/api/v1/promotions/apply", { productId, selectedDate: "2026-02-01" }, creatorCookie)
-  assert(apply.res.status === 200 && apply.json.success, "apply promotion should be ok")
+  assert(
+    (apply.res.status === 200 && apply.json.success) || apply.res.status === 409,
+    "apply promotion should be ok or conflict",
+  )
 
   const myProducts = await get("/api/v1/products?limit=5&offset=0", merchantCookie)
   assert(myProducts.res.status === 200 && myProducts.json.success, "merchant products should be ok")
 
   const promos = await get("/api/v1/promotions?limit=5&offset=0", merchantCookie)
   assert(promos.res.status === 200 && promos.json.success, "merchant promotions should be ok")
+  if (Array.isArray(promos.json.data) && promos.json.data.length > 0) {
+    const promotionId = promos.json.data[0].id
+    const creatorForbidden = await get(`/api/v1/promotions/${promotionId}/brief`, creatorCookie)
+    assert(
+      creatorForbidden.res.status === 200 || creatorForbidden.res.status === 403,
+      "creator brief should be own-access or forbidden",
+    )
+  }
 
   const admin = await get("/api/v1/admin/overview", adminCookie)
   assert(admin.res.status === 200 && admin.json.success, "admin overview should be ok")

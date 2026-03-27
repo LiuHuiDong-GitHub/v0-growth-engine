@@ -23,10 +23,12 @@ export async function GET(
         status: "pending" | "submitted" | "published"
         performance_level: string | null
         name: string
+        creator_id: number | null
+        owner_id: number
       }[]
     >(
       `
-      SELECT p.id, p.title, p.status, p.performance_level, pr.name
+      SELECT p.id, p.title, p.status, p.performance_level, p.creator_id, pr.name, pr.user_id AS owner_id
       FROM promotions p
       JOIN products pr ON pr.id = p.product_id
       WHERE p.product_id = :productId
@@ -37,6 +39,12 @@ export async function GET(
     )
     if (!promotionRows.length) return fail("未找到推广任务", "NOT_FOUND", 404)
     const promotion = promotionRows[0]
+    if (auth.user?.role === "merchant" && promotion.owner_id !== auth.user.userId) {
+      return fail("无权限访问该产品推广数据", "FORBIDDEN", 403)
+    }
+    if (auth.user?.role === "creator" && promotion.creator_id !== auth.user.userId) {
+      return fail("无权限访问该产品推广数据", "FORBIDDEN", 403)
+    }
     const videos = await query<
       {
         id: number

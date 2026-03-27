@@ -81,6 +81,12 @@ TARGET_URL="http://localhost:3001/api/v1/products/for-creator" AUTH_COOKIE="ge_t
 npm run test:smoke
 ```
 
+### 5.1.2 写接口压测
+
+```bash
+AUTH_COOKIE="ge_token=xxxx" TARGET_URL="http://localhost:3001/api/v1/messages" npm run perf:write
+```
+
 ### 5.2 安全检查（手动）
 
 - 未登录直接访问：
@@ -91,8 +97,15 @@ npm run test:smoke
 - 角色越权：
   - 创作者访问 `/api/v1/admin/overview`
   - 预期：403
+- 数据归属：
+  - 创作者仅可访问自己 promotion 的 `/api/v1/promotions/:promotionId/brief`
+  - 创作者仅可提交自己 promotion 的 `/api/v1/promotions/:promotionId/videos`
+  - 商家仅可访问自己产品对应的 `/api/v1/products/:id/promotion`
+  - 预期：越权均 403
 - 输入校验：
   - `POST /api/v1/products` 缺少 `name/link/fullDescription`
+  - 预期：400
+  - `POST /api/v1/products` 不勾选 agreed 或 link 非 URL
   - 预期：400
 
 ## 6. OpenClaw 需要做的人为动作

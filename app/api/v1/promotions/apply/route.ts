@@ -22,6 +22,24 @@ export async function POST(req: NextRequest) {
     if (!products.length) return fail("产品不存在", "NOT_FOUND", 404)
     const product = products[0]
 
+    const existing = await query<{ id: number }[]>(
+      `
+      SELECT id
+      FROM promotions
+      WHERE product_id = :productId
+        AND creator_id = :creatorId
+        AND status IN ('pending', 'submitted')
+      LIMIT 1
+      `,
+      {
+        productId,
+        creatorId: auth.user!.userId,
+      },
+    )
+    if (existing.length) {
+      return fail("你已申请该产品推广，请勿重复提交", "CONFLICT", 409)
+    }
+
     const [result] = await execute(
       `
       INSERT INTO promotions (

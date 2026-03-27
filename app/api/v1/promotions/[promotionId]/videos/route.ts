@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server"
-import { execute } from "@/lib/server/db"
+import { execute, query } from "@/lib/server/db"
 import { requireRoles } from "@/lib/server/guards"
 import { fail, ok, serverError } from "@/lib/server/http"
 
@@ -18,6 +18,15 @@ export async function POST(
     const body = await req.json()
     const videoItems = Array.isArray(body?.videoItems) ? body.videoItems : []
     if (!videoItems.length) return fail("videoItems 不能为空", "VALIDATION_ERROR", 400)
+
+    const owners = await query<{ creator_id: number | null }[]>(
+      "SELECT creator_id FROM promotions WHERE id = :id LIMIT 1",
+      { id },
+    )
+    if (!owners.length) return fail("任务不存在", "NOT_FOUND", 404)
+    if (auth.user?.role === "creator" && owners[0].creator_id !== auth.user.userId) {
+      return fail("无权限提交该任务视频", "FORBIDDEN", 403)
+    }
 
     for (const item of videoItems) {
       await execute(

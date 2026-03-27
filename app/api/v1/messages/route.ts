@@ -25,12 +25,21 @@ export async function GET(req: NextRequest) {
         created_at: Date
       }[]
     >(
-      `
-      SELECT id, type, avatar_url, sender_name, text, created_at
-      FROM messages
-      ORDER BY id ASC
-      LIMIT ${limit} OFFSET ${offset}
-    `,
+      auth.user?.role === "admin"
+        ? `
+          SELECT id, type, avatar_url, sender_name, text, created_at
+          FROM messages
+          ORDER BY id ASC
+          LIMIT ${limit} OFFSET ${offset}
+        `
+        : `
+          SELECT id, type, avatar_url, sender_name, text, created_at
+          FROM messages
+          WHERE user_id = :userId OR type = 'admin'
+          ORDER BY id ASC
+          LIMIT ${limit} OFFSET ${offset}
+        `,
+      auth.user?.role === "admin" ? undefined : { userId: auth.user!.userId },
     )
 
     const ids = rows.map((r) => r.id)

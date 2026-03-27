@@ -81,6 +81,11 @@ export async function POST(req: NextRequest) {
     if (!name || !link || !fullDescription) {
       return fail("name/link/fullDescription 为必填", "VALIDATION_ERROR", 400)
     }
+    const agreed = Boolean(body?.agreed)
+    if (!agreed) return fail("请先同意协议后再发布", "VALIDATION_ERROR", 400)
+    if (!/^https?:\/\/|^www\./i.test(link)) {
+      return fail("产品链接格式不正确", "VALIDATION_ERROR", 400)
+    }
 
     const tags = Array.isArray(body?.tags) ? body.tags : []
     const bonusTargets = Array.isArray(body?.bonusTargets) ? body.bonusTargets : []

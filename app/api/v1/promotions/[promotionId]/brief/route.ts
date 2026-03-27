@@ -35,10 +35,11 @@ export async function GET(
         product_name: string
         logo: string | null
         tags: string | null
+        creator_id: number | null
       }[]
     >(
       `
-      SELECT p.id AS pid, pr.name AS product_name, pr.avatar_url AS logo, pr.tags_json AS tags
+      SELECT p.id AS pid, p.creator_id, pr.name AS product_name, pr.avatar_url AS logo, pr.tags_json AS tags
       FROM promotions p
       JOIN products pr ON pr.id = p.product_id
       WHERE p.id = :id
@@ -49,6 +50,9 @@ export async function GET(
     if (!rows.length) return fail("任务不存在", "NOT_FOUND", 404)
 
     const row = rows[0]
+    if (auth.user?.role === "creator" && row.creator_id !== auth.user.userId) {
+      return fail("无权限访问该任务", "FORBIDDEN", 403)
+    }
     return ok({
       id: String(row.pid),
       name: row.product_name,
