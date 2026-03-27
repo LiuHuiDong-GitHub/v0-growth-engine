@@ -18,7 +18,7 @@ import {
   isCurrentMonth as isCurrentMonthUtil,
 } from "../lib/upload-calendar-utils"
 import { getTextFontSize as getTextFontSizeUtil, scrollHorizontal } from "../lib/upload-utils"
-import { apiPost } from "@/lib/api-client"
+import { apiPost, apiUploadFile, apiUploadDataUrl } from "@/lib/api-client"
 
 const initialValidationErrors = {
   contactName: "",
@@ -50,8 +50,8 @@ export function useUploadForm() {
   const [customTagInput, setCustomTagInput] = useState("")
   const [isAddingCustomTag, setIsAddingCustomTag] = useState(false)
   const [documentDescription, setDocumentDescription] = useState(productData.fullDescription)
-  const [uploadedFiles, setUploadedFiles] = useState<Array<{ name: string; size: string; url: string }>>([])
-  const [uploadedMedia, setUploadedMedia] = useState<Array<{ type: "image" | "video"; url: string; name: string }>>([])
+  const [uploadedFiles, setUploadedFiles] = useState<Array<{ name: string; size: string; url: string; file?: File }>>([])
+  const [uploadedMedia, setUploadedMedia] = useState<Array<{ type: "image" | "video"; url: string; name: string; file?: File }>>([])
   const [activeMediaIndex, setActiveMediaIndex] = useState<number | null>(null)
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false)
   const [showCalendar, setShowCalendar] = useState(false)
@@ -218,12 +218,44 @@ export function useUploadForm() {
     }
     setIsAddingToPromotions(true)
     try {
+      // 1) 上传 logo（优先 File，其次 dataUrl）
+      let logoUrl = productLogoUrl || "/placeholder-logo.png"
+      if (logoFile) {
+        const up = await apiUploadFile(logoFile)
+        logoUrl = up.fileUrl
+      } else if (productLogoUrl?.startsWith("data:")) {
+        const up = await apiUploadDataUrl(productLogoUrl, "logo.png")
+        logoUrl = up.fileUrl
+      }
+
+      // 2) 上传资料文件（documents）
+      const uploadedDocuments = await Promise.all(
+        uploadedFiles.map(async (f) => {
+          if (f.file) {
+            const up = await apiUploadFile(f.file)
+            return { name: f.name, size: f.size, url: up.fileUrl }
+          }
+          return f
+        }),
+      )
+
+      // 3) 上传媒体（images/videos）
+      const uploadedMedias = await Promise.all(
+        uploadedMedia.map(async (m) => {
+          if (m.file) {
+            const up = await apiUploadFile(m.file)
+            return { type: m.type, url: up.fileUrl, name: m.name }
+          }
+          return { type: m.type, url: m.url, name: m.name }
+        }),
+      )
+
       await apiPost("/api/v1/products", {
         name: productName || "未命名产品",
         description: productDescription,
         fullDescription: documentDescription,
         link: productLink,
-        logo: productLogoUrl || "/placeholder-logo.png",
+        logo: logoUrl,
         tags: selectedTags,
         contactName,
         contactEmail,
@@ -235,8 +267,8 @@ export function useUploadForm() {
         })),
         expectedPublishDate: selectedDate,
         agreed,
-        documents: uploadedFiles,
-        media: uploadedMedia,
+        documents: uploadedDocuments.map((d) => ({ name: d.name, size: d.size, url: d.url })),
+        media: uploadedMedias,
       })
       setIsAddingToPromotions(false)
       setAddedToPromotions(true)
@@ -257,6 +289,7 @@ export function useUploadForm() {
         name: file.name,
         size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
         url: URL.createObjectURL(file),
+        file,
       }))
       setUploadedFiles((prev) => [...prev, ...newFiles])
     }
@@ -294,9 +327,11 @@ export function useUploadForm() {
             alert(`文件 "${file.name}" 不是图片或视频格式，已跳过`)
             return null
           }
-          return { type, url, name: file.name }
+          return { type, url, name: file.name, file }
         })
-        .filter((item): item is { type: "image" | "video"; url: string; name: string } => item !== null)
+        .filter(
+          (item): item is { type: "image" | "video"; url: string; name: string; file: File } => item !== null,
+        )
       setUploadedMedia((prev) => [...prev, ...newMedia])
       if (uploadedMedia.length === 0 && newMedia.length > 0) setActiveMediaIndex(0)
     }
