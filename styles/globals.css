@@ -1,0 +1,139 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* User-defined colors take precedence over default shadcn/ui styles */
+  --background: 0 0% 100%; /* User-defined */
+  --foreground: 0 0% 3.9%; /* User-defined */
+  --card: 0 0% 100%; /* User-defined */
+  --card-foreground: 0 0% 3.9%; /* User-defined */
+  --popover: 0 0% 100%; /* User-defined */
+  --popover-foreground: 0 0% 3.9%; /* User-defined */
+  --primary: 0 0% 9%; /* User-defined */
+  --primary-foreground: 0 0% 98%; /* User-defined */
+  --secondary: 0 0% 96.1%; /* User-defined */
+  --secondary-foreground: 0 0% 9%; /* User-defined */
+  --muted: 0 0% 96.1%; /* User-defined */
+  --muted-foreground: 0 0% 45.1%; /* User-defined */
+  --accent: 0 0% 96.1%; /* User-defined */
+  --accent-foreground: 0 0% 9%; /* User-defined */
+  --destructive: 0 84.2% 60.2%; /* User-defined */
+  --destructive-foreground: 0 0% 98%; /* User-defined */
+  --border: 0 0% 89.8%; /* User-defined */
+  --input: 0 0% 89.8%; /* User-defined */
+  --ring: 0 0% 3.9%; /* User-defined */
+  --chart-1: 12 76% 61%; /* User-defined */
+  --chart-2: 173 58% 39%; /* User-defined */
+  --chart-3: 197 37% 24%; /* User-defined */
+  --chart-4: 43 74% 66%; /* User-defined */
+  --chart-5: 27 87% 67%; /* User-defined */
+  --radius: 0.5rem; /* User-defined */
+  --sidebar: oklch(0.985 0 0); /* User-defined */
+  --sidebar-foreground: oklch(0.145 0 0); /* User-defined */
+  --sidebar-primary: oklch(0.205 0 0); /* User-defined */
+  --sidebar-primary-foreground: oklch(0.985 0 0); /* User-defined */
+  --sidebar-accent: oklch(0.97 0 0); /* User-defined */
+  --sidebar-accent-foreground: oklch(0.205 0 0); /* User-defined */
+  --sidebar-border: oklch(0.922 0 0); /* User-defined */
+  --sidebar-ring: oklch(0.708 0 0); /* User-defined */
+}
+
+.dark {
+  /* User-defined colors take precedence over default shadcn/ui styles */
+  --background: 0 0% 3.9%; /* User-defined */
+  --foreground: 0 0% 98%; /* User-defined */
+  --card: 0 0% 3.9%; /* User-defined */
+  --card-foreground: 0 0% 98%; /* User-defined */
+  --popover: 0 0% 3.9%; /* User-defined */
+  --popover-foreground: 0 0% 98%; /* User-defined */
+  --primary: 0 0% 98%; /* User-defined */
+  --primary-foreground: 0 0% 9%; /* User-defined */
+  --secondary: 0 0% 14.9%; /* User-defined */
+  --secondary-foreground: 0 0% 98%; /* User-defined */
+  --muted: 0 0% 14.9%; /* User-defined */
+  --muted-foreground: 0 0% 63.9%; /* User-defined */
+  --accent: 0 0% 14.9%; /* User-defined */
+  --accent-foreground: 0 0% 98%; /* User-defined */
+  --destructive: 0 62.8% 30.6%; /* User-defined */
+  --destructive-foreground: 0 0% 98%; /* User-defined */
+  --border: 0 0% 14.9%; /* User-defined */
+  --input: 0 0% 14.9%; /* User-defined */
+  --ring: 0 0% 83.1%; /* User-defined */
+  --chart-1: 220 70% 50%; /* User-defined */
+  --chart-2: 160 60% 45%; /* User-defined */
+  --chart-3: 30 80% 55%; /* User-defined */
+  --chart-4: 280 65% 60%; /* User-defined */
+  --chart-5: 340 75% 55%; /* User-defined */
+  --sidebar: oklch(0.205 0 0); /* User-defined */
+  --sidebar-foreground: oklch(0.985 0 0); /* User-defined */
+  --sidebar-primary: oklch(0.488 0.243 264.376); /* User-defined */
+  --sidebar-primary-foreground: oklch(0.985 0 0); /* User-defined */
+  --sidebar-accent: oklch(0.269 0 0); /* User-defined */
+  --sidebar-accent-foreground: oklch(0.985 0 0); /* User-defined */
+  --sidebar-border: oklch(0.269 0 0); /* User-defined */
+  --sidebar-ring: oklch(0.439 0 0); /* User-defined */
+}
+
+@theme inline {
+  /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Global cursor pointer for all interactive elements - preserved from existing */
+  button,
+  a,
+  [role="button"],
+  [onclick],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  select,
+  label[for] {
+    cursor: pointer;
+  }
+}
