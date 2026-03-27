@@ -3,16 +3,27 @@
 import Link from "next/link"
 import { useState } from "react"
 import AppHeader from "@/components/app-header"
+import { useRouter } from "next/navigation"
+import { apiPost } from "@/lib/api-client"
 
 export default function SelectRolePage() {
   const [selectedRole, setSelectedRole] = useState<string | null>(null)
+  const router = useRouter()
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState("")
 
-  const handleRoleSelect = (role: string) => {
+  const handleRoleSelect = async (role: string) => {
     setSelectedRole(role)
-    if (role === "creator") {
-      window.location.href = "/creator/verification"
-    } else {
-      window.location.href = "/products/upload"
+    setSubmitting(true)
+    setError("")
+    try {
+      await apiPost("/api/v1/auth/set-role", { role: role === "creator" ? "creator" : "merchant" })
+      if (role === "creator") router.push("/creator/verification")
+      else router.push("/products/upload")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "设置角色失败")
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -33,6 +44,7 @@ export default function SelectRolePage() {
             {/* Creator/Blogger Card */}
             <button
               onClick={() => handleRoleSelect("creator")}
+              disabled={submitting}
               className="group relative overflow-hidden rounded-xl sm:rounded-2xl border-2 border-slate-200 bg-white p-5 sm:p-8 text-center transition-all duration-300 hover:border-blue-500 hover:shadow-xl hover:-translate-y-1"
             >
               <div className="mb-4 sm:mb-6 flex justify-center">
@@ -57,6 +69,7 @@ export default function SelectRolePage() {
             {/* Investor/Developer Card */}
             <button
               onClick={() => handleRoleSelect("investor")}
+              disabled={submitting}
               className="group relative overflow-hidden rounded-xl sm:rounded-2xl border-2 border-slate-200 bg-white p-5 sm:p-8 text-center transition-all duration-300 hover:border-indigo-500 hover:shadow-xl hover:-translate-y-1"
             >
               <div className="mb-4 sm:mb-6 flex justify-center">
@@ -86,6 +99,11 @@ export default function SelectRolePage() {
             </Link>
             
           </div>
+          {(error || submitting) && (
+            <p className={`mt-4 text-center text-xs ${error ? "text-red-500" : "text-slate-500"}`}>
+              {error || "正在设置角色..."}
+            </p>
+          )}
         </div>
       </main>
     </div>

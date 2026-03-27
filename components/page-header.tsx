@@ -120,7 +120,6 @@ export function PageHeader({
   const pathname = usePathname()
   const autoBreadcrumbs = generateBreadcrumb(pathname)
   const [showUserMenu, setShowUserMenu] = useState(false)
-  const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   const [user, setUser] = useState<{ name: string; email: string; avatar: string; role?: string } | null>(null)
   const [liveNotifications, setLiveNotifications] = useState(notifications)
@@ -133,6 +132,18 @@ export function PageHeader({
       .then(setLiveNotifications)
       .catch(() => undefined)
   }, [])
+
+  const markAllRead = async () => {
+    try {
+      await apiPost("/api/v1/notifications/mark-all-read", {})
+      const updated = await apiGet<Array<{ id: number; title: string; message: string; time: string; unread: boolean }>>(
+        "/api/v1/notifications?limit=20&offset=0",
+      )
+      setLiveNotifications(updated)
+    } catch {
+      // ignore
+    }
+  }
 
   const handleLogout = () => {
     apiPost("/api/v1/auth/logout", {})
@@ -180,7 +191,9 @@ export function PageHeader({
                 <div className="px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-slate-900">通知</h3>
-                    <button className="text-xs text-blue-600 hover:text-blue-700">全部已读</button>
+                    <button onClick={markAllRead} className="text-xs text-blue-600 hover:text-blue-700">
+                      全部已读
+                    </button>
                   </div>
                 </div>
                 <div className="max-h-80 overflow-y-auto">
@@ -208,7 +221,15 @@ export function PageHeader({
                   ))}
                 </div>
                 <div className="p-3 text-center bg-slate-50 border-t border-slate-100">
-                  <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">查看所有通知</button>
+                  <button
+                    onClick={() => {
+                      setShowNotifications(false)
+                      router.push("/notifications")
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    查看所有通知
+                  </button>
                 </div>
               </div>
             )}
@@ -243,8 +264,8 @@ export function PageHeader({
                   )}
                   <button
                     onClick={() => {
-                      setShowSettingsModal(true)
                       setShowUserMenu(false)
+                      router.push("/settings")
                     }}
                     className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer"
                   >

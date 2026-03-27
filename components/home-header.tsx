@@ -27,6 +27,7 @@ import {
   AlertTriangle,
   FileText,
 } from "lucide-react"
+import { apiGet, apiPost } from "@/lib/api-client"
 
 interface HomeHeaderProps {
   profileName?: string
@@ -47,6 +48,8 @@ export function HomeHeader({
   const { showSettingsModal, setShowSettingsModal } = useSettings()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
+  const [user, setUser] = useState<{ name: string; email: string; avatar: string; role?: string } | null>(null)
+  const [liveNotifications, setLiveNotifications] = useState(notifications)
 
   // Settings state
   const [activeSettingsTab, setActiveSettingsTab] = useState<"account" | "billing">("account")
@@ -168,7 +171,30 @@ export function HomeHeader({
   ]
 
   const handleLogout = () => {
-    router.push("/auth/login")
+    apiPost("/api/v1/auth/logout", {})
+      .catch(() => undefined)
+      .finally(() => router.push("/auth/login"))
+  }
+
+  useEffect(() => {
+    apiGet<{ name: string; email: string; avatar: string; role: string }>("/api/v1/me")
+      .then(setUser)
+      .catch(() => undefined)
+    apiGet<Array<{ id: number; title: string; message: string; time: string; unread: boolean }>>("/api/v1/notifications")
+      .then(setLiveNotifications)
+      .catch(() => undefined)
+  }, [])
+
+  const markAllRead = async () => {
+    try {
+      await apiPost("/api/v1/notifications/mark-all-read", {})
+      const updated = await apiGet<Array<{ id: number; title: string; message: string; time: string; unread: boolean }>>(
+        "/api/v1/notifications?limit=20&offset=0",
+      )
+      setLiveNotifications(updated)
+    } catch {
+      // ignore
+    }
   }
 
   return (
@@ -199,7 +225,7 @@ export function HomeHeader({
               >
                 <Bell className="h-5 w-5" />
                 <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
-                  {notifications.filter((n) => n.unread).length}
+                  {liveNotifications.filter((n) => n.unread).length}
                 </span>
               </button>
 
@@ -209,11 +235,13 @@ export function HomeHeader({
                   <div className="px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
                     <div className="flex items-center justify-between">
                       <h3 className="font-semibold text-slate-900">通知</h3>
-                      <button className="text-xs text-blue-600 hover:text-blue-700">全部已读</button>
+                      <button onClick={markAllRead} className="text-xs text-blue-600 hover:text-blue-700">
+                        全部已读
+                      </button>
                     </div>
                   </div>
                   <div className="max-h-80 overflow-y-auto">
-                    {notifications.map((notif) => (
+                    {liveNotifications.map((notif) => (
                       <div
                         key={notif.id}
                         className={`p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer ${notif.unread ? "bg-blue-50/30" : ""}`}
@@ -237,7 +265,15 @@ export function HomeHeader({
                     ))}
                   </div>
                   <div className="p-3 text-center bg-slate-50 border-t border-slate-100">
-                    <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">查看所有通知</button>
+                    <button
+                      onClick={() => {
+                        setShowNotifications(false)
+                        router.push("/notifications")
+                      }}
+                      className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                    >
+                      查看所有通知
+                    </button>
                   </div>
                 </div>
               )}
@@ -260,14 +296,14 @@ export function HomeHeader({
               {showUserMenu && (
                 <div className="absolute right-0 top-full mt-2 w-56 rounded-xl border border-slate-200 bg-white shadow-xl z-50 overflow-hidden">
                   <div className="px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
-                    <p className="font-medium text-slate-900">{profileName}</p>
-                    <p className="text-sm text-slate-500 truncate">{profileEmail}</p>
+                    <p className="font-medium text-slate-900">{user?.name || profileName}</p>
+                    <p className="text-sm text-slate-500 truncate">{user?.email || profileEmail}</p>
                   </div>
                   <div className="py-1">
                     <button
                       onClick={() => {
-                        setShowSettingsModal(true)
                         setShowUserMenu(false)
+                        router.push("/settings")
                       }}
                       className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer"
                     >

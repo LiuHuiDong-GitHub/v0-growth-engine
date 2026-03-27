@@ -5,17 +5,28 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff, Play } from "lucide-react"
+import { apiPost } from "@/lib/api-client"
 
 export default function RegisterPage() {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState("")
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Register:", { email, password })
-    router.push("/auth/role")
+    setSubmitting(true)
+    setError("")
+    try {
+      await apiPost("/api/v1/auth/register", { email, password })
+      router.push("/auth/role")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "注册失败")
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const handleGoogleRegister = () => {
@@ -101,11 +112,13 @@ export default function RegisterPage() {
             {/* Continue Button */}
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 py-3.5 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-900 transition-colors"
+              disabled={submitting}
+              className="w-full flex items-center justify-center gap-2 py-3.5 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-900 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors"
             >
               Continue
               <Play className="w-4 h-4 fill-current" />
             </button>
+            {error && <p className="text-xs text-red-500">{error}</p>}
           </form>
         </div>
 

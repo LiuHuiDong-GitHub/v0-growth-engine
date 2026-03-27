@@ -5,6 +5,7 @@ import { useState } from "react"
 import Link from "next/link"
 import AppHeader from "@/components/app-header"
 import { PhoneInput } from "@/components/ui/phone-input"
+import { apiPost } from "@/lib/api-client"
 
 export default function ForgotPasswordPage() {
   const [method, setMethod] = useState<"phone" | "email">("phone")
@@ -14,25 +15,55 @@ export default function ForgotPasswordPage() {
   const [verificationCode, setVerificationCode] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState("")
+  const [info, setInfo] = useState("")
 
-  const handleGetVerificationCode = () => {
-    if (method === "phone") {
-      console.log("Getting verification code for phone:", phoneNumber)
-    } else {
-      console.log("Getting verification code for email:", email)
+  const handleGetVerificationCode = async () => {
+    setSubmitting(true)
+    setError("")
+    setInfo("")
+    try {
+      if (method === "phone") {
+        await apiPost("/api/v1/auth/forgot-password/send-code", {
+          method: "phone",
+          countryCode,
+          phoneNumber,
+        })
+      } else {
+        await apiPost("/api/v1/auth/forgot-password/send-code", {
+          method: "email",
+          email,
+        })
+      }
+      setInfo("验证码已发送（本地联调固定为 123456）")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "发送验证码失败")
+    } finally {
+      setSubmitting(false)
     }
   }
 
-  const handleResetPassword = (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (newPassword !== confirmPassword) {
-      alert("密码不匹配")
-      return
-    }
-    if (method === "phone") {
-      console.log("Reset password for phone:", phoneNumber)
-    } else {
-      console.log("Reset password for email:", email)
+    setSubmitting(true)
+    setError("")
+    setInfo("")
+    try {
+      await apiPost("/api/v1/auth/forgot-password/reset", {
+        method,
+        countryCode,
+        phoneNumber,
+        email,
+        verificationCode,
+        newPassword,
+        confirmPassword,
+      })
+      setInfo("密码已重置，请返回登录")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "重置密码失败")
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -122,6 +153,7 @@ export default function ForgotPasswordPage() {
                   <button
                     type="button"
                     onClick={handleGetVerificationCode}
+                    disabled={submitting}
                     className="px-4 sm:px-8 py-3 sm:py-4 bg-blue-50 text-blue-600 rounded-lg sm:rounded-xl font-medium hover:bg-blue-100 transition-all text-sm sm:text-base md:text-lg whitespace-nowrap"
                   >
                     获取验证码
@@ -159,12 +191,18 @@ export default function ForgotPasswordPage() {
               <div className="pt-4 sm:pt-8">
                 <button
                   type="submit"
+                  disabled={submitting}
                   className="w-full sm:w-auto sm:max-w-xs mx-auto block py-3 sm:py-4 px-6 sm:px-8 bg-gradient-to-r from-purple-400 via-purple-500 to-pink-400 text-white text-sm sm:text-base md:text-lg font-semibold rounded-full hover:shadow-lg hover:scale-105 transition-all"
                 >
                   重置密码
                 </button>
               </div>
             </form>
+            {(error || info) && (
+              <p className={`mt-4 text-center text-xs ${error ? "text-red-500" : "text-slate-600"}`}>
+                {error || info}
+              </p>
+            )}
 
             {/* Back to Login Link */}
             <div className="text-center mt-6">
