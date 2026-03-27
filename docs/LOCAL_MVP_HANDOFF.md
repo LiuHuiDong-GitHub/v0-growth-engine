@@ -87,6 +87,14 @@ npm run test:smoke
 AUTH_COOKIE="ge_token=xxxx" TARGET_URL="http://localhost:3001/api/v1/messages" npm run perf:write
 ```
 
+### 5.1.3 一键上线前验收（推荐）
+
+> 会自动：回归冒烟 + 读/写压测 + 导出慢查询汇总到 `docs/reports/`。
+
+```bash
+SLOW_QUERY_MS=120 BASE_URL="http://localhost:3001" npm run preflight
+```
+
 ### 5.2 安全检查（手动）
 
 - 未登录直接访问：

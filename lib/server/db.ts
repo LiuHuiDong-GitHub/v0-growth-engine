@@ -6,6 +6,78 @@ let pool: Pool | null = null
 let bootstrapped = false
 let bootstrapPromise: Promise<void> | null = null
 
+type SlowQueryStat = {
+  count: number
+  totalMs: number
+  maxMs: number
+  lastMs: number
+  lastAt: number
+}
+
+const slowQueryStats = new Map<string, SlowQueryStat>()
+const slowQuerySince = Date.now()
+
+function getSlowThresholdMs() {
+  const raw = Number(process.env.SLOW_QUERY_MS ?? 120)
+  if (!Number.isFinite(raw) || raw <= 0) return 120
+  return raw
+}
+
+function fingerprintSql(sql: string) {
+  return sql
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/'(?:''|[^'])*'/g, "'?'")
+    .replace(/\b\d+\b/g, "?")
+}
+
+function recordSlowQuery(sql: string, ms: number) {
+  const threshold = getSlowThresholdMs()
+  if (ms < threshold) return
+  const key = fingerprintSql(sql)
+  const now = Date.now()
+  const prev = slowQueryStats.get(key)
+  if (!prev) {
+    slowQueryStats.set(key, {
+      count: 1,
+      totalMs: ms,
+      maxMs: ms,
+      lastMs: ms,
+      lastAt: now,
+    })
+    return
+  }
+  prev.count += 1
+  prev.totalMs += ms
+  prev.maxMs = Math.max(prev.maxMs, ms)
+  prev.lastMs = ms
+  prev.lastAt = now
+}
+
+export function dumpSlowQueryStats(options?: { limit?: number }) {
+  const limit = Math.min(Math.max(options?.limit ?? 50, 1), 200)
+  const items = Array.from(slowQueryStats.entries()).map(([sql, s]) => ({
+    sql,
+    count: s.count,
+    totalMs: Math.round(s.totalMs),
+    avgMs: Math.round(s.totalMs / Math.max(s.count, 1)),
+    maxMs: Math.round(s.maxMs),
+    lastMs: Math.round(s.lastMs),
+    lastAt: new Date(s.lastAt).toISOString(),
+  }))
+  items.sort((a, b) => b.maxMs - a.maxMs || b.totalMs - a.totalMs || b.count - a.count)
+  return {
+    thresholdMs: getSlowThresholdMs(),
+    since: new Date(slowQuerySince).toISOString(),
+    totalFingerprints: slowQueryStats.size,
+    top: items.slice(0, limit),
+  }
+}
+
+export function resetSlowQueryStats() {
+  slowQueryStats.clear()
+}
+
 function getPool() {
   if (!pool) {
     pool = mysql.createPool({
@@ -26,7 +98,9 @@ export async function query<T = unknown[]>(
   params?: Record<string, unknown> | unknown[],
 ) {
   await ensureDatabaseReady()
+  const start = Date.now()
   const [rows] = await getPool().query(sql, params as never)
+  recordSlowQuery(sql, Date.now() - start)
   return rows
 }
 
@@ -35,7 +109,10 @@ export async function execute(
   params?: Record<string, unknown> | unknown[],
 ) {
   await ensureDatabaseReady()
-  return getPool().execute(sql, params as never)
+  const start = Date.now()
+  const res = await getPool().execute(sql, params as never)
+  recordSlowQuery(sql, Date.now() - start)
+  return res
 }
 
 export async function ensureDatabaseReady() {
