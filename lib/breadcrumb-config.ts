@@ -3,69 +3,75 @@ export interface BreadcrumbConfig {
   href?: string
 }
 
-// Breadcrumb mapping for all routes in GrowthEngine
+// 面包屑映射（符合 docs/URI_NAMING_GUIDELINES.md）
 export const breadcrumbMap: Record<string, BreadcrumbConfig[]> = {
-  // Auth Pages
-  "/select-role": [{ label: "GrowthEngine" }, { label: "选择角色" }],
-  "/register": [{ label: "GrowthEngine" }, { label: "注册" }],
-  "/login": [{ label: "GrowthEngine" }, { label: "登录" }],
-  "/forgot-password": [{ label: "GrowthEngine" }, { label: "重置密码" }],
+  // 认证（统一 /auth/*）
+  "/auth/role": [{ label: "GrowthEngine" }, { label: "选择角色" }],
+  "/auth/register": [{ label: "GrowthEngine" }, { label: "注册" }],
+  "/auth/login": [{ label: "GrowthEngine" }, { label: "登录" }],
+  "/auth/forgot-password": [{ label: "GrowthEngine" }, { label: "重置密码" }],
+  "/auth/verify-email": [{ label: "GrowthEngine" }, { label: "验证邮箱" }],
 
-  // Blogger Pages
-  "/blogger-dashboard": [{ label: "GrowthEngine" }, { label: "创作者中心" }],
-  "/blogger-verification": [
+  // 创作者中心
+  "/creator/dashboard": [{ label: "GrowthEngine" }, { label: "创作者中心" }],
+  "/creator/verification": [
     { label: "GrowthEngine" },
-    { label: "创作者中心", href: "/blogger-dashboard" },
+    { label: "创作者中心", href: "/creator/dashboard" },
     { label: "身份认证" },
   ],
-  "/select-product": [
+  "/creator/products": [
     { label: "GrowthEngine" },
-    { label: "创作者中心", href: "/blogger-dashboard" },
+    { label: "创作者中心", href: "/creator/dashboard" },
     { label: "选择产品" },
   ],
-  "/product/[id]": [
+  "/products/[id]": [
     { label: "GrowthEngine" },
-    { label: "创作者中心", href: "/blogger-dashboard" },
-    { label: "选择产品", href: "/select-product" },
+    { label: "创作者中心", href: "/creator/dashboard" },
+    { label: "选择产品", href: "/creator/products" },
     { label: "产品详情" },
   ],
-  "/submit-video": [
+  "/creator/videos/new": [
     { label: "GrowthEngine" },
-    { label: "创作者中心", href: "/blogger-dashboard" },
+    { label: "创作者中心", href: "/creator/dashboard" },
     { label: "提交视频" },
   ],
-  "/blogger-video/[id]": [
+  "/videos/[id]": [
     { label: "GrowthEngine" },
-    { label: "创作者中心", href: "/blogger-dashboard" },
+    { label: "创作者中心", href: "/creator/dashboard" },
     { label: "视频详情" },
   ],
 
-  // Seller/Product Pages
-  "/my-product": [{ label: "GrowthEngine" }, { label: "商家中心" }],
-  "/upload-product": [{ label: "GrowthEngine" }, { label: "商家中心", href: "/my-product" }, { label: "发布产品" }],
-  "/my-promotions": [{ label: "GrowthEngine" }, { label: "商家中心", href: "/my-product" }, { label: "推广任务" }],
-  "/product-details/[id]": [
+  // 商家中心
+  "/products": [{ label: "GrowthEngine" }, { label: "商家中心" }],
+  "/products/upload": [
     { label: "GrowthEngine" },
-    { label: "商家中心", href: "/my-product" },
-    { label: "推广任务", href: "/my-promotions" },
+    { label: "商家中心", href: "/products" },
+    { label: "发布产品" },
+  ],
+  "/promotions": [
+    { label: "GrowthEngine" },
+    { label: "商家中心", href: "/products" },
+    { label: "推广任务" },
+  ],
+  "/promotions/[id]": [
+    { label: "GrowthEngine" },
+    { label: "商家中心", href: "/products" },
+    { label: "推广任务", href: "/promotions" },
     { label: "任务详情" },
   ],
 
-  // Other Pages
-  "/message-board": [{ label: "GrowthEngine" }, { label: "消息中心" }],
+  // 其他
+  "/messages": [{ label: "GrowthEngine" }, { label: "消息中心" }],
 }
 
 export function getBreadcrumbs(pathname: string): BreadcrumbConfig[] {
-  // Try exact match first
   if (breadcrumbMap[pathname]) {
     return breadcrumbMap[pathname]
   }
 
-  // Try pattern match for dynamic routes [id]
   for (const [pattern, config] of Object.entries(breadcrumbMap)) {
     if (pattern.includes("[id]")) {
       const regexPattern = pattern.replace(/\[id\]/g, "[^/]+").replace(/\//g, "\\/")
-
       const regex = new RegExp(`^${regexPattern}$`)
       if (regex.test(pathname)) {
         return config
@@ -73,6 +79,5 @@ export function getBreadcrumbs(pathname: string): BreadcrumbConfig[] {
     }
   }
 
-  // Fallback to home
   return [{ label: "GrowthEngine" }]
 }

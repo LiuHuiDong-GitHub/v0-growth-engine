@@ -1,0 +1,30 @@
+"use client"
+
+import AppHeader from "@/components/app-header"
+import { productData } from "@/lib/product-data"
+import { useProductDetail } from "./hooks/use-product-detail"
+import { ProductDetailContent } from "./product-detail-content"
+import { ProductDetailStyles } from "./product-detail-styles"
+
+/**
+ * 产品详情页容器：仅负责布局、数据注入与样式挂载
+ * 设计意图：页面 ≤200 行，职责为组合 hook + 主内容组件
+ */
+export default function ProductDetailPage({ params }: { params: { id: string } }) {
+  const detail = useProductDetail()
+
+  return (
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
+      <div className="flex flex-1 flex-col">
+        <AppHeader />
+        <main className="flex-1 p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center">
+          <div className="mx-auto max-w-7xl w-full">
+            <ProductDetailContent product={productData} detail={detail} />
+          </div>
+        </main>
+      </div>
+
+      <ProductDetailStyles />
+    </div>
+  )
+}

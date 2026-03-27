@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { useRouter, usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
+import { HomeHeader } from "./home-header"
+import { PageHeader } from "./page-header"
 import {
   Search,
   Bell,
@@ -31,34 +31,37 @@ import {
   Zap,
 } from "lucide-react"
 
-// 路径名称映射
+// 路径名称映射（规范 URI 后的 segment）
 const pathNameMap: Record<string, string> = {
   "": "首页",
-  "select-product": "待推广项目",
-  "select-role": "选择角色",
-  "upload-product": "上传产品",
-  "my-product": "我的产品",
-  "my-promotions": "我的推广",
-  "blogger-dashboard": "视频仪表盘",
-  "blogger-verification": "博主认证",
-  "blogger-video": "博主视频",
-  "product-details": "产品详情",
-  "product": "产品",
-  "submit-video": "提交视频",
-  "message-board": "留言板",
-  "help": "帮助中心",
-  "login": "登录",
-  "register": "注册",
+  auth: "认证",
+  role: "选择角色",
+  creator: "创作者中心",
+  dashboard: "仪表盘",
+  verification: "身份认证",
+  products: "商家中心",
+  videos: "视频",
+  new: "新建",
+  upload: "发布产品",
+  promotions: "推广任务",
+  videos: "视频",
+  messages: "消息中心",
+  legal: "法律",
+  privacy: "隐私政策",
+  terms: "服务条款",
+  help: "帮助中心",
+  login: "登录",
+  register: "注册",
   "forgot-password": "忘记密码",
   "verify-email": "验证邮箱",
 }
 
 // 特殊路径的自定义面包屑配置
 const customBreadcrumbs: Record<string, Array<{ label: string; href?: string }>> = {
-  "/blogger-dashboard": [
+  "/creator/dashboard": [
     { label: "首页", href: "/" },
-    { label: "我的推广", href: "/my-promotions" },
-    { label: "视频仪表盘" },
+    { label: "推广任务", href: "/promotions" },
+    { label: "创作者中心" },
   ],
 }
 
@@ -71,7 +74,7 @@ function generateBreadcrumb(pathname: string): Array<{ label: string; href?: str
     return customBreadcrumbs[pathname]
   }
   
-  // 检查动态路由的自定义配置 (如 /product-details/:id)
+  // 检查动态路由的自定义配置 (如 /promotions/:id)
   const matchedKey = Object.keys(customBreadcrumbs).find(key => {
     const pattern = key.replace(/:\w+/g, '\\d+')
     const regex = new RegExp(`^${pattern}$`)
@@ -81,12 +84,12 @@ function generateBreadcrumb(pathname: string): Array<{ label: string; href?: str
     return customBreadcrumbs[matchedKey]
   }
   
-  // 特殊处理 /product-details/:id 路径
-  if (pathname.startsWith("/product-details/")) {
+  // 特殊处理 /promotions/:id 路径（推广任务详情）
+  if (pathname.startsWith("/promotions/")) {
     return [
       { label: "首页", href: "/" },
-      { label: "我的产品", href: "/my-product" },
-      { label: "产品详情" },
+      { label: "商家中心", href: "/products" },
+      { label: "任务详情" },
     ]
   }
   
@@ -120,7 +123,19 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
-  const router = useRouter()
+  const pathname = usePathname()
+  const isHomePage = pathname === "/"
+  
+  // 根据页面类型返回不同的header组件
+  if (isHomePage) {
+    return <HomeHeader />
+  }
+  
+  return <PageHeader breadcrumbItems={breadcrumbItems} />
+}
+
+// 保留原有的完整实现作为导出，供需要时使用
+export function AppHeaderLegacy({ breadcrumbItems }: AppHeaderProps) {
   const pathname = usePathname()
   const isHomePage = pathname === "/"
   const autoBreadcrumbs = generateBreadcrumb(pathname)
@@ -228,7 +243,7 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
   }
 
   const handleLogout = () => {
-    router.push("/login")
+    router.push("/auth/login")
   }
 
   const handleExportData = () => {
@@ -241,7 +256,7 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
 
   const handleDeleteAccount = () => {
     if (deleteConfirmText === "删除我的账户") {
-      router.push("/login")
+      router.push("/auth/login")
     }
   }
 
@@ -374,7 +389,7 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
                             <span>设置</span>
                           </button>
                           <Link
-                            href="/message-board"
+                            href="/messages"
                             onClick={() => setShowUserMenu(false)}
                             className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer"
                           >
@@ -509,7 +524,7 @@ export function AppHeader({ breadcrumbItems }: AppHeaderProps) {
                           <span>设置</span>
                         </button>
                         <Link
-                          href="/message-board"
+                          href="/messages"
                           onClick={() => setShowUserMenu(false)}
                           className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer"
                         >
