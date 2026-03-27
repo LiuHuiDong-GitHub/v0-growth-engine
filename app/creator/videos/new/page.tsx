@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Plus, Trash2, Video, Upload, Play, Link } from "lucide-react"
 import Breadcrumb from "@/components/breadcrumb"
 import AppHeader from "@/components/app-header"
-import { apiGet, apiPost } from "@/lib/api-client"
+import { apiGet, apiPost, apiUploadDataUrl } from "@/lib/api-client"
 
 interface VideoItem {
   id: string
@@ -342,9 +342,19 @@ export default function SubmitVideoPage() {
                       videoLink: item.videoLink,
                     }))
                   if (!payload.length) return
+                  // 上传 dataUrl 封面（如存在）
+                  const uploadedPayload = await Promise.all(
+                    payload.map(async (it, idx) => {
+                      if (it.coverImageUrl?.startsWith("data:")) {
+                        const up = await apiUploadDataUrl(it.coverImageUrl, `cover-${idx + 1}.png`)
+                        return { ...it, coverImageUrl: up.fileUrl }
+                      }
+                      return it
+                    }),
+                  )
                   await apiPost(`/api/v1/promotions/${projectId}/videos`, {
                     projectId,
-                    videoItems: payload,
+                    videoItems: uploadedPayload,
                   })
                   router.push("/creator/dashboard")
                 }}

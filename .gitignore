@@ -10,6 +10,9 @@
 /.next/
 /out/
 
+# local uploads
+/public/uploads/
+
 # production
 /build
 

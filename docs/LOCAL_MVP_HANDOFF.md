@@ -52,6 +52,17 @@ npm run dev
 
 ## 5. 性能与安全自测命令
 
+## 5.0 文件上传与落盘位置
+
+- 上传接口：`POST /api/v1/uploads`
+  - 支持 `multipart/form-data`（字段名 `file`）
+  - 支持 JSON `{ dataUrl, filename }`
+- 文件落盘目录：`public/uploads/`
+- 前端访问路径：`/uploads/<filename>`
+- 限制：
+  - 单文件最大 10MB
+  - 允许类型：image/*、video/*、application/pdf、application/zip（其余会拒绝）
+
 ### 5.1 压测（需要登录cookie）
 
 先在浏览器登录后复制 `ge_token` cookie，拼成：
@@ -62,6 +73,12 @@ npm run dev
 
 ```bash
 TARGET_URL="http://localhost:3001/api/v1/products/for-creator" AUTH_COOKIE="ge_token=xxxx" npm run perf:smoke
+```
+
+### 5.1.1 自动化回归冒烟
+
+```bash
+npm run test:smoke
 ```
 
 ### 5.2 安全检查（手动）
@@ -83,7 +100,8 @@ TARGET_URL="http://localhost:3001/api/v1/products/for-creator" AUTH_COOKIE="ge_t
 1. 填好 `.env.local` 里的真实 MySQL 密码和 AI key
 2. 本地启动后完整走一遍三角色链路
 3. 执行一次压测并记录结果
-4. 若失败，把错误日志交给我二次修复
+4. 执行一次 `npm run test:smoke`（必须为 REGRESSION_SMOKE_OK）
+5. 若失败，把错误日志交给我二次修复
 
 ## 7. 你本人可能需要手动处理的点
 

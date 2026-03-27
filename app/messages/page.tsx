@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from "react"
 import { Upload, Send, Plus, FileText, ImageIcon, Video, Music, File as FileIcon, Settings, MessageSquare } from "lucide-react"
 import Link from "next/link"
 import AppHeader from "@/components/app-header"
-import { apiGet, apiPost } from "@/lib/api-client"
+import { apiGet, apiPost, apiUploadFile } from "@/lib/api-client"
 
 type Message = {
   id: number
@@ -57,11 +57,17 @@ export default function MessageBoardPage() {
 
   const handleSendMessage = async () => {
     if (message.trim() || files.length > 0) {
-      const payloadFiles = files.map((file) => ({
-        name: file.name,
-        size: file.size,
-        type: file.type,
-      }))
+      const payloadFiles = await Promise.all(
+        files.map(async (file) => {
+          const uploaded = await apiUploadFile(file)
+          return {
+            name: uploaded.name,
+            size: uploaded.size,
+            type: uploaded.type,
+            fileUrl: uploaded.fileUrl,
+          }
+        }),
+      )
       const data = await apiPost<{ message: Message }>("/api/v1/messages", {
         text: message || undefined,
         files: payloadFiles,

@@ -17,10 +17,15 @@ function toArray(value: unknown): string[] {
   return []
 }
 
-export async function GET() {
+import { NextRequest } from "next/server"
+
+export async function GET(req: NextRequest) {
   try {
     const auth = await requireRoles(["creator", "admin"])
     if (auth.response) return auth.response
+
+    const limit = Math.min(Math.max(Number(req.nextUrl.searchParams.get("limit") || 20), 1), 50)
+    const offset = Math.max(Number(req.nextUrl.searchParams.get("offset") || 0), 0)
 
     const rows = await query<
       {
@@ -35,7 +40,7 @@ export async function GET() {
       SELECT id, name, avatar_url, description, tags_json
       FROM products
       ORDER BY id DESC
-      LIMIT 20
+      LIMIT ${limit} OFFSET ${offset}
     `,
     )
 

@@ -1,3 +1,4 @@
+import { NextRequest } from "next/server"
 import { query } from "@/lib/server/db"
 import { requireAuth } from "@/lib/server/guards"
 import { ok, serverError } from "@/lib/server/http"
@@ -10,10 +11,13 @@ function formatRelativeTime(date: Date) {
   return `${Math.floor(diff / 86400)}天前`
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const auth = await requireAuth()
     if (auth.response) return auth.response
+
+    const limit = Math.min(Math.max(Number(req.nextUrl.searchParams.get("limit") || 20), 1), 50)
+    const offset = Math.max(Number(req.nextUrl.searchParams.get("offset") || 0), 0)
 
     const rows = await query<
       {
@@ -29,7 +33,7 @@ export async function GET() {
         FROM notifications
         WHERE user_id = :userId
         ORDER BY id DESC
-        LIMIT 20
+        LIMIT ${limit} OFFSET ${offset}
       `,
       { userId: auth.user!.userId },
     )

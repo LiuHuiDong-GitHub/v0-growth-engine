@@ -7,10 +7,13 @@ function formatTime(input: Date) {
   return input.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const auth = await requireAuth()
     if (auth.response) return auth.response
+
+    const limit = Math.min(Math.max(Number(req.nextUrl.searchParams.get("limit") || 50), 1), 100)
+    const offset = Math.max(Number(req.nextUrl.searchParams.get("offset") || 0), 0)
 
     const rows = await query<
       {
@@ -26,7 +29,7 @@ export async function GET() {
       SELECT id, type, avatar_url, sender_name, text, created_at
       FROM messages
       ORDER BY id ASC
-      LIMIT 50
+      LIMIT ${limit} OFFSET ${offset}
     `,
     )
 

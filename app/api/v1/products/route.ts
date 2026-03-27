@@ -18,10 +18,13 @@ function toArray(value: unknown): string[] {
   return []
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const auth = await requireRoles(["merchant", "admin"])
     if (auth.response) return auth.response
+
+    const limit = Math.min(Math.max(Number(req.nextUrl.searchParams.get("limit") || 20), 1), 50)
+    const offset = Math.max(Number(req.nextUrl.searchParams.get("offset") || 0), 0)
 
     const rows = await query<
       {
@@ -38,14 +41,14 @@ export async function GET() {
           SELECT id, name, avatar_url, description, status, tags_json
           FROM products
           ORDER BY id DESC
-          LIMIT 20
+          LIMIT ${limit} OFFSET ${offset}
         `
         : `
           SELECT id, name, avatar_url, description, status, tags_json
           FROM products
           WHERE user_id = :userId
           ORDER BY id DESC
-          LIMIT 20
+          LIMIT ${limit} OFFSET ${offset}
         `,
       auth.user?.role === "admin" ? undefined : { userId: auth.user!.userId },
     )

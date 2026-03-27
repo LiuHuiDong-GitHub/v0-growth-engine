@@ -9,6 +9,8 @@ export async function GET(req: NextRequest) {
     if (auth.response) return auth.response
 
     const tab = req.nextUrl.searchParams.get("tab")
+    const limit = Math.min(Math.max(Number(req.nextUrl.searchParams.get("limit") || 40), 1), 100)
+    const offset = Math.max(Number(req.nextUrl.searchParams.get("offset") || 0), 0)
     const filters: string[] = []
     const params: Record<string, unknown> = {}
     if (auth.user?.role !== "admin") {
@@ -39,7 +41,7 @@ export async function GET(req: NextRequest) {
       JOIN products pr ON pr.id = p.product_id
       ${where}
       ORDER BY p.id DESC
-      LIMIT 40
+      LIMIT ${limit} OFFSET ${offset}
     `,
       params,
     )
