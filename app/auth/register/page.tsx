@@ -29,11 +29,6 @@ export default function RegisterPage() {
     }
   }
 
-  const handleGoogleRegister = () => {
-    console.log("Google register")
-    router.push("/auth/role")
-  }
-
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
       {/* Register Card - Matching the image design */}
@@ -46,11 +41,12 @@ export default function RegisterPage() {
             <p className="text-slate-500 text-sm">Welcome! Please fill in the details to get started.</p>
           </div>
 
-          {/* Google Register Button */}
+          {/* Google Register — MVP 未接 OAuth */}
           <button
             type="button"
-            onClick={handleGoogleRegister}
-            className="w-full flex items-center justify-center gap-3 py-3.5 text-base border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors font-medium text-slate-700 mb-6"
+            title="即将支持"
+            disabled
+            className="w-full flex items-center justify-center gap-3 py-3.5 text-base border border-slate-200 rounded-lg opacity-60 cursor-not-allowed font-medium text-slate-500 mb-6"
           >
             {/* Google Icon */}
             <svg className="w-5 h-5" viewBox="0 0 24 24">

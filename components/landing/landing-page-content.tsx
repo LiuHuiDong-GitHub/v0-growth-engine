@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useRef, useMemo } from "react"
+import { useState, useRef, useMemo, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card"
 import AppHeader from "@/components/app-header"
 import { TrendingUp, ChevronLeft, ChevronRight } from "lucide-react"
 import { landingTestimonials } from "@/lib/landing-data"
+import { apiGet } from "@/lib/api-client"
 
 /**
  * 首页/Home 共用内容（步骤 3 去重）
@@ -21,10 +22,13 @@ export default function LandingPageContent() {
   const [scrollLeft, setScrollLeft] = useState(0)
   const [showCarouselNav, setShowCarouselNav] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [notifications, setNotifications] = useState([])
-  const [showUserMenu, setShowUserMenu] = useState(false)
-  const [showNotifications, setShowNotifications] = useState(false)
+  const [sessionUser, setSessionUser] = useState<{ role: string } | null>(null)
+
+  useEffect(() => {
+    apiGet<{ role: string }>("/api/v1/me")
+      .then((u) => setSessionUser(u))
+      .catch(() => setSessionUser(null))
+  }, [])
 
   const testimonialsWithIcon = useMemo(
     () =>
@@ -35,12 +39,36 @@ export default function LandingPageContent() {
     [],
   )
 
-  const handleUploadClick = () => {
-    if (!isLoggedIn) {
-      router.push("/auth/login")
-    } else {
-      router.push("/products/upload")
+  const goLogin = () => router.push("/auth/login")
+
+  /** 商家/管理员发布产品；创作者进入创作者产品广场（不误导进上传页） */
+  const handleUploadProductClick = () => {
+    if (!sessionUser) {
+      goLogin()
+      return
     }
+    if (sessionUser.role === "merchant" || sessionUser.role === "admin") {
+      router.push("/products/upload")
+      return
+    }
+    router.push("/creator/products")
+  }
+
+  /** 博主接单入口；商家看自己的推广任务 */
+  const handleCreatorBrowseClick = () => {
+    if (!sessionUser) {
+      goLogin()
+      return
+    }
+    if (sessionUser.role === "creator") {
+      router.push("/creator/products")
+      return
+    }
+    if (sessionUser.role === "merchant") {
+      router.push("/promotions")
+      return
+    }
+    router.push("/admin")
   }
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -80,9 +108,10 @@ export default function LandingPageContent() {
             <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 leading-relaxed max-w-2xl mx-auto px-4 sm:mb-[46px]">
               GrowthEngine — 独立创作者的首选引擎，让你的产品被需要的人群看到。
             </p>
-            <Button 
-              onClick={handleUploadClick}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-lg px-8 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all">
+            <Button
+              onClick={handleUploadProductClick}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-lg px-8 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all"
+            >
               上传产品
             </Button>
 
@@ -259,7 +288,7 @@ export default function LandingPageContent() {
         <section id="services" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
           <div className="text-center mt-0 mb-[30px]">
             <Button
-              onClick={handleUploadClick}
+              onClick={handleCreatorBrowseClick}
               className="bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600 text-white text-lg px-9 py-6 rounded-full shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all"
             >
               推广产品
@@ -302,6 +331,7 @@ export default function LandingPageContent() {
                 <Button
                   variant="outline"
                   className="w-full border-blue-200 text-blue-600 hover:bg-blue-50 bg-transparent"
+                  onClick={() => router.push("/help#getting-started")}
                 >
                   查看详情
                 </Button>
@@ -331,11 +361,12 @@ export default function LandingPageContent() {
                   </svg>
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                  为了促使案例相关的程序，确保业务在有效关联的基础下正中安好的第工程性地，目示是有效关联的核心关键。
+                  聚合多平台账号与内容排期，减少切换成本，让推广节奏更可控、数据更可追踪。
                 </p>
                 <Button
                   variant="outline"
                   className="w-full border-purple-200 text-purple-600 hover:bg-purple-50 bg-transparent"
+                  onClick={() => router.push("/help#blogger-verification")}
                 >
                   查看详情
                 </Button>
@@ -367,11 +398,12 @@ export default function LandingPageContent() {
                   </svg>
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                  提供高效开发工具和教程，帮助你快速完成产品部署。从开发到产品发布，为你的产品助力，地位你的产品力。
+                  提供高效开发工具与教程，帮助你完成从开发到上线的关键步骤，为产品迭代与发布提速。
                 </p>
                 <Button
                   variant="outline"
                   className="w-full border-pink-200 text-pink-600 hover:bg-pink-50 bg-transparent"
+                  onClick={() => router.push("/help#getting-started")}
                 >
                   查看详情
                 </Button>
@@ -533,18 +565,20 @@ export default function LandingPageContent() {
               <div className="leading-5">
                 <h4 className="font-semibold text-gray-900 mb-4 leading-6">Product</h4>
                 <ul className="space-y-2">
-                  <li>
-                    
+                  <li className="leading-6">
+                    <Link href="/#features" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                      功能与案例
+                    </Link>
                   </li>
                   <li className="leading-6">
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                      How It Works
-                    </a>
+                    <Link href="/#services" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                      博主接单
+                    </Link>
                   </li>
                   <li className="leading-6">
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                      Pricing
-                    </a>
+                    <Link href="/help#getting-started" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                      帮助中心
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -569,21 +603,26 @@ export default function LandingPageContent() {
                 <h4 className="font-semibold text-gray-900 mb-4 leading-6">Support</h4>
                 <ul className="space-y-2">
                   <li className="leading-6">
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                      Support
-                    </a>
+                    <Link href="/help" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                      帮助中心
+                    </Link>
                   </li>
                   <li className="leading-6">
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                      FAQ
-                    </a>
+                    <Link href="/help#getting-started" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                      常见问题
+                    </Link>
+                  </li>
+                  <li className="leading-6">
+                    <Link href="/messages" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                      留言与客服
+                    </Link>
                   </li>
                 </ul>
               </div>
             </div>
 
             <div className="border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 pt-2.5">
-              <p className="text-sm text-gray-500">© 2025 GrowthEngine. All rights reserved.</p>
+              <p className="text-sm text-gray-500">© 2026 GrowthEngine. All rights reserved.</p>
               <div className="flex items-center gap-4">
                 <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -612,16 +651,6 @@ export default function LandingPageContent() {
         </footer>
       </div>
 
-      {/* Click outside to close dropdowns */}
-      {(showUserMenu || showNotifications) && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => {
-            setShowUserMenu(false)
-            setShowNotifications(false)
-          }}
-        />
-      )}
     </>
   )
 }

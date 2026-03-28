@@ -120,7 +120,7 @@ SLOW_QUERY_MS=120 BASE_URL="http://localhost:3001" npm run preflight
 
 1. 填好 `.env.local` 里的真实 MySQL 密码和 AI key
 2. 本地启动后完整走一遍三角色链路
-   - 参考：`docs/QA_MANUAL_ACCEPTANCE_CHECKLIST.md`
+   - 参考：`docs/QA_MANUAL_ACCEPTANCE_CHECKLIST.md`、`docs/FRONTEND_SMOKE_QA_REPORT.md`（已知问题与占位项）
 3. 执行一次压测并记录结果
 4. 执行一次 `npm run test:smoke`（必须为 REGRESSION_SMOKE_OK）
 5. 若失败，把错误日志交给我二次修复
