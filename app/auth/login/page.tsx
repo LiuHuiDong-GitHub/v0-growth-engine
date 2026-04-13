@@ -100,7 +100,6 @@ export default function LoginPage() {
             <span className="px-4 bg-white text-slate-400 font-medium">OR</span>
           </div>
         </div>
-        <p className="text-center text-xs text-slate-400 mb-3">第三方登录开发中，请使用上方邮箱验证码登录。</p>
 
         {/* Other Login Methods */}
         <div className="grid grid-cols-5 gap-3 mb-6">

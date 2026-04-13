@@ -61,7 +61,7 @@ npm run dev
 - 前端访问路径：`/uploads/<filename>`
 - 限制：
   - 单文件最大 10MB
-  - 允许类型：image/*、video/*、application/pdf、application/zip（其余会拒绝）
+  - 允许类型：`image/*`、`video/*`、`application/pdf`、`application/zip`（其余会拒绝）
 
 ### 5.1 压测（需要登录cookie）
 
